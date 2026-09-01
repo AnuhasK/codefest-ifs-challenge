@@ -1,8 +1,8 @@
 # Architecture Document v1 — Ashen Era Archive Intelligence System
 
 **Track: 1B — Connecting Facts Across Thousands of Pages**  
-**Date: 30 August 2026**  
-**Status: Approved**
+**Date: 31 August 2026**  
+**Status: Approved (v1.1 — image processing + provider lock-in)**
 
 ---
 
@@ -14,22 +14,23 @@
 4. [Technology Stack & Rationale](#4-technology-stack--rationale)
 5. [Dual Storage Architecture](#5-dual-storage-architecture)
 6. [Ingestion Pipeline](#6-ingestion-pipeline)
-7. [Contextual Retrieval — Core Design](#7-contextual-retrieval--core-design)
-8. [Hybrid Retrieval Architecture](#8-hybrid-retrieval-architecture)
-9. [Entity & Knowledge Graph Architecture](#9-entity--knowledge-graph-architecture)
-10. [Entity & Claim Extraction — Phased Strategy](#10-entity--claim-extraction--phased-strategy)
-11. [Multi-Hop Retrieval](#11-multi-hop-retrieval)
-12. [Evidence Management](#12-evidence-management)
-13. [Answer Generation & Verification](#13-answer-generation--verification)
-14. [Deterministic Citation Architecture](#14-deterministic-citation-architecture)
-15. [Immutable Corpus Principle](#15-immutable-corpus-principle)
-16. [Logical Document Model](#16-logical-document-model)
-17. [Chunk Architecture](#17-chunk-architecture)
-18. [Query-Time Data Flow](#18-query-time-data-flow)
-19. [Evaluation Architecture](#19-evaluation-architecture)
-20. [Observability](#20-observability)
-21. [Project Structure](#21-project-structure)
-22. [What We Are Deliberately NOT Building](#22-what-we-are-deliberately-not-building)
+7. [Image & Vision Processing Architecture](#7-image--vision-processing-architecture)
+8. [Contextual Retrieval — Core Design](#8-contextual-retrieval--core-design)
+9. [Hybrid Retrieval Architecture](#9-hybrid-retrieval-architecture)
+10. [Entity & Knowledge Graph Architecture](#10-entity--knowledge-graph-architecture)
+11. [Entity & Claim Extraction — Phased Strategy](#11-entity--claim-extraction--phased-strategy)
+12. [Multi-Hop Retrieval](#12-multi-hop-retrieval)
+13. [Evidence Management](#13-evidence-management)
+14. [Answer Generation & Verification](#14-answer-generation--verification)
+15. [Deterministic Citation Architecture](#15-deterministic-citation-architecture)
+16. [Immutable Corpus Principle](#16-immutable-corpus-principle)
+17. [Logical Document Model](#17-logical-document-model)
+18. [Chunk Architecture](#18-chunk-architecture)
+19. [Query-Time Data Flow](#19-query-time-data-flow)
+20. [Evaluation Architecture](#20-evaluation-architecture)
+21. [Observability](#21-observability)
+22. [Project Structure](#22-project-structure)
+23. [What We Are Deliberately NOT Building](#23-what-we-are-deliberately-not-building)
 
 ---
 
@@ -214,23 +215,43 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 
 ---
 
-### Embedding Model: Provider Abstraction
+### Embedding Model: Voyage AI
 
-**Decision:** Abstract the embedding model behind a provider interface so we can switch between Voyage, OpenAI, BGE-M3, or Gemini without code changes.
+**Decision:** Use **Voyage AI** (`voyage-3-large`) as the primary embedding model, behind a provider abstraction interface.
 
 **Rationale:**
-- Different embedding models have different strengths (multilingual, code, retrieval-optimized)
-- We want to experimentally compare models and pick the best for this corpus
-- API-based models (Voyage, OpenAI) are easy to start with; local models (BGE-M3) avoid API costs
-- The competition rewards experimental methodology — showing we tested multiple embeddings is valuable
+- Voyage AI is specifically optimized for retrieval tasks and consistently ranks at the top of MTEB benchmarks
+- `voyage-3-large` produces 1024-dimensional vectors — good balance of quality and storage
+- Voyage natively distinguishes between **document embeddings** and **query embeddings** (asymmetric embedding), which improves retrieval accuracy
+- API-based — no local GPU required
+- The provider abstraction still allows swapping to other models if needed for experimentation
+
+**Alternatives considered:**
+- OpenAI `text-embedding-3-large` — good quality, but Voyage is retrieval-specialized
+- BGE-M3 — open-source/local, but API-based is simpler for team velocity
+- Gemini `text-embedding-004` — good but Voyage has stronger retrieval benchmarks
 
 ---
 
-### LLM: Provider Abstraction
+### LLM: Google Gemini
 
-**Decision:** Abstract the LLM behind a provider interface.
+**Decision:** Use **Google Gemini** as the primary LLM, behind a provider abstraction interface.
 
-**Rationale:** Same as embeddings — we want to be able to swap between GPT-4o, Claude, Gemini Flash, etc. without code changes. Cheaper models can handle entity extraction; stronger models handle answer generation.
+**Model selection:**
+- **Gemini 2.5 Flash** — primary model for entity extraction, contextualization, relationship extraction (fast, cheap, high throughput for batch processing)
+- **Gemini 2.5 Pro** — for answer generation and verification (stronger reasoning when needed)
+- **Gemini Flash with vision** — for image description and figure plate data extraction
+
+**Rationale:**
+- Gemini has strong multimodal (vision) capabilities — critical for processing the 85 images in the corpus
+- Gemini Flash is extremely cost-effective for batch processing (entity extraction across ~2,000 chunks)
+- Gemini Pro provides strong reasoning for complex answer generation
+- Native structured output support (JSON mode) for reliable entity/relationship extraction
+- The provider abstraction still allows swapping if needed
+
+**Alternatives considered:**
+- GPT-4o — strong but more expensive for batch processing
+- Claude Sonnet 4 — excellent instruction following, but Gemini's vision and cost profile wins for this project
 
 ---
 
@@ -243,8 +264,10 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 | markdown-it-py or similar | Markdown parsing with heading structure |
 | Built-in file I/O | Plain text files |
 | Tesseract / EasyOCR / Docling | OCR for scanned PDFs (`.scan.pdf`) |
+| Pillow (PIL) | Image loading, format handling |
+| Gemini Vision | Image description and data extraction from figure plates |
 
-**Rationale:** These are the standard, well-maintained Python libraries for each format. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
+**Rationale:** These are the standard, well-maintained Python libraries for each format. Gemini Vision is used for image understanding — extracting data from figure plates and generating text descriptions of atmospheric artwork. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
 
 ---
 
@@ -325,6 +348,10 @@ IMMUTABLE CORPUS (read-only)
   (Tesseract/EasyOCR for .scan.pdf files)
         │
         ▼
+  Image Processing
+  (Gemini Vision for figure plates + atmospheric art → text descriptions + data extraction)
+        │
+        ▼
   Structure Detection
   (identify chapters, sections, headings, tables, paragraphs)
         │
@@ -367,7 +394,197 @@ IMMUTABLE CORPUS (read-only)
 
 ---
 
-## 7. Contextual Retrieval — Core Design
+## 7. Image & Vision Processing Architecture
+
+The corpus contains **85 images** across three locations that carry information not available in any text document. This is a critical gap that must be addressed.
+
+### Image Inventory
+
+| Location | Count | Type | Content | Size |
+|---|---|---|---|---|
+| `images/` | 15 | Figure plates | **Data plates** with numerical values (threat ratings, garrison strengths, attunement costs) | ~30-45KB each |
+| `wiki/images/` | 55 | Atmospheric art | Portraits, heraldry/banners, landscapes, battle paintings, relic illustrations | ~2MB each |
+| `codex/images/` | 15 | Figure plates | Same plates as `images/` (duplicates within codex context) | ~30-45KB each |
+
+### Why Images Are Critical
+
+Several sample questions can **only** be answered from image content:
+
+- *"What numerical rating is assigned to the Weeping Lurker?"* → Answer is **3**, only visible in the figure plate image
+- *"What is the recorded garrison strength of Greyfell Citadel?"* → Answer is **3,695**, only visible in the figure plate image  
+- *"What is the central emblem on the banner of House Morvain?"* → Answer requires visual inspection of the heraldry image
+- *"In the portrait of Ignatz Ashgrove the Oathless, what object are they holding?"* → Answer requires visual inspection of the portrait
+
+Even though we target Track 1B (text-based multi-hop), the figure plates contain **factual data** (numbers, names, scales) that may be needed to connect facts across documents. Ignoring images means missing data that text retrieval can never find.
+
+### Image Processing Strategy
+
+#### 1. Figure Plates (Data Extraction)
+
+The 15 figure plates are structured data visualizations. Each contains:
+- A title (entity name)
+- A metric type (Threat Rating, Garrison Strength, Attunement Cost, etc.)
+- A numerical value
+- A scale or unit
+- Sometimes a provenance note ("As entered into the Codex Vaeloria")
+
+**Processing approach:**
+```
+Figure Plate Image
+        │
+        ▼
+  Gemini Vision (structured extraction)
+        │
+        ▼
+  Structured Data:
+  {
+    "entity_name": "Weeping Lurker",
+    "metric": "Threat Rating",
+    "value": 3,
+    "scale": "0-10, per the Vanguard scale",
+    "provenance": null
+  }
+        │
+        ▼
+  Store as:
+  1. Asset record in PostgreSQL (image path, description, extracted data)
+  2. Text chunk (generated description → embeddable and searchable)
+  3. Entity link in Neo4j (plate → entity it describes)
+```
+
+**Gemini Vision prompt for figure plates:**
+```
+This is a figure plate from a fantasy codex. Extract ALL information visible 
+in this image as structured data:
+
+- entity_name: the name/title shown
+- metric_type: what is being measured (e.g., "Threat Rating", "Garrison Strength")
+- value: the numerical value shown
+- unit_or_scale: the scale or unit (e.g., "of 10, per the Vanguard scale")
+- additional_text: any other text visible in the image
+
+Respond in JSON format.
+```
+
+#### 2. Atmospheric Art (Visual Descriptions)
+
+The 55 wiki images are artistic illustrations. They require descriptive text generation:
+
+**Categories and what to extract:**
+
+| Category prefix | Count | Extract |
+|---|---|---|
+| `atmo_portrait_character_*` | 12 | What the character looks like, what they're holding, armor/clothing details |
+| `atmo_heraldry_faction_*` | 5 | Banner/emblem design, colors, central motif, symbols |
+| `atmo_landscape_location_*` | 10 | Landscape features, architectural details, environment |
+| `atmo_battle_painting_conflict_*` | 6 | Battle scene details, factions visible, key elements |
+| `atmo_creature_creature_*` | 10 | Creature appearance, distinguishing features, size cues |
+| `atmo_relic_artifact_*` | 12 | Artifact appearance, materials, inscriptions, motifs |
+
+**Processing approach:**
+```
+Atmospheric Art Image
+        │
+        ▼
+  Gemini Vision (detailed description)
+        │
+        ▼
+  Text Description:
+  "Portrait of Ignatz Ashgrove the Oathless. The figure is shown 
+   standing in dark armor, holding a notched sword in their right 
+   hand. Their expression is stern, with scarred features..."
+        │
+        ▼
+  Store as:
+  1. Asset record in PostgreSQL (image path, description)
+  2. Text chunk (description → embeddable and searchable via hybrid retrieval)
+  3. Entity link in Neo4j (image → entity it depicts)
+  4. Document link (image → wiki article that references it)
+```
+
+**Gemini Vision prompt for atmospheric art:**
+```
+This is an illustration from a fantasy wiki article about "{entity_name}".
+Describe this image in detail, focusing on:
+1. What is depicted (person, place, creature, artifact, banner, battle)
+2. Visual details that someone might ask about (colors, objects held, 
+   symbols, emblems, motifs, inscriptions, materials)
+3. Any text visible in the image
+4. Distinguishing features
+
+Be factual and specific. Do not speculate beyond what is visible.
+```
+
+#### 3. Wiki-Image Linking
+
+Each wiki article's first line references its image:
+```markdown
+![House Morvain](images/atmo_heraldry_faction_house_morvain.png)
+```
+
+During markdown extraction, parse this reference to:
+1. Link the image asset to the wiki document
+2. Link the image asset to the corresponding entity in Neo4j
+3. Include the image description in the wiki article's chunks (so text search finds it)
+
+### Asset Table (PostgreSQL)
+
+```sql
+CREATE TABLE assets (
+    id UUID PRIMARY KEY,
+    document_id UUID REFERENCES documents(id),  -- the wiki/codex article this belongs to
+    file_path TEXT NOT NULL,
+    asset_type TEXT NOT NULL,  -- figure_plate, portrait, heraldry, landscape, battle_painting, creature, relic
+    entity_name TEXT,  -- the entity this image depicts
+    description TEXT,  -- Gemini Vision generated description
+    extracted_data JSONB,  -- structured data from figure plates
+    embedding vector(1024),  -- text embedding of the description (for retrieval)
+    metadata JSONB DEFAULT '{}'
+);
+```
+
+### Image → Entity Links in Neo4j
+
+```cypher
+// Link image assets to entities
+MERGE (a:Asset {id: $asset_id})
+SET a.type = $asset_type, a.file_path = $file_path
+
+MATCH (e:Entity {name: $entity_name})
+MERGE (a)-[:DEPICTS]->(e)
+
+// Link to document
+MATCH (d:Document {id: $document_id})
+MERGE (d)-[:CONTAINS_IMAGE]->(a)
+```
+
+### Image Data as Searchable Chunks
+
+Each image generates a **synthetic text chunk** that enters the standard retrieval pipeline:
+
+```
+Chunk content (for a figure plate):
+"Figure plate: Greyfell Citadel. Recorded Garrison Strength: 3,695 souls 
+under arms. As entered into the Codex Vaeloria. Figures verified by the 
+Silent Choir."
+
+Chunk content (for a portrait):
+"Portrait illustration of Ignatz Ashgrove the Oathless from the wiki article. 
+The figure is depicted in dark plate armor, holding a notched longsword in 
+their right hand..."
+```
+
+These synthetic chunks:
+- Get standard + contextual embeddings (like any other chunk)
+- Are searchable via BM25 and dense retrieval
+- Have provenance pointing to the original image file
+- Link to entities in Neo4j
+
+This means when someone asks *"What is the garrison strength of Greyfell Citadel?"*, the BM25/dense search will find the synthetic chunk from the figure plate, and the answer will cite the original image as the source.
+
+---
+
+## 8. Contextual Retrieval — Core Design
 
 Contextual retrieval is a **core component**, not optional.
 
