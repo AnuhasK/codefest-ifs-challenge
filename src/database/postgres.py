@@ -14,8 +14,8 @@ from src.config import (
 )
 
 
-def get_connection():
-    """Create and return a direct psycopg connection with pgvector registered."""
+def get_connection(register_vec: bool = True):
+    """Create and return a direct psycopg connection with pgvector registered if available."""
     conn = psycopg.connect(
         dbname=POSTGRES_DB,
         user=POSTGRES_USER,
@@ -24,7 +24,11 @@ def get_connection():
         port=POSTGRES_PORT,
         row_factory=dict_row,
     )
-    register_vector(conn)
+    if register_vec:
+        try:
+            register_vector(conn)
+        except Exception:
+            pass
     return conn
 
 
