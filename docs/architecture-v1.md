@@ -255,7 +255,7 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 
 ---
 
-### Document Processing
+### Document Processing & NLP
 
 | Library | Purpose |
 |---|---|
@@ -266,8 +266,10 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 | Tesseract / EasyOCR / Docling | OCR for scanned PDFs (`.scan.pdf`) |
 | Pillow (PIL) | Image loading, format handling |
 | Gemini Vision | Image description and data extraction from figure plates |
+| spaCy + `en_core_web_trf` | Entity extraction (gazette EntityRuler + transformer NER) — zero LLM calls |
+| Pydantic | Structured output schema enforcement for LLM relationship extraction |
 
-**Rationale:** These are the standard, well-maintained Python libraries for each format. Gemini Vision is used for image understanding — extracting data from figure plates and generating text descriptions of atmospheric artwork. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
+**Rationale:** These are the standard, well-maintained Python libraries for each format. Gemini Vision is used for image understanding — extracting data from figure plates and generating text descriptions of atmospheric artwork. spaCy handles entity extraction offline using a gazette built from wiki/codex filenames + transformer NER for coverage, eliminating LLM calls for NER. Pydantic enforces structured output schemas when the LLM classifies relationships, preventing hallucinated relationship types. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
 
 ---
 
@@ -369,11 +371,11 @@ IMMUTABLE CORPUS (read-only)
         │
         ▼
   Entity Extraction (Layer 1)
-  (NER via LLM → Neo4j entity nodes)
+  (gazette + spaCy NER → Neo4j entity nodes, zero LLM calls)
         │
         ▼
   Relationship Extraction (Layer 2)
-  (entity co-occurrence + LLM → Neo4j edges)
+  (co-occurrence pre-filter + LLM structured output → Neo4j edges)
         │
         ▼
   Claim Extraction (Layer 3 — stretch)
@@ -771,30 +773,87 @@ CREATE CONSTRAINT entity_id IF NOT EXISTS FOR (e:Entity) REQUIRE e.id IS UNIQUE;
 
 ---
 
-## 10. Entity & Claim Extraction — Phased Strategy
+## 10. Entity & Claim Extraction — Hybrid Strategy
 
-### Layer 1: Named Entity Recognition (Core)
+### Design Rationale: Why Not LLM-Only?
 
-Extract entities from every chunk using LLM:
+The original approach called for LLM-based NER on every chunk (~2,000+ calls). On the Gemini free tier (~15 RPM), this alone would take ~2+ hours and consume budget better spent on contextual prefixes and answer generation — where LLMs are irreplaceable.
+
+The hybrid approach, well-validated by the ML/NLP community, splits the work:
+- **Pattern matching** (gazette + spaCy) handles entity detection — a problem it's already good at
+- **LLM reasoning** (Gemini + structured output) handles relationship classification — a problem that requires understanding context
+
+### Layer 1: Named Entity Recognition — Gazette + spaCy (Core)
+
+**Zero LLM calls. Fully offline.**
+
+#### Step 1a: Build Gazette from Corpus Structure
+
+The corpus itself encodes entity names in its file structure:
+```
+wiki/wiki_person_ser_vael.md          → Person: "Ser Vael"
+wiki/wiki_faction_ashen_vanguard.md   → Faction: "Ashen Vanguard"
+wiki/wiki_place_red_vale.md           → Place: "Red Vale"
+wiki/wiki_creature_gravemaw_wyrm.md   → Creature: "Gravemaw Wyrm"
+wiki/wiki_artifact_thrice_bound_edge.md → Artifact: "Thrice-Bound Edge"
+codex/codex_data_book_*.pdf           → Entity names from codex entries
+```
+
+Parse ~95 wiki filenames + codex entries to build a **complete entity dictionary** with canonical names and types. This gives us a high-coverage gazette with zero guesswork.
+
+#### Step 1b: spaCy EntityRuler + Transformer NER
+
+Apply a two-pass NER pipeline:
+```
+Pass 1: spaCy EntityRuler (gazette matching)
+  - Load gazette patterns from wiki/codex filenames
+  - Exact match + case-insensitive match
+  - Catches all entities that have wiki/codex articles
+
+Pass 2: spaCy en_core_web_trf (transformer NER)
+  - Catches entities NOT in the gazette (characters mentioned only in novels/ephemera)
+  - Detects generic patterns: capitalized multi-word phrases, titles ("Ser", "Lord")
+  - Produces candidate entities for manual review or confidence filtering
+```
+
+**Combined output:**
 ```
 Input:  "Ser Vael of the Ashen Vanguard rode to Red Vale..."
-Output: [Person: "Ser Vael", Faction: "Ashen Vanguard", Place: "Red Vale"]
+Output: [Person: "Ser Vael" (gazette), Faction: "Ashen Vanguard" (gazette), Place: "Red Vale" (gazette)]
 ```
 
 - Store as Neo4j nodes
 - Link each entity to the chunks/documents where it appears
 - **This alone enables:** entity-based retrieval, basic cross-document linking
+- **API cost: 0 calls**
 
-### Layer 2: Relationship Extraction (Core)
+### Layer 2: Relationship Extraction — Co-occurrence + LLM (Core)
 
-For chunks containing multiple entities, extract relationships:
+#### Step 2a: Co-occurrence Pre-filter
+
+For each chunk, identify which entities co-occur:
 ```
-Input:  chunk containing [Ser Vael] and [Ashen Vanguard]
-Output: (Ser Vael)-[:MEMBER_OF]->(Ashen Vanguard)
+Chunk contains: [Ser Vael, Ashen Vanguard, Red Vale]
+→ 3 entity pairs: (Ser Vael, Ashen Vanguard), (Ser Vael, Red Vale), (Ashen Vanguard, Red Vale)
+→ Only chunks with 2+ entities proceed to LLM classification
 ```
+
+This filters out ~30-40% of chunks (those with 0-1 entities), reducing LLM calls.
+
+#### Step 2b: LLM Relationship Classification with Structured Output
+
+Feed pre-extracted entities + their chunk context into Gemini with a strict Pydantic/JSON schema:
+```
+Input:  entities=["Ser Vael", "Ashen Vanguard"], chunk_text="..."
+Output: {"relationships": [{"source": "Ser Vael", "target": "Ashen Vanguard", 
+         "type": "MEMBER_OF", "evidence": "...", "confidence": 0.95}]}
+```
+
+The structured output schema forces the LLM to only emit relationships from the predefined type set (`MEMBER_OF`, `LED`, `WON`, `PARTICIPATED_IN`, etc.), preventing hallucinated relationship types.
 
 - Store as Neo4j edges with evidence references
 - **This enables:** 2-3 hop graph traversal for multi-document questions
+- **API cost: ~500-800 calls** (only chunks with 2+ entities)
 
 ### Layer 3: Claim Extraction (Stretch)
 
@@ -813,12 +872,26 @@ Key constraint: `accused_of` must NOT automatically become `committed`. The dist
 
 - **This enables:** conflict detection, source reliability comparison, nuanced answers
 
+### LLM Budget Summary (Gemini Free Tier)
+
+| Task | Method | API Calls | With 3 Keys @ 15 RPM |
+|---|---|---|---|
+| Entity extraction (Layer 1) | Gazette + spaCy | **0** | N/A |
+| Relationship extraction (Layer 2) | Co-occurrence + LLM | **~500-800** | ~11-18 min |
+| Contextual prefixes (§8) | LLM (irreplaceable) | **~2,000** | ~44 min |
+| Image processing (§7) | Gemini Vision (irreplaceable) | **~70** | ~2 min |
+| Answer generation | LLM (irreplaceable) | **1/query** | Real-time |
+| **Total ingestion** | | **~2,570-2,870** | **~57-64 min** |
+
+Compare to LLM-only approach: ~4,500+ calls → ~100+ min with 3 keys. The hybrid approach saves ~40% of the API budget.
+
 ### Why phased?
 
 1. Each layer adds value independently — if time runs out, Layer 1 + Layer 2 still works
-2. Layer 1 is fast, reliable, and has the highest ROI
-3. Layer 3 is the most LLM-intensive and error-prone
-4. A working system with Layer 1+2 + good hybrid retrieval answers most 1B questions
+2. Layer 1 is fast, reliable, completely offline, and has the highest ROI
+3. Layer 2 is optimized: LLM only classifies relationships, not discovers entities
+4. Layer 3 is the most LLM-intensive and error-prone
+5. A working system with Layer 1+2 + good hybrid retrieval answers most 1B questions
 
 ---
 
