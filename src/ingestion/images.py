@@ -69,16 +69,28 @@ def classify_image_type(filename: str) -> tuple[str, str]:
 # Local OCR for figure plates (rapidocr-onnxruntime)
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# RapidOCR Local Figure Plate Processing
+# ---------------------------------------------------------------------------
+
+_rapid_ocr_engine = None
+
+
+def _get_rapid_ocr_engine():
+    """Module-level singleton for RapidOCR engine to avoid reloading ONNX models on every plate."""
+    global _rapid_ocr_engine
+    if _rapid_ocr_engine is None:
+        from rapidocr_onnxruntime import RapidOCR
+        _rapid_ocr_engine = RapidOCR()
+    return _rapid_ocr_engine
+
+
 def extract_plate_text_ocr(image_path: str) -> str:
     """
     Extract raw text from a figure plate using RapidOCR (local, offline).
-
-    Returns all detected text lines joined by newline.
-    Raises ImportError if rapidocr-onnxruntime is not installed.
+    Reuses a cached ONNX engine instance for fast (<50ms) inference.
     """
-    from rapidocr_onnxruntime import RapidOCR
-
-    ocr_engine = RapidOCR()
+    ocr_engine = _get_rapid_ocr_engine()
     result, _ = ocr_engine(image_path)
 
     if not result:
@@ -93,19 +105,28 @@ def extract_plate_text_ocr(image_path: str) -> str:
 
 def parse_plate_structured_data(ocr_text: str, entity_name: str) -> Dict[str, Any]:
     """
-    Parse OCR text from a figure plate into structured fields.
+    Parse OCR text from a figure plate into comprehensive structured fields.
 
-    Attempts to extract:
+    Extracts:
     - entity_name: name/title shown on the plate
-    - metric_type: what is being measured (Threat Rating, Garrison Strength, etc.)
-    - numerical_value: the number shown
-    - scale_or_unit: the scale or unit description
-    - provenance_note: any attribution text (e.g., "As entered into the Codex Vaeloria")
+    - metric_type: primary metric name (e.g. Recorded Garrison Strength, Attunement Cost, Threat Rating)
+    - numerical_value: primary numerical value
+    - all_metrics: dictionary mapping every label/benchmark/tolerance to its value
+    - scale_or_unit: unit or scale description (e.g. 'souls under arms', 'vitae-grains', 'of 10, per the Vanguard scale')
+    - provenance_note: attribution text (e.g. 'As entered into the Codex Vaeloria...')
+    - raw_ocr_text: full raw text captured
     """
-    data: Dict[str, Any] = {"entity_name": entity_name}
+    data: Dict[str, Any] = {
+        "entity_name": entity_name,
+        "metric_type": "Metric",
+        "numerical_value": None,
+        "all_metrics": {},
+        "scale_or_unit": "",
+        "provenance_note": "",
+        "raw_ocr_text": ocr_text,
+    }
 
     lines = [line.strip() for line in ocr_text.split("\n") if line.strip()]
-
     if not lines:
         return data
 
@@ -114,33 +135,82 @@ def parse_plate_structured_data(ocr_text: str, entity_name: str) -> Dict[str, An
         r"[Gg]arrison\s*[Ss]trength",
         r"[Aa]ttunement\s*[Cc]ost",
         r"[Dd]efensive\s*[Rr]ating",
+        r"[Cc]asualties",
         r"[Pp]opulation",
         r"[Ss]trategic\s*[Vv]alue",
     ]
 
+    current_label = None
+    detected_primary_metric = None
+
     for line in lines:
+        # Check provenance
+        if re.search(r"(entered into|codex|verified by|recorded by|as per)", line, re.IGNORECASE):
+            data["provenance_note"] = line.strip()
+            continue
+
+        # Check unit / scale
+        if re.search(r"(souls\s*under\s*arms|soulsunderarms|vitae-grains|vitae|souls\s*lost|soulslost|per\s*the\s*vanguard\s*scale|of\s*\d+,\s*per)", line, re.IGNORECASE):
+            unit_clean = line.strip()
+            if re.search(r"souls\s*under\s*arms|soulsunderarms", unit_clean, re.I):
+                unit_clean = "souls under arms"
+            elif re.search(r"souls\s*lost|soulslost", unit_clean, re.I):
+                unit_clean = "souls lost"
+            elif re.search(r"vitae-grains", unit_clean, re.I):
+                unit_clean = "vitae-grains"
+            data["scale_or_unit"] = unit_clean
+            continue
+
+        # Check if this line is a known primary metric name
         for pattern in metric_patterns:
             if re.search(pattern, line, re.IGNORECASE):
-                data["metric_type"] = line.strip()
+                detected_primary_metric = line.strip()
+                data["metric_type"] = detected_primary_metric
+                current_label = detected_primary_metric
                 break
 
-        numeric_match = re.match(r"^[\s]*([\d,]+(?:\.\d+)?)\s*$", line)
-        if numeric_match and "numerical_value" not in data:
-            raw_val = numeric_match.group(1).replace(",", "")
-            try:
-                data["numerical_value"] = (
-                    int(raw_val) if "." not in raw_val else float(raw_val)
-                )
-            except ValueError:
-                data["numerical_value"] = numeric_match.group(1)
+        # Number match (supports digits, commas, and OCR dot-as-thousand separator e.g. 87.349 -> 87349)
+        num_match = re.match(r"^[\s]*([\d,\.]+)\s*$", line)
+        if num_match and re.search(r"\d", line):
+            raw = num_match.group(1).replace(",", "").replace(" ", "")
+            # Check if period is a thousand separator in 5-digit/4-digit number (e.g. 87.349 or 6.970)
+            if re.match(r"^\d{1,3}\.\d{3}$", raw):
+                val = int(raw.replace(".", ""))
+            elif "." in raw:
+                try:
+                    val = float(raw)
+                except ValueError:
+                    val = raw
+            else:
+                try:
+                    val = int(raw)
+                except ValueError:
+                    val = raw
 
-        if re.search(r"(per the|out of|of \d+|scale)", line, re.IGNORECASE):
-            data["scale_or_unit"] = line.strip()
+            lbl = current_label or detected_primary_metric or "Value"
+            clean_lbl = re.sub(r"^" + re.escape(entity_name) + r"\s*[-–:]\s*", "", lbl, flags=re.I).strip()
+            if not clean_lbl:
+                clean_lbl = detected_primary_metric or "Value"
 
-        if re.search(
-            r"(entered into|codex|verified|recorded by|as per)", line, re.IGNORECASE
-        ):
-            data["provenance_note"] = line.strip()
+            data["all_metrics"][clean_lbl] = val
+
+            if data["numerical_value"] is None:
+                data["numerical_value"] = val
+                if detected_primary_metric:
+                    data["metric_type"] = detected_primary_metric
+                else:
+                    data["metric_type"] = clean_lbl
+
+            current_label = None
+        else:
+            # If not a number, this line could be the label for the next upcoming number
+            current_label = line.strip()
+
+    # Final fallback if no primary value found
+    if data["numerical_value"] is None and data["all_metrics"]:
+        first_lbl, first_val = next(iter(data["all_metrics"].items()))
+        data["numerical_value"] = first_val
+        data["metric_type"] = first_lbl
 
     return data
 
@@ -369,13 +439,28 @@ def process_image(
                 metric = extracted_data.get("metric_type", "Metric")
                 unit = extracted_data.get("scale_or_unit", "")
                 prov = extracted_data.get("provenance_note", "")
-                description = (
-                    f"Figure plate for {entity_name}: {metric} is {val} ({unit}). "
-                    f"{prov}".strip()
-                )
+                all_m = extracted_data.get("all_metrics", {})
+
+                # Build rich, comprehensive description capturing all numbers and benchmarks
+                desc_parts = [f"Figure plate for {entity_name}: {metric} is {val}"]
+                if unit:
+                    desc_parts.append(f"({unit}).")
+                else:
+                    desc_parts.append(".")
+
+                if len(all_m) > 1:
+                    comparisons = [f"{k}: {v}" for k, v in all_m.items() if str(v) != str(val)]
+                    if comparisons:
+                        desc_parts.append(f"Comparative standards & benchmarks: {'; '.join(comparisons)}.")
+
+                if prov:
+                    desc_parts.append(f"Provenance: {prov}.")
+
+                description = " ".join(desc_parts).strip()
                 extracted_data["ocr_source"] = "rapidocr"
+                all_vals_str = ", ".join(f"{k}={v}" for k, v in all_m.items())
                 print(
-                    f"  [RapidOCR] Extracted figure plate '{entity_name}': {metric} = {val} ({unit}) [0 API calls]",
+                    f"  [RapidOCR] Extracted figure plate '{entity_name}': {all_vals_str} ({unit}) [0 API calls]",
                     flush=True,
                 )
                 return (description, extracted_data)
