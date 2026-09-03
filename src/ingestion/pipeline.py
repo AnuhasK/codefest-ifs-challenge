@@ -3,7 +3,7 @@ from typing import List, Dict, Any, Optional
 from uuid import UUID, uuid4
 import json
 import re
-import psycopg
+import spacy
 
 from src.config import CORPUS_PATH
 from src.database.postgres import get_db_connection
@@ -20,6 +20,10 @@ from src.ingestion.extraction import extract_document_representation
 from src.ingestion.ocr import ocr_scanned_pdf
 from src.ingestion.images import process_corpus_images
 from src.ingestion.chunking import chunk_document, create_image_chunk
+from src.ingestion.entities import extract_entities_from_corpus, ExtractedEntity
+from src.ingestion.contextualization import contextualize_all_chunks
+from src.providers.embeddings import EmbeddingProvider, get_embedding_provider
+from src.providers.llm_provider import LLMProvider, get_llm_provider
 
 
 def validate_ingested_corpus(
@@ -33,13 +37,11 @@ def validate_ingested_corpus(
     duplicate_chunks = 0
     warnings: List[str] = []
 
-    # Map chunks to document IDs
     doc_chunk_counts: Dict[UUID, int] = {doc.id: 0 for doc in documents}
     for c in chunks:
         if c.document_id in doc_chunk_counts:
             doc_chunk_counts[c.document_id] += 1
         
-        # Check text uniqueness
         content_snippet = c.content.strip()[:100]
         if content_snippet in chunk_hashes:
             duplicate_chunks += 1
@@ -117,20 +119,26 @@ def save_to_database(
                         ),
                     )
 
-            # 2. Insert chunks
+            # 2. Insert chunks with vector embeddings
             for chunk in chunks:
+                emb_val = chunk.embedding if chunk.embedding is not None else None
+                ctx_emb_val = chunk.contextual_embedding if chunk.contextual_embedding is not None else None
+
                 cur.execute(
                     """
                     INSERT INTO chunks (
                         id, document_id, section_id, representation_id, content,
                         contextualized_content, page_start, page_end, chapter,
-                        section_title, position, token_count, metadata
+                        section_title, position, token_count, embedding, contextual_embedding, metadata
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (id) DO UPDATE SET
                         content = EXCLUDED.content,
+                        contextualized_content = EXCLUDED.contextualized_content,
                         section_title = EXCLUDED.section_title,
                         token_count = EXCLUDED.token_count,
+                        embedding = EXCLUDED.embedding,
+                        contextual_embedding = EXCLUDED.contextual_embedding,
                         metadata = EXCLUDED.metadata;
                     """,
                     (
@@ -146,19 +154,23 @@ def save_to_database(
                         chunk.section_title,
                         chunk.position,
                         chunk.token_count,
+                        emb_val,
+                        ctx_emb_val,
                         json.dumps(chunk.metadata),
                     ),
                 )
 
             # 3. Insert assets
             for asset in assets:
+                asset_emb = asset.embedding if hasattr(asset, "embedding") and asset.embedding is not None else None
                 cur.execute(
                     """
-                    INSERT INTO assets (id, document_id, file_path, asset_type, entity_name, description, extracted_data, metadata)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO assets (id, document_id, file_path, asset_type, entity_name, description, extracted_data, embedding, metadata)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (id) DO UPDATE SET
                         description = EXCLUDED.description,
                         extracted_data = EXCLUDED.extracted_data,
+                        embedding = EXCLUDED.embedding,
                         metadata = EXCLUDED.metadata;
                     """,
                     (
@@ -169,6 +181,7 @@ def save_to_database(
                         asset.entity_name,
                         asset.description,
                         json.dumps(asset.extracted_data),
+                        asset_emb,
                         json.dumps(asset.metadata),
                     ),
                 )
@@ -193,9 +206,22 @@ def save_to_database(
                 )
 
 
+def apply_vector_indexes() -> None:
+    """Apply HNSW vector indexes to pgvector tables."""
+    migration_file = Path(__file__).resolve().parent.parent / "database" / "migrations" / "002_vector_indexes.sql"
+    if migration_file.exists():
+        sql = migration_file.read_text(encoding="utf-8")
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql)
+        print("HNSW vector indexes successfully applied in PostgreSQL.", flush=True)
+
+
 def run_ingestion(
     corpus_path: Path | str = CORPUS_PATH,
     use_vision: bool = True,
+    generate_embeddings_flag: bool = True,
+    use_contextual_llm: bool = True,
     persist_db: bool = True,
 ) -> IngestionReport:
     """
@@ -204,7 +230,10 @@ def run_ingestion(
     2. Text & OCR Extraction
     3. Gemini Vision Image Processing
     4. Format-aware Chunking & Provenance
-    5. Database Persistence & Validation
+    5. Gazette & spaCy Entity Extraction (Phase 2)
+    6. Hybrid Contextual Prefix Generation (Phase 2)
+    7. Dual Vector Embeddings (Standard + Contextual) (Phase 2)
+    8. Database Persistence & HNSW Indexing
     """
     corpus_root = Path(corpus_path).resolve()
     print(f"--- Starting Corpus Ingestion from: {corpus_root} ---", flush=True)
@@ -221,13 +250,10 @@ def run_ingestion(
 
     # 2. Extract and chunk text documents
     for doc in documents:
-        # If this is purely an image document, skip text extraction
         if doc.source_category == "images":
             continue
 
-        # Find best representation to extract
         rep = doc.representations[0]
-        # Prefer DOCX or MD representation if available
         for r in doc.representations:
             if r.format in ("docx", "md"):
                 rep = r
@@ -242,15 +268,12 @@ def run_ingestion(
                     rep.file_path, rep.format, doc.id, rep.id
                 )
 
-            # Update representation metadata
             if extraction.pages:
                 rep.page_count = len(extraction.pages)
 
-            # Chunk document
             chunks = chunk_document(extraction, doc)
             all_chunks.extend(chunks)
 
-            # Generate provenance for each chunk
             for c in chunks:
                 prov = Provenance(
                     id=uuid4(),
@@ -271,26 +294,20 @@ def run_ingestion(
     print("Processing visual assets (figure plates & artwork)...", flush=True)
     assets = process_corpus_images(corpus_root, use_vision=use_vision)
     
-    # Map assets to corresponding wiki documents if applicable
     doc_by_stem = {doc.metadata.get("stem"): doc for doc in documents if doc.metadata}
-    
     plate_count = sum(1 for a in assets if a.asset_type == "figure_plate")
     art_count = len(assets) - plate_count
 
     for asset in assets:
-        # Link asset to matching wiki document
         stem = Path(asset.file_path).stem
         if stem.startswith("atmo_"):
-            # Extract wiki stem e.g. atmo_portrait_character_aldous_wrenfield_the_last_warden -> aldous_wrenfield_the_last_warden
             wiki_slug = re.sub(r"^atmo_[a-z]+_[a-z]+_", "", stem)
             if wiki_slug in doc_by_stem:
                 asset.document_id = doc_by_stem[wiki_slug].id
 
-        # Create synthetic chunk
         img_chunk = create_image_chunk(asset)
         all_chunks.append(img_chunk)
 
-        # Provenance for synthetic chunk
         prov = Provenance(
             id=uuid4(),
             chunk_id=img_chunk.id,
@@ -302,17 +319,70 @@ def run_ingestion(
         )
         provenance_records.append(prov)
 
-    print(f"Processed {len(assets)} visual assets ({plate_count} figure plates, {art_count} illustrations).", flush=True)
-    print(f"Total chunks created: {len(all_chunks)} ({len(all_chunks) - len(assets)} text, {len(assets)} synthetic image chunks).", flush=True)
+    print(f"Processed {len(assets)} visual assets ({plate_count} plates, {art_count} art).", flush=True)
+    print(f"Total chunks created: {len(all_chunks)} ({len(all_chunks) - len(assets)} text, {len(assets)} image chunks).", flush=True)
 
-    # 4. Validate
+    # 4. Phase 2: Offline Gazette + spaCy Entity Extraction
+    print("Running Gazette + spaCy entity extraction...", flush=True)
+    nlp = spacy.load("en_core_web_sm")
+    all_extracted_entities, chunk_to_entities = extract_entities_from_corpus(
+        chunks=all_chunks,
+        corpus_path=corpus_root,
+        nlp=nlp,
+    )
+    print(f"Extracted {len(all_extracted_entities)} entity occurrences across chunks (0 LLM calls).", flush=True)
+
+    # 5. Phase 2: Hybrid Contextual Prefix Generation
+    print("Generating hybrid contextual prefixes (Tier 1 Template + Tier 2 LLM)...", flush=True)
+    llm = get_llm_provider() if use_contextual_llm else None
+    docs_map = {str(d.id): d.title for d in documents}
+    ctx_stats = contextualize_all_chunks(
+        chunks=all_chunks,
+        chunk_entities=chunk_to_entities,
+        documents_map=docs_map,
+        nlp=nlp,
+        llm=llm,
+        use_llm_tier=use_contextual_llm,
+    )
+    print(f"Contextualization complete: {ctx_stats['template_prefixes']} template prefixes, {ctx_stats['llm_prefixes']} LLM prefixes.", flush=True)
+
+    # 6. Phase 2: Embedding Generation (Standard + Contextual)
+    if generate_embeddings_flag:
+        print("Generating dual embeddings via Voyage AI (raw text & contextual text)...", flush=True)
+        provider = get_embedding_provider()
+        
+        # Batch raw text embeddings
+        raw_texts = [c.content for c in all_chunks]
+        raw_vectors = provider.embed_texts(raw_texts, batch_size=16)
+        for c, vec in zip(all_chunks, raw_vectors):
+            c.embedding = vec
+
+        # Batch contextual text embeddings
+        ctx_texts = [c.contextualized_content or c.content for c in all_chunks]
+        ctx_vectors = provider.embed_texts(ctx_texts, batch_size=16)
+        for c, vec in zip(all_chunks, ctx_vectors):
+            c.contextual_embedding = vec
+
+        # Embed visual asset descriptions
+        asset_texts = [a.description or a.entity_name or "visual asset" for a in assets]
+        asset_vectors = provider.embed_texts(asset_texts, batch_size=16)
+        for a, vec in zip(assets, asset_vectors):
+            a.embedding = vec
+
+        print(f"Successfully generated {len(raw_vectors) + len(ctx_vectors) + len(asset_vectors)} vector embeddings.", flush=True)
+
+    # 7. Validate
     validation = validate_ingested_corpus(documents, all_chunks, assets)
 
-    # 5. Persist to PostgreSQL
+    # 8. Persist to PostgreSQL + HNSW Indexing
     if persist_db:
         print("Persisting documents, chunks, assets, and provenance to PostgreSQL...", flush=True)
         save_to_database(documents, all_chunks, assets, provenance_records)
         print("Database persistence complete.", flush=True)
+
+        if generate_embeddings_flag:
+            print("Applying HNSW vector indexes...", flush=True)
+            apply_vector_indexes()
 
     report = IngestionReport(
         documents_discovered=len(discovered_files),
