@@ -37,13 +37,23 @@ GEMINI_API_KEYS = [k.strip() for k in _raw_gemini_keys.split(",") if k.strip()]
 GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "")
 
+# Gemini Rate & Quota Limits (Free Tier Protection)
+GEMINI_MAX_RPM_PER_KEY = int(os.getenv("GEMINI_MAX_RPM_PER_KEY", "5"))
+GEMINI_MAX_DAILY_PER_KEY = int(os.getenv("GEMINI_MAX_DAILY_PER_KEY", "20"))
+GEMINI_MAX_INPUT_TOKENS = int(os.getenv("GEMINI_MAX_INPUT_TOKENS", "100000"))
+
 # Models
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "voyage-3-large")
 EMBEDDING_DIMENSION = 1024
-LLM_MODEL = os.getenv("LLM_MODEL", "gemini-2.5-flash")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.7-flash")
 LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-2.5-pro")
 
 # Chunking Parameters
 CHUNK_MAX_TOKENS = int(os.getenv("CHUNK_MAX_TOKENS", "512"))
 CHUNK_OVERLAP_TOKENS = int(os.getenv("CHUNK_OVERLAP_TOKENS", "100"))
 CHUNK_MIN_TOKENS = int(os.getenv("CHUNK_MIN_TOKENS", "50"))
+
+# Image Processing
+# When True, figure plates are processed with RapidOCR (local, offline, zero API calls).
+# When False, falls back to Gemini Vision for all image processing.
+USE_LOCAL_OCR = os.getenv("USE_LOCAL_OCR", "true").lower() in ("true", "1", "yes")
