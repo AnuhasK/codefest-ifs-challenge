@@ -37,3 +37,22 @@ def test_process_corpus_images_offline(corpus_root: Path):
         chunk = create_image_chunk(a)
         assert chunk.content, "Synthetic image chunk content must not be empty"
         assert chunk.metadata.get("is_asset_chunk") is True
+
+
+def test_rapidocr_figure_plate_extraction(corpus_root: Path):
+    from src.ingestion.images import extract_plate_text_ocr, parse_plate_structured_data
+
+    sample_plate = corpus_root / "images" / "plate_08_creature_weeping_lurker.png"
+    if not sample_plate.exists():
+        sample_plates = list(corpus_root.glob("**/plate_*.png"))
+        assert sample_plates, "No plate images found in corpus"
+        sample_plate = sample_plates[0]
+
+    raw_text = extract_plate_text_ocr(str(sample_plate))
+    assert raw_text, "RapidOCR should extract non-empty text from figure plate"
+    assert "Weeping Lurker" in raw_text or "THREAT" in raw_text.upper() or "RATING" in raw_text.upper()
+
+    parsed = parse_plate_structured_data(raw_text, "Weeping Lurker")
+    assert parsed["entity_name"] == "Weeping Lurker"
+    assert "metric_type" in parsed
+    assert "numerical_value" in parsed
