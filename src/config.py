@@ -45,8 +45,8 @@ GEMINI_MAX_INPUT_TOKENS = int(os.getenv("GEMINI_MAX_INPUT_TOKENS", "100000"))
 # Models
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "voyage-3-large")
 EMBEDDING_DIMENSION = 1024
-LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.7-flash")
-LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-2.5-pro")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.6-flash")
+LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.6-flash")
 
 # Chunking Parameters
 CHUNK_MAX_TOKENS = int(os.getenv("CHUNK_MAX_TOKENS", "512"))
