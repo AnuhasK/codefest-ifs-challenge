@@ -398,7 +398,7 @@ CHUNK_MIN_TOKENS = 50  # don't create tiny chunks
 
 ### 1.10 — Image Processing (`src/ingestion/images.py`)
 
-Process all images in the corpus using Gemini Vision:
+Process all images in the corpus using **local OCR for figure plates** and **Gemini Vision for atmospheric art**:
 
 ```python
 def process_images(corpus_path: str, llm: LLMProvider) -> list[Asset]:
@@ -406,15 +406,22 @@ def process_images(corpus_path: str, llm: LLMProvider) -> list[Asset]:
     1. Discover all images (images/, wiki/images/, codex/images/)
     2. Classify image type from filename pattern
     3. Deduplicate (images/ and codex/images/ contain the same plates)
-    4. Process figure plates → structured data extraction via Gemini Vision
+    4. Process figure plates → structured data extraction via RapidOCR (local, zero API calls)
     5. Process atmospheric art → detailed description via Gemini Vision
     6. Generate synthetic text chunks from descriptions
     7. Link images to wiki articles (parse markdown image references)
     8. Store asset records in PostgreSQL
     """
 
-def process_figure_plate(image_path: str, llm: LLMProvider) -> Asset:
-    """Extract structured data from a figure plate using Gemini Vision."""
+def extract_plate_text_ocr(image_path: str) -> str:
+    """Extract raw text from a figure plate using RapidOCR (local, offline, ~50ms)."""
+
+def parse_plate_structured_data(ocr_text: str, entity_name: str) -> dict:
+    """Parse OCR text into structured fields (entity, metric, value, scale)."""
+
+def process_figure_plate(image_path: str) -> Asset:
+    """Extract structured data from a figure plate using local OCR. No API calls.
+    Falls back to Gemini Vision if OCR extraction fails."""
 
 def process_atmospheric_art(image_path: str, entity_name: str, llm: LLMProvider) -> Asset:
     """Generate detailed description of atmospheric art using Gemini Vision."""
@@ -425,13 +432,13 @@ def create_image_chunk(asset: Asset) -> Chunk:
 
 **Image classification from filename:**
 ```
-plate_*                          → figure_plate (data extraction)
-atmo_portrait_character_*        → portrait (description)
-atmo_heraldry_faction_*          → heraldry (description — focus on emblems/motifs)
-atmo_landscape_location_*        → landscape (description)
-atmo_battle_painting_conflict_*  → battle_painting (description)
-atmo_creature_creature_*         → creature (description)
-atmo_relic_artifact_*            → relic (description — focus on visual details)
+plate_*                          → figure_plate (local OCR extraction)
+atmo_portrait_character_*        → portrait (Gemini Vision description)
+atmo_heraldry_faction_*          → heraldry (Gemini Vision — focus on emblems/motifs)
+atmo_landscape_location_*        → landscape (Gemini Vision description)
+atmo_battle_painting_conflict_*  → battle_painting (Gemini Vision description)
+atmo_creature_creature_*         → creature (Gemini Vision description)
+atmo_relic_artifact_*            → relic (Gemini Vision — focus on visual details)
 ```
 
 **Deduplication:** `images/` and `codex/images/` contain identical plates (same filenames). Process once, link to both locations.
@@ -444,7 +451,8 @@ Extract the image path and link the asset to the wiki document.
 
 **Test (`tests/test_image_processing.py`):**
 - Discover all images → verify counts (15 plates, 55 atmospheric, 15 codex duplicates)
-- Process a figure plate → verify structured data extracted (entity_name, metric, value)
+- Process a figure plate via RapidOCR → verify structured data extracted with **zero API calls**
+- OCR text from a plate contains expected numbers and metric names
 - Process an atmospheric portrait → verify description mentions the character
 - Create synthetic chunk from plate → verify chunk contains extracted data values
 - Wiki-image linking → verify asset linked to correct wiki document
@@ -525,8 +533,8 @@ def validate_corpus(chunks: list[Chunk], documents: list[Document]) -> Validatio
 - [ ] Document bundling correctly groups PDF/DOCX variants (4 chronicle pairs, 3 codex pairs)
 - [ ] Content extraction succeeds for **every** non-scanned document (PDF, DOCX, MD, TXT)
 - [ ] OCR extraction runs on all `.scan.pdf` files and produces non-empty text
-- [ ] **Image processing:** All 15 figure plates processed with Gemini Vision → structured data extracted
-- [ ] **Image processing:** All 55 wiki atmospheric images processed → descriptions generated
+- [ ] **Image processing:** All 15 figure plates processed with **local OCR (RapidOCR)** → structured data extracted, **zero API calls**
+- [ ] **Image processing:** All 55 wiki atmospheric images processed via Gemini Vision → descriptions generated
 - [ ] **Image processing:** Synthetic text chunks created for all processed images
 - [ ] **Wiki-image linking:** Image assets linked to their wiki articles
 - [ ] Semantic chunking produces chunks with correct metadata (document_id, page, section)

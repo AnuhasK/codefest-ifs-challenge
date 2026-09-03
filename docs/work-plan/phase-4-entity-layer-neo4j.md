@@ -1,7 +1,7 @@
 # Phase 4 — Entity Layer + Neo4j
 
 **Timeline: Days 4–5**  
-**Goal:** Entities extracted and stored in Neo4j, entity-aware retrieval integrated into the hybrid pipeline.
+**Goal:** Entities (already extracted in Phase 2 via gazette + spaCy) stored in Neo4j, deduplicated, resolved, and entity-aware retrieval integrated into the hybrid pipeline.
 
 ---
 
@@ -10,8 +10,8 @@
 - Phase 3 complete — all acceptance criteria met
 - Hybrid retrieval pipeline working (BM25 + dense + contextual + RRF + reranker)
 - Neo4j running via Docker Compose (should be up since Phase 1)
-- spaCy installed with `en_core_web_trf` model (`python -m spacy download en_core_web_trf`)
-- LLM provider working (needed later for relationship extraction in Phase 5, not for entity extraction)
+- **Entities already extracted in Phase 2** via gazette + spaCy (stored as entity list + chunk_id → entities mapping)
+- spaCy pipeline already built and tested (from Phase 2)
 
 ---
 
@@ -84,89 +84,46 @@ class KnowledgeGraph:
 
 ---
 
-### 4.3 — Entity Extraction (Layer 1) — Gazette + spaCy (`src/ingestion/entities.py`)
+### 4.3 — Load & Store Entities in Neo4j (`src/ingestion/entities.py`)
 
-Extract named entities from every chunk using a **hybrid offline approach** — zero LLM calls:
+Entities were already extracted in **Phase 2** (gazette + spaCy, zero LLM calls). This step loads those results and persists them to Neo4j.
 
 ```python
-import spacy
-from spacy.pipeline import EntityRuler
-
-class ExtractedEntity:
-    name: str
-    entity_type: str  # Person, Faction, Place, Event, Artifact, Organization, Creature, Title
-    mentions: list[str]  # text spans where this entity appears
-    chunk_id: str
-    document_id: str
-    source: str  # "gazette" or "spacy_ner" — tracks how the entity was found
-
-def build_gazette_from_corpus(corpus_path: str) -> dict[str, str]:
+def store_entities_in_neo4j(
+    entities: list[ExtractedEntity],
+    chunk_entities: dict[str, list[ExtractedEntity]],
+    graph: KnowledgeGraph
+) -> None:
     """
-    Parse wiki/codex filenames to build entity dictionary.
+    Load entities extracted in Phase 2 and persist to Neo4j.
     
-    wiki/wiki_person_ser_vael.md          → Person: "Ser Vael"
-    wiki/wiki_faction_ashen_vanguard.md   → Faction: "Ashen Vanguard"
-    wiki/wiki_place_red_vale.md           → Place: "Red Vale"
-    wiki/wiki_creature_gravemaw_wyrm.md   → Creature: "Gravemaw Wyrm"
-    wiki/wiki_artifact_thrice_bound_edge.md → Artifact: "Thrice-Bound Edge"
-    
-    Returns: {"Ser Vael": "Person", "Ashen Vanguard": "Faction", ...}
-    """
-
-def build_spacy_pipeline(gazette: dict[str, str]) -> spacy.Language:
-    """
-    Build a spaCy pipeline with:
-    1. EntityRuler loaded with gazette patterns (high priority)
-    2. en_core_web_trf transformer NER (catches entities not in gazette)
-    """
-
-def extract_entities_from_chunk(
-    chunk: Chunk,
-    nlp: spacy.Language
-) -> list[ExtractedEntity]:
-    """Extract named entities from a single chunk using spaCy pipeline."""
-
-def extract_entities_from_corpus(
-    chunks: list[Chunk],
-    corpus_path: str
-) -> list[ExtractedEntity]:
-    """
-    Extract entities from all chunks using gazette + spaCy.
-    No LLM calls needed — fully offline.
-    
-    1. Build gazette from wiki/codex filenames
-    2. Build spaCy pipeline with EntityRuler + transformer NER
-    3. Process all chunks through the pipeline
-    4. Return extracted entities with source tracking
+    1. Deduplicate entities (see 4.4)
+    2. Create entity nodes in Neo4j
+    3. Create MENTIONED_IN edges from entities to chunks/documents
     """
 ```
 
-**Two-pass NER strategy:**
+**Cypher for entity creation:**
+```cypher
+MERGE (e:Entity {id: $id})
+SET e.name = $name,
+    e.type = $type,
+    e.aliases = $aliases,
+    e.source = $source,
+    e.mention_count = $mention_count
 
-| Pass | Method | What it catches | Priority |
-|---|---|---|---|
-| 1 | spaCy EntityRuler (gazette) | All entities with wiki/codex articles (~95 entities) | High — exact match |
-| 2 | spaCy `en_core_web_trf` | Entities only mentioned in novels/ephemera, no wiki article | Lower — candidate entities |
+// For each chunk reference:
+MERGE (c:Chunk {id: $chunk_id})
+MERGE (e)-[:MENTIONED_IN]->(c)
 
-**Gazette pattern example:**
-```python
-patterns = [
-    {"label": "PERSON", "pattern": "Ser Vael"},
-    {"label": "PERSON", "pattern": [{"LOWER": "ser"}, {"LOWER": "vael"}]},
-    {"label": "FACTION", "pattern": "Ashen Vanguard"},
-    {"label": "FACTION", "pattern": [{"LOWER": "ashen"}, {"LOWER": "vanguard"}]},
-    # ... generated from wiki filenames
-]
+// For each document reference:
+MERGE (d:Document {id: $doc_id})
+MERGE (e)-[:APPEARS_IN]->(d)
 ```
 
-**Implementation details:**
-- Parse wiki filenames: strip `wiki_` prefix, split on `_`, extract type and name
-- Generate case-insensitive EntityRuler patterns for each gazette entry
-- Run spaCy pipeline on all chunks (fast — ~1-2 min for full corpus on CPU)
-- Tag each entity with its source (`gazette` vs `spacy_ner`) for quality tracking
-- Gazette entities are trusted; spaCy NER entities are candidates (may need filtering)
+**Note:** Entity extraction itself (gazette building, spaCy NER, chunk annotation) was completed in Phase 2 step 2.3. This step only handles graph persistence.
 
-**Expected entity counts (rough estimates):**
+**Expected entity counts (from Phase 2):**
 - ~95 entities from gazette (wiki filenames)
 - ~100-200 unique Person entities total (gazette + spaCy NER)
 - ~20-40 Faction/Organization entities
@@ -175,15 +132,11 @@ patterns = [
 - ~20-40 Artifact entities
 - ~10-15 Creature entities
 
-**API cost: 0 LLM calls.**
-
-**Test (`tests/test_entity_extraction.py`):**
-- Build gazette from wiki filenames → verify expected entity count (~95)
-- Extract from a wiki article about a specific character → verify the character name is extracted as Person
-- Extract from a chunk mentioning multiple entities → verify all are captured
-- Extract from a chunk with no entities → verify empty list returned
-- Verify gazette entities have `source="gazette"` and spaCy entities have `source="spacy_ner"`
-- Verify extracted entity types are from the allowed set
+**Test:**
+- All entities stored in Neo4j with correct properties (name, type, source)
+- MENTIONED_IN edges exist for each chunk reference
+- Querying by entity type returns expected counts
+- Entity source tracking preserved (gazette vs spacy_ner)
 
 ---
 
@@ -373,18 +326,15 @@ Focus especially on the 1B sample questions that mention specific characters/fac
 > **Do NOT proceed to Phase 5 unless ALL of the following are met:**
 
 - [ ] Neo4j connection works and entities can be created/queried
-- [ ] Gazette built from wiki/codex filenames with correct entity count (~95)
-- [ ] spaCy pipeline (EntityRuler + transformer NER) runs on all chunks without crashing
-- [ ] Entity extraction completes with **zero LLM calls**
-- [ ] Entities are stored in Neo4j with correct types and chunk/document references
-- [ ] Entity source tracking distinguishes gazette vs spaCy NER entities
+- [ ] Entities from Phase 2 loaded and stored in Neo4j with correct types and chunk/document references
+- [ ] Entity source tracking preserved (gazette vs spaCy NER from Phase 2)
 - [ ] Entity deduplication merges obvious duplicates (exact + case-insensitive matches)
 - [ ] Basic entity resolution resolves common aliases
 - [ ] Entity search returns relevant chunks for queries mentioning entity names
 - [ ] Entity search is integrated into the hybrid retrieval pipeline via RRF fusion
 - [ ] Hybrid + entity retrieval shows improvement on entity-heavy 1B questions
 - [ ] Entity count statistics are logged (total entities, per type, per source, per document)
-- [ ] All unit tests pass: `pytest tests/test_entity_extraction.py tests/test_entity_search.py tests/test_neo4j.py`
+- [ ] All unit tests pass: `pytest tests/test_entity_search.py tests/test_neo4j.py tests/test_entity_resolution.py`
 - [ ] Experiment 6 results documented with comparison to Experiment 5
 
 ### Key Metrics to Record
@@ -403,8 +353,9 @@ Experiment 6 vs 5:            Recall@10 = ?, Δ = ?
 | Test file | What it tests |
 |---|---|
 | `tests/test_neo4j.py` | Connection, CRUD operations, query execution |
-| `tests/test_entity_extraction.py` | LLM entity extraction, type classification, edge cases |
 | `tests/test_entity_resolution.py` | Deduplication, alias resolution, merge logic |
 | `tests/test_entity_search.py` | Entity-based retrieval, integration with PostgreSQL |
+
+**Note:** Entity extraction tests (`tests/test_entity_extraction.py`) are in Phase 2.
 
 Run all tests: `pytest tests/ -v`

@@ -265,11 +265,12 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 | Built-in file I/O | Plain text files |
 | Tesseract / EasyOCR / Docling | OCR for scanned PDFs (`.scan.pdf`) |
 | Pillow (PIL) | Image loading, format handling |
-| Gemini Vision | Image description and data extraction from figure plates |
+| rapidocr-onnxruntime | Local OCR for figure plates — extracts printed text/numbers from data plates offline (~50ms/image on CPU, ~15MB, zero API calls) |
+| Gemini Vision | Visual description of atmospheric art (portraits, heraldry, landscapes, battle paintings, creatures, relics) |
 | spaCy + `en_core_web_trf` | Entity extraction (gazette EntityRuler + transformer NER) — zero LLM calls |
 | Pydantic | Structured output schema enforcement for LLM relationship extraction |
 
-**Rationale:** These are the standard, well-maintained Python libraries for each format. Gemini Vision is used for image understanding — extracting data from figure plates and generating text descriptions of atmospheric artwork. spaCy handles entity extraction offline using a gazette built from wiki/codex filenames + transformer NER for coverage, eliminating LLM calls for NER. Pydantic enforces structured output schemas when the LLM classifies relationships, preventing hallucinated relationship types. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
+**Rationale:** These are the standard, well-maintained Python libraries for each format. Figure plates contain printed text and numbers that a lightweight local OCR library (`rapidocr-onnxruntime`) extracts with near-perfect accuracy on CPU — no API calls needed, making extraction deterministic and reproducible. Gemini Vision is reserved for atmospheric art where visual scene description genuinely requires a vision-language model. spaCy handles entity extraction offline using a gazette built from wiki/codex filenames + transformer NER for coverage, eliminating LLM calls for NER. Pydantic enforces structured output schemas when the LLM classifies relationships, preventing hallucinated relationship types. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
 
 ---
 
@@ -362,16 +363,21 @@ IMMUTABLE CORPUS (read-only)
   (format-aware splitting — see §17)
         │
         ▼
+  Entity Extraction (Layer 1)
+  (gazette + spaCy NER → entity annotations per chunk, zero LLM calls)
+        │
+        ▼
   Contextualization
-  (generate contextual prefixes for each chunk — see §7)
+  (hybrid: template prefix using metadata + spaCy entities for most chunks,
+   LLM prefix for pronoun-heavy chunks only — see §8)
         │
         ▼
   Embedding Generation
   (standard embeddings + contextual embeddings → pgvector)
         │
         ▼
-  Entity Extraction (Layer 1)
-  (gazette + spaCy NER → Neo4j entity nodes, zero LLM calls)
+  Entity Storage
+  (persist extracted entities → Neo4j nodes + MENTIONED_IN edges)
         │
         ▼
   Relationship Extraction (Layer 2)
@@ -430,12 +436,20 @@ The 15 figure plates are structured data visualizations. Each contains:
 - A scale or unit
 - Sometimes a provenance note ("As entered into the Codex Vaeloria")
 
-**Processing approach:**
+**Processing approach — Local OCR (zero API calls):**
 ```
 Figure Plate Image
         │
         ▼
-  Gemini Vision (structured extraction)
+  RapidOCR (local text extraction, ~50ms on CPU)
+        │
+        ▼
+  Raw OCR Text:
+  "Weeping Lurker\nThreat Rating\n3\nof 10, per the Vanguard scale"
+        │
+        ▼
+  Regex / Structured Parsing
+  (extract entity name, metric type, numerical value, scale)
         │
         ▼
   Structured Data:
@@ -454,19 +468,12 @@ Figure Plate Image
   3. Entity link in Neo4j (plate → entity it describes)
 ```
 
-**Gemini Vision prompt for figure plates:**
-```
-This is a figure plate from a fantasy codex. Extract ALL information visible 
-in this image as structured data:
-
-- entity_name: the name/title shown
-- metric_type: what is being measured (e.g., "Threat Rating", "Garrison Strength")
-- value: the numerical value shown
-- unit_or_scale: the scale or unit (e.g., "of 10, per the Vanguard scale")
-- additional_text: any other text visible in the image
-
-Respond in JSON format.
-```
+**Why local OCR instead of Gemini Vision for plates?**
+- Figure plates contain **printed text and numbers**, not complex visual scenes
+- RapidOCR extracts this text with near-perfect accuracy on CPU (~50ms/image)
+- Zero API calls → deterministic, reproducible, offline-capable
+- Saves ~15 Gemini Vision calls for use on atmospheric art where a VLM is genuinely needed
+- If OCR fails on a stylized plate, falls back to Gemini Vision for that specific plate
 
 #### 2. Atmospheric Art (Visual Descriptions)
 
@@ -612,17 +619,57 @@ Before embedding, we prepend a **contextual prefix** that situates the chunk:
 │                                             │
 │ "From The Ashen Chronicles Vol II,          │
 │  Chapter 7: The War Council at Red Vale.    │
-│  This passage describes Ser Vael's actions  │
-│  following the signing of the Leaden Accord.│
+│  Mentions: Ser Vael, Leaden Accord,         │
+│  Ashen Vanguard.                            │
 │                                             │
 │  He then broke the accord and fled to the   │
 │  eastern marshes."                          │
 └─────────────────────────────────────────────┘
 ```
 
-### How we generate contextual prefixes
+### How we generate contextual prefixes — Hybrid Approach
 
-For each chunk, an LLM receives:
+We use a **two-tier** strategy that minimizes LLM calls by leveraging the entity extraction (gazette + spaCy) already performed earlier in the ingestion pipeline:
+
+#### Tier 1: Template Prefix (majority of chunks, zero API calls)
+
+Built from chunk metadata (available from Phase 1) + spaCy entity annotations:
+
+```python
+def build_template_prefix(chunk, document, entities_in_chunk):
+    parts = [f"From {document.title}"]
+    if chunk.chapter:
+        parts.append(f", {chunk.chapter}")
+    if chunk.section_title:
+        parts.append(f": {chunk.section_title}")
+    parts.append(".")
+    if entities_in_chunk:
+        entity_names = [e.name for e in entities_in_chunk]
+        parts.append(f" Mentions: {', '.join(entity_names)}.")
+    return "".join(parts)
+```
+
+**Example output:**
+```
+"From The Ashen Chronicles Vol II, Chapter 7: The War Council at Red Vale.
+ Mentions: Ser Vael, Ashen Vanguard, Leaden Accord."
+```
+
+This captures the **biggest retrieval improvements** — the embedding now knows which document, section, and entities are involved.
+
+#### Tier 2: LLM Prefix (pronoun-heavy chunks only, ~500-800 API calls)
+
+Some chunks are full of pronouns ("he", "she", "they") with few or no named entities. The template prefix can't help much because spaCy finds nothing to list.
+
+**Detection (using spaCy):**
+```python
+def needs_llm_prefix(chunk, entities_in_chunk):
+    doc = nlp(chunk.content)
+    pronouns = [t for t in doc if t.pos_ == "PRON" and t.dep_ == "nsubj"]
+    return len(pronouns) >= 2 and len(entities_in_chunk) <= 1
+```
+
+For these chunks, an LLM receives:
 1. The full document title
 2. The chapter/section heading
 3. Surrounding chunks (previous + next) for local context
@@ -631,7 +678,7 @@ For each chunk, an LLM receives:
 The LLM generates a 1-3 sentence prefix that:
 - Names the document and section
 - Identifies key entities mentioned
-- Resolves pronouns where possible
+- Resolves pronouns where possible ("He" → "Ser Vael")
 - Does NOT add information not present in the document
 
 ### Dual embeddings
@@ -649,7 +696,7 @@ At query time, both embedding columns are searched, and results are combined via
 
 - Anthropic's research showed contextual retrieval reduces retrieval failure by 49% when combined with BM25
 - This corpus is heavily interconnected — isolated chunks frequently lack the context needed for retrieval
-- The cost is manageable: one LLM call per chunk during ingestion (offline, not at query time)
+- The hybrid approach keeps costs manageable: template prefixes for most chunks (free), LLM only for pronoun-heavy chunks (~500-800 calls)
 - We can experimentally measure the improvement: standard vs. contextual retrieval
 
 ### Important constraint
@@ -877,13 +924,15 @@ Key constraint: `accused_of` must NOT automatically become `committed`. The dist
 | Task | Method | API Calls | With 3 Keys @ 15 RPM |
 |---|---|---|---|
 | Entity extraction (Layer 1) | Gazette + spaCy | **0** | N/A |
+| Contextual prefixes (entity-rich chunks) | Template (metadata + spaCy entities) | **0** | N/A |
+| Contextual prefixes (pronoun-heavy chunks) | LLM | **~500-800** | ~11-18 min |
 | Relationship extraction (Layer 2) | Co-occurrence + LLM | **~500-800** | ~11-18 min |
-| Contextual prefixes (§8) | LLM (irreplaceable) | **~2,000** | ~44 min |
-| Image processing (§7) | Gemini Vision (irreplaceable) | **~70** | ~2 min |
+| Image processing — figure plates (§7) | RapidOCR (local, offline) | **0** | N/A |
+| Image processing — atmospheric art (§7) | Gemini Vision (irreplaceable) | **~55** | ~1.5 min |
 | Answer generation | LLM (irreplaceable) | **1/query** | Real-time |
-| **Total ingestion** | | **~2,570-2,870** | **~57-64 min** |
+| **Total ingestion** | | **~1,055-1,655** | **~23-36 min** |
 
-Compare to LLM-only approach: ~4,500+ calls → ~100+ min with 3 keys. The hybrid approach saves ~40% of the API budget.
+Compare to LLM-only approach: ~4,500+ calls → ~100+ min with 3 keys. The hybrid approach saves ~65% of the API budget. Local OCR for figure plates additionally saves ~15 Vision calls and makes plate extraction fully deterministic.
 
 ### Why phased?
 
