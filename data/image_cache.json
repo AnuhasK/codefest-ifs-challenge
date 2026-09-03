@@ -1,0 +1,387 @@
+{
+  "atmo_battle_painting_conflict_the_accord_of_mournthrone.png": {
+    "description": "In the foreground, a tall warrior clad in dark plate armor and a red cape stands atop a rocky ledge, holding a long sword beside a black banner adorned with a golden, eight-pointed star emblem. Below him, a vast host bearing red and black flags marches through a smoke-filled valley toward a burning Gothic fortress featuring towering spires and a winged griffin statue. Rendered in a sepia-toned, dark fantasy etching style, the composition highlights intricate metallic armor, crumbling stonework, and heavy plumes of smoke obscuring a dim sun.",
+    "extracted_data": {
+      "entity_name": "The Accord Of Mournthrone",
+      "asset_type": "battle_painting"
+    }
+  },
+  "atmo_battle_painting_conflict_the_leaden_accord.png": {
+    "description": "A vast army clad in dark, ornate plate armor marches toward a distant siege, carrying tattered dark blue and crimson banners marked with golden skull-and-sunburst emblems. Soldiers in the foreground wear spiky helmets and heavy iron shoulder guards while holding aloft banners topped with intricate metallic star icons. In the background, black smoke and fire billow from a burning fortress beneath a massive Gothic cathedral perched high on a rugged hill.",
+    "extracted_data": {
+      "entity_name": "The Leaden Accord",
+      "asset_type": "battle_painting"
+    }
+  },
+  "atmo_battle_painting_conflict_the_purge_of_blackport.png": {
+    "description": "Framed like an aged parchment document, this dark fantasy artwork depicts an army of heavily armored knights advancing toward a burning, fortress-like gothic city. In the foreground, a mounted commander raises a sword and points a spear, surrounded by soldiers clad in dark steel plate armor and black cloaks adorned with cross motifs. Tattered black banners loom overhead, prominently displaying a central skull encircled by an eight-pointed star emblem. The rocky battlefield is strewn with rubble and fallen bodies, while thick plumes of black smoke billow into a sepia-toned sky.",
+    "extracted_data": {
+      "entity_name": "The Purge Of Blackport",
+      "asset_type": "battle_painting"
+    }
+  },
+  "atmo_battle_painting_conflict_the_war_of_drowned_light.png": {
+    "description": "In this dark fantasy illustration, a horned commander clad in tarnished steel plate armor and a draped red cape stands on a rocky overlook beside an army of dark-helmeted soldiers bearing spears, scythes, and ragged banners. To the right, a towering black flag displays a radiant sun surrounding a skull emblem, suspended beneath a full human skeleton mounted atop the flagpole. In the distance, decaying gothic cathedrals and spires line a turbulent river filled with burning wreckage, all set against a muted sepia palette illuminated by a shaft of pale sunlight breaking through heavy, textured clouds.",
+    "extracted_data": {
+      "entity_name": "The War Of Drowned Light",
+      "asset_type": "battle_painting"
+    }
+  },
+  "atmo_battle_painting_conflict_the_war_of_endless_vigil.png": {
+    "description": "A crowned leader wearing dark steel plate armor and a tattered crimson cape stands on a rocky ledge holding a longsword, looking out over a vast assembled army. Beside him, large tattered banners display an emblem featuring a spiked circle surrounding a sword symbol. In the background, a massive Gothic city with soaring cathedral spires and stone ramparts burns amidst thick plumes of dark smoke. The artwork uses a muted sepia color palette with a distressed, parchment-like texture to convey a grim medieval fantasy atmosphere.",
+    "extracted_data": {
+      "entity_name": "The War Of Endless Vigil",
+      "asset_type": "battle_painting"
+    }
+  },
+  "atmo_battle_painting_conflict_the_winter_reckoning.png": {
+    "description": "A massive horde of warriors clad in dark, spiked metallic armor and heavy fur cloaks marches through the snow, carrying long spears and towering black banners emblazoned with red eight-pointed Chaos stars and skull emblems. The artwork utilizes a muted sepia and charcoal palette, accented by deep crimson detailing on the fluttering flags. In the background, a desolate snowy landscape leads up to a sprawling Gothic fortress and city engulfed in bright flames and rising plumes of dark smoke.",
+    "extracted_data": {
+      "entity_name": "The Winter Reckoning",
+      "asset_type": "battle_painting"
+    }
+  },
+  "atmo_creature_creature_ashfall_colossus.png": {
+    "description": "Presented as a parchment grimoire page, the artwork depicts a giant colossus forged from dark, cracked stone and glowing magma embers, draped in heavy iron chains. Gothic spires and architectural turrets sprout from its shoulders and back, spewing plumes of dark smoke into the air above its shadowy, skull-like face. At its feet, miniature armed figures stand on a foggy, ash-covered landscape, while the margins of the page display anatomical concept studies and geometric diagrams.",
+    "extracted_data": {
+      "entity_name": "Ashfall Colossus",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_cinder_shrike.png": {
+    "description": "This concept art illustration on aged parchment features the \"Cinder Shrike,\" a menacing, bird-like monster perched on a dark, jagged rock formation. The creature has a charred, obsidian-black body with glowing orange embers oozing through its decaying wings and ribbed torso, along with spiky plumage and sharp talons. Surrounding the central figure are several detailed field journal sketches, including a close-up of its head, a full skeletal anatomical study, a talon detail, and thumbnail scenes showing the creature in flight above dark gothic spires.",
+    "extracted_data": {
+      "entity_name": "Cinder Shrike",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_gravemaw_wyrm.png": {
+    "description": "This dark fantasy manuscript illustration, rendered in sepia tones and dark ink on aged parchment, depicts a colossal skeletal wyrm with jagged teeth and decaying tissue looming over a desolate graveyard filled with tombstones and ruined gothic structures. A small, cloaked figure holding a tall staff stands in the foreground, gazing up at the massive creature amidst the gloomy landscape. The surrounding margins feature detailed anatomical sketches of the monster's skull and spine, as well as a circular emblem containing a spired architectural symbol in the top right corner.",
+    "extracted_data": {
+      "entity_name": "Gravemaw Wyrm",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_lantern_moth_swarm.png": {
+    "description": "A hooded figure in dark traveler's cloaks and rugged boots stands on a shadowy, uneven landscape, raising a glowing lantern toward a massive swarm of winged lantern-moths. In the misty background, distant Gothic spires and castle architecture rise beneath a dark, sepia-toned sky filled with tiny flying insects. The artwork is presented as an aged parchment field study with decorative corner flourish borders, featuring inset panels showing detailed anatomical sketches of an individual moth, its glowing lantern-like abdomen, a close-up of its sharp insectoid head, and a circular swarm diagram.",
+    "extracted_data": {
+      "entity_name": "Lantern Moth Swarm",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_marsh_revenant.png": {
+    "description": "This concept art page depicts a tall, emaciated swamp creature draped in dark moss, roots, and dripping marsh vegetation, set against an aged parchment background. The entity has elongated, needle-sharp skeletal claws, a decayed skull face veiled in stringy, damp foliage, and no clothing or armor beyond the entwined flora. Surrounding the main illustration are detailed study sketches of its skull, clawed hand, and smaller figures wading through a murky, mist-covered swamp filled with dead trees.",
+    "extracted_data": {
+      "entity_name": "Marsh Revenant",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_pale_stag_of_omens.png": {
+    "description": "This dark fantasy illustration depicts a monstrous, pale stag with glowing white eyes, an emaciated ribcage, and colossal branching antlers dripping with dark moss, presented on aged, stained parchment. Surrounding the central figure are technical anatomical sketches of its skull and legs, along with a circular astrological emblem on the bottom right. In the background, the entity stands upon a desolate, rocky landscape featuring leafless trees and a towering gothic castle with dark spires against a stormy, muted gray sky.",
+    "extracted_data": {
+      "entity_name": "Pale Stag Of Omens",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_salt_blind_leviathan.png": {
+    "description": "An antique, parchment-styled journal page depicts a colossal leviathan emerging from churning ocean waves near a tiny boat. Rendered in muted sepia, grey, and dark brown tones, the massive sea monster possesses a rough, stone-like hide, spiky dorsal fins, and a wide-gaped jaw lined with needle-sharp teeth. Surrounding the main scene are various anatomical sketches, including a close-up of the creature's open head, side-profile silhouettes, and a circular diagram of a concentric, tooth-lined mouth.",
+    "extracted_data": {
+      "entity_name": "Salt Blind Leviathan",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_thorn_wraith.png": {
+    "description": "This concept art, rendered in dark sepia tones on aged parchment, depicts a \"Thorn Wraith\" made entirely of tangled, spike-ridden vines, shredded dark cloth, and wooden barbs. The tall entity wields a long, curved whip adorned with sharp thorns and features long, claw-like hands. Surrounding inset sketches showcase details of its spiky head, a small thorn ring, a circular emblem framing a distant Gothic castle encircled by a crown of thorns, and a scene of the creature standing in a desolate, barren forest landscape.",
+    "extracted_data": {
+      "entity_name": "Thorn Wraith",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_vault_chitin.png": {
+    "description": "This sepia-toned concept art sheet depicts a massive, insectoid creature armored in thick, segmented chitin plating with sharp, curved scythe-like claws and mandibles. Rendered in monochromatic brown and beige ink on an aged parchment background, the page features detailed anatomical studies, including an oval egg cluster, a head detail, and a claw close-up. The bottom panel illustrates the monstrous entity crawling through a vaulted stone catacomb toward a tiny human figure holding a light source, highlighting the creature's immense scale relative to the stone architecture.",
+    "extracted_data": {
+      "entity_name": "Vault Chitin",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_creature_creature_weeping_lurker.png": {
+    "description": "Rendered in sepia and dark brown tones on a parchment-style background, the artwork depicts a monstrous, hunched creature with a pockmarked head dripping viscous fluid into a shallow, reflective pool of dark water. The creature possesses elongated limbs with sharp, clawed hands resting in the water and a pronounced row of pointed spines running along its arched back. In the background, dark stone gothic arches and a carved bust suggest a subterranean chamber, while framed margin sketches along the border display anatomical studies of its head, clawed hand, spinal ridge, and a human skull.",
+    "extracted_data": {
+      "entity_name": "Weeping Lurker",
+      "asset_type": "creature"
+    }
+  },
+  "atmo_heraldry_faction_house_morvain.png": {
+    "description": "This artwork depicts a tattered, vertically split black-and-cream heraldic banner suspended from an ornate horizontal bar topped with a central skull crest. At the center of the banner rests an ornate golden shield displaying two crossed golden keys against a dark field. Shredded dark red and black ribbons hang from side chains bearing smaller skull medallions, all set against an aged, parchment-textured background.",
+    "extracted_data": {
+      "entity_name": "House Morvain",
+      "asset_type": "heraldry"
+    }
+  },
+  "atmo_heraldry_faction_the_ashen_vanguard.png": {
+    "description": "A tattered black and gold banner suspended from a skull-adorned crossbar displays a prominent central eye dripping viscous tears within a spiked star halo. In the foreground, soldiers clad in dark, weathered steel armor and helmets march with raised spears, with one knight featuring a matching spiked star insignia on their shoulder plate. Rendered in a muted sepia and charcoal palette, the background depicts a vast army advancing through an ashen landscape toward distant gothic spires.",
+    "extracted_data": {
+      "entity_name": "The Ashen Vanguard",
+      "asset_type": "heraldry"
+    }
+  },
+  "atmo_heraldry_faction_the_bleeding_crown.png": {
+    "description": "A tattered burgundy banner hangs from a spiked metal crossbar, featuring a prominent central emblem with a pale, coiled serpent encircled by a metallic oval frame. Positioned directly above the crest is an intricate, spiky crown that appears to drip dark blood down over the emblem, flanked by narrower tattered banners decorated with skull medallions. Set against a dark, smoky backdrop, crowned skulls impaled on pikes and speartips frame the bottom corners of the composition.",
+    "extracted_data": {
+      "entity_name": "The Bleeding Crown",
+      "asset_type": "heraldry"
+    }
+  },
+  "atmo_heraldry_faction_the_iron_ring_cartel.png": {
+    "description": "A dark, tattered banner hangs from a spiked iron pole fitted with hanging chains, skulls, and heavy metal pendulums. At the center, a large spiked metallic ring frames a dark stone tower engulfed in roaring orange flames and thick smoke. Beneath this central emblem, gold accent lines lead to a smaller iron ring, all set against a textured, parchment-like background with ornate corner embellishments.",
+    "extracted_data": {
+      "entity_name": "The Iron Ring Cartel",
+      "asset_type": "heraldry"
+    }
+  },
+  "atmo_heraldry_faction_the_silent_choir.png": {
+    "description": "A large, ragged black banner hangs from a decorative wooden crossbar, featuring a prominent stag skull with branching antlers set against a golden cross and circular halo symbol. At the apex of the banner pole rests a smaller human skull framed by a spiked halo, while hooded figures clad in dark armor stand beneath it holding metallic staves with circular crests. The artwork utilizes a dark, sepia-toned palette with weathered textures, showcasing a misty background filled with towering gothic spires and cathedral architecture.",
+    "extracted_data": {
+      "entity_name": "The Silent Choir",
+      "asset_type": "heraldry"
+    }
+  },
+  "atmo_landscape_location_blackford.png": {
+    "description": "A massive dark gothic castle with towering spires, fortified stone walls, and battlements sits perched atop a steep, rocky mountain under a dramatic, stormy sky. A winding dirt path leads up the rugged terrain, where a small procession of dark-cloaked figures on horseback and foot travels towards the fortress carrying long spears. In the lower left, a multi-arched stone bridge connects the cliffside, while mist shrouds the base of the mountain. The entire scene is rendered in muted sepia, black, and gray tones with an aged, parchment-like border.",
+    "extracted_data": {
+      "entity_name": "Blackford",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_embermarch.png": {
+    "description": "A colossal, dark gothic castle with towering spires, battlements, and hanging red banners sits atop a sheer, rocky mountain peak under an overcast, pale-yellow sky. In the foreground, four cloaked figures in dark armor walk along a rugged, stony path, with one holding a tall staff. The surrounding desolate landscape features jagged mountain ridges, misty valleys, and a winding river spanning a distant stone bridge near the lower fortress walls.",
+    "extracted_data": {
+      "entity_name": "Embermarch",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_fenspire.png": {
+    "description": "A towering, dark Gothic stone castle sits atop a sheer, jagged cliff, featuring soaring spires, detailed battlements, and warm, glowing windows under a dramatic, cloud-heavy sky. Long red banners hang above the fortress's arched gateway, where a rocky, misty path curves along a body of dark water. Along the path, small hooded figures in dark cloaks, carrying staves and weapons, make their way up toward the massive entrance.",
+    "extracted_data": {
+      "entity_name": "Fenspire",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_gloammarch.png": {
+    "description": "This fantasy artwork features an imposing, dark gothic castle constructed from weathered stone, with towering spires, thick battlements, and a large arched gatehouse built high atop a craggy mountain peak. A rugged, winding path leads up toward the fortress entrance, flanked by steep rocky cliffs and wooden gallows visible on the left ledge. Along the path, small figures in dark cloaks and armor\u2014some mounted on horses and holding long spears\u2014approach the castle under a muted, sepia-toned, overcast sky.",
+    "extracted_data": {
+      "entity_name": "Gloammarch",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_gloamreach.png": {
+    "description": "Perched atop a rugged mountain peak, a massive gothic castle built from dark stone features soaring spires, intricate arches, and a steep stone pathway leading up through a fortified gatehouse. In the foreground, warriors clad in dark plate armor march along the rocky trail, flanked by tall spiked posts bearing tattered banners adorned with a skull-like head trophy. The scene is rendered in a muted, sepia-and-charcoal color palette, illuminated by a brilliant bolt of lightning cutting through storm clouds over a desolate, misty valley below.",
+    "extracted_data": {
+      "entity_name": "Gloamreach",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_hollowreach.png": {
+    "description": "Set against a stormy, sepia-toned sky, a colossal dark stone fortress featuring soaring Gothic spires and heavy battlements is built directly into a rugged mountain peak. A multi-arched stone bridge spans a deep chasm, connecting the fortress's gated entrance to a treacherous, rocky path. In the foreground, three armored figures wearing dark cloaks and plate mail gaze toward the citadel, holding weapons such as a spear and a round shield beside a gnarled, leafless tree.",
+    "extracted_data": {
+      "entity_name": "Hollowreach",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_ironfell_citadel.png": {
+    "description": "Perched high atop a rugged, dark mountain peak under a swirling, sepia-toned sky, the colossal stone citadel features towering Gothic spires, fortified battlements, and an arched entrance reached via a narrow stone causeway. In the bottom-left foreground, a procession of figures in dark metallic armor marches along the rocky path towards the gatehouse, with one carrying a tall flagpole bearing a tattered dark banner marked with a light emblem. The surrounding dark fantasy landscape is defined by dramatic cliffs, deep ravines, and a waterfall cascading down the rocky precipice beneath the fortress foundations.",
+    "extracted_data": {
+      "entity_name": "Ironfell Citadel",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_thorncairn.png": {
+    "description": "A towering, dark-stone gothic castle with sharp spires and battlements sits perched atop a sheer, craggy mountain peak under a stormy, sepia-toned sky. Below, a narrow, rocky ridge path cuts through swirling clouds and fog, leading directly toward the fortress's arched entranceway. In the foreground, a small party of dark-cloaked, hooded travelers\u2014one carrying a long staff or weapon over their shoulder\u2014ascends the treacherous path toward the citadel.",
+    "extracted_data": {
+      "entity_name": "Thorncairn",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_vharencrag_fortress.png": {
+    "description": "Perched high upon a rugged mountain peak, the dark stone fortress features intricate Gothic architecture with towering, spire-laden ramparts set against a stormy, lightning-streaked sky. A winding stone causeway arches over a deep chasm toward the fortress gate, passing near a dead, gnarled tree on a rocky outcrop. In the foreground, a small group of dark-armored, cloaked figures march along the stone path, with one soldier carrying a tall black banner.",
+    "extracted_data": {
+      "entity_name": "Vharencrag Fortress",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_landscape_location_vharenford.png": {
+    "description": "Perched atop a steep, rocky crag, a massive dark stone castle features tall Gothic spires, layered battlements, and intricate stonework under a dramatic sky with golden light breaking through heavy clouds. In the foreground, a winding dirt path is traveled by a group of dark-armored, hooded figures carrying spears, staves, and sidearms. Below the cliff face, a river flows through a deep canyon past distant snow-capped mountains, with a small sailboat navigating the water.",
+    "extracted_data": {
+      "entity_name": "Vharenford",
+      "asset_type": "landscape"
+    }
+  },
+  "atmo_portrait_character_aldous_wrenfield_the_last_warden.png": {
+    "description": "A battle-worn knight with a scarred face holds an ornate golden chalice in one hand while resting his other hand on the hilt of a sword at his waist. He wears a heavy dark cloak over soiled armor and a surcoat bearing the black emblem of a raven perched upon a bare tree, a symbol mirrored on the tattered banner to his left. In the background, a massive, decaying stone castle towers over a desolate, sepia-toned landscape beneath an overcast sky.",
+    "extracted_data": {
+      "entity_name": "Aldous Wrenfield The Last Warden",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_brannoc_ironmere_the_red_handed.png": {
+    "description": "The artwork portrays a stern king wearing a dark metal crown, battered plate armor adorned with chains and medallions, and a tattered red-and-black cape featuring a weathered crest. His right hand is prominently drenched in blood, contrasting sharply with his dark attire as it rests near the hilt of a sword at his waist. In the background, soldiers carrying tattered red banners stand amidst smoke in front of the towering ruins of a Gothic stone castle.",
+    "extracted_data": {
+      "entity_name": "Brannoc Ironmere The Red Handed",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_cerys_sablewood_the_ashen.png": {
+    "description": "A dark-haired female warrior stands clad in ornate, dark plate armor featuring a golden tree crest on her chest plate and a tattered, dark cloak draped over her shoulders. She grips a massive warhammer adorned with a radial sunburst emblem, with a metallic mask trinket hanging from her belt straps. The background presents a grim, sepia-toned atmosphere filled with towering, ruined gothic castle spires and tattered banners.",
+    "extracted_data": {
+      "entity_name": "Cerys Sablewood The Ashen",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_corvus_hollowmere_the_pale.png": {
+    "description": "The artwork depicts a pale, dark-haired warrior clad in dark, worn armor and a tattered black cloak, gripping the ornate hilt of a sword in his gloved hand. A bird of prey perches atop his left shoulder near a small heraldic crest emblem suspended from decorative metal chains across his chest. Set against an aged, sepia-toned background, a ruined stone fortress looms in the distance over a gloomy battlefield dotted with tattered flags and bare trees.",
+    "extracted_data": {
+      "entity_name": "Corvus Hollowmere The Pale",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_gareth_ironmere.png": {
+    "description": "Gareth Ironmere is portrayed as a rugged, dark-haired warrior clad in weathered dark plate armor and a fur-lined, tattered cloak, resting his gloved hands on the hilt of a large sword while a stark white owl perches on his shoulder. An emblem decorated with a stylized crest adorns his chest plate, echoing a tattered red banner with a white heraldic symbol standing in the background. The muted, parchment-textured scene is rendered in deep reds, dark blues, and sepia tones, framing the character against a desolate, smoke-filled battlefield strewn with ruined stone castles and crumbling spires.",
+    "extracted_data": {
+      "entity_name": "Gareth Ironmere",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_halvard_vane_the_grave_sworn.png": {
+    "description": "In a grim, sepia-toned landscape, the battle-worn knight Halvard Vane is clad in tattered dark cloaks, chainmail, and weathered steel armor bearing a faded cross-and-skull heraldic emblem. In his raised right hand, he holds a brightly glowing ornate iron lantern that illuminates his weathered face, while his left hand grips a battered sword. The desolate ground around him is littered with skulls and tattered banners, with a perched raven on the left and a ruined gothic castle rising on a distant rocky cliff in the background.",
+    "extracted_data": {
+      "entity_name": "Halvard Vane The Grave Sworn",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_ignatz_ashgrove_the_oathless.png": {
+    "description": "A stern, gaunt knight stands gripping a large rolled scroll secured with a red wax seal in his right hand, while his left hand rests near the skull pommel of a sword. He wears dark, weathered plate armor featuring a worn heraldic chest emblem, paired with a ragged black-and-red cloak fastened by skull-embossed chains and clasps. The artwork uses a muted, parchment-like color palette dominated by charcoal, deep crimson, and aged sepia tones. In the background, looming gothic castle spires, a gargoyle statue on a pedestal, and tattered battle banners stand against a stormy, textured sky.",
+    "extracted_data": {
+      "entity_name": "Ignatz Ashgrove The Oathless",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_isolde_fellgard_the_unforgiven.png": {
+    "description": "This dark fantasy portrait depicts a stern female warrior wearing a prominent wolf pelt as a hood over her dark, layered robes, which are detailed with ornate leather belts, metal clasps, and hanging chains. She grips a cross-guarded sword in her gloved right hand, clad in a dark, worn cloak framed against a sepia and charcoal color palette. In the background, tattered war banners rise above a desolate, rocky landscape, alongside a towering, ruined gothic castle with jagged spires beneath a cloudy sky.",
+    "extracted_data": {
+      "entity_name": "Isolde Fellgard The Unforgiven",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_maelis_harrowick_the_pale.png": {
+    "description": "The artwork features a pale, dark-haired man wearing a tattered black cloak over a crimson and white tunic embroidered with a heraldic eagle emblem, secured by ornate chains and a skull pendant. A white barn owl perches on his left shoulder above a decorative metallic spaulder. The background depicts a gloomy, sepia-toned gothic landscape filled with desolate ruins, tattered banners on wooden masts, and towering castle spires beneath a overcast sky.",
+    "extracted_data": {
+      "entity_name": "Maelis Harrowick The Pale",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_malchior_cindervale_the_flame_touched.png": {
+    "description": "A dark-haired knight with severe burn scars across the left side of his face holds a glowing, ornate metal lantern in his gloved hand. He wears a tattered, crimson-lined cloak over dark armor adorned with heavy gold chains, a sword at his hip, and a heraldic emblem on his chest. In the misty background stands a towering, ruined Gothic castle with jagged spires alongside a ragged red war banner.",
+    "extracted_data": {
+      "entity_name": "Malchior Cindervale The Flame Touched",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_morwenna_ashgrove.png": {
+    "description": "This dark fantasy artwork features a dark-haired noblewoman in a fur-trimmed burgundy cloak and intricately embroidered black dress, holding a sword pointed downward. She stands against a muted, sepia-toned parchment background featuring a tattered war banner and a knight's helmet resting among the rubble at her feet. In the hazy distance, the crumbling towers of a ruined stone castle rise above a desolate, battle-scarred landscape.",
+    "extracted_data": {
+      "entity_name": "Morwenna Ashgrove",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png": {
+    "description": "In this dark fantasy artwork, a stern queen wearing a jagged golden crown stands adorned in a tattered, deep purple cape fastened with elaborate metallic clasps. A large black raven rests on her left shoulder, mirroring the raven emblem etched onto her golden, weathered armor breastplate. In the desolate background, a torn black flag hangs on a pole to the left, while the looming silhouette of a ruined gothic tower rises against a sepia-toned sky on the right.",
+    "extracted_data": {
+      "entity_name": "Sabelle Mournvale The Twice Crowned",
+      "asset_type": "portrait"
+    }
+  },
+  "atmo_relic_artifact_chalice_of_ashdeep.png": {
+    "description": "An ornate, dark-toned metallic chalice rests on draped black fabric set against a muted, textured background. The main bowl of the goblet features a prominent relief carving of a death's-head moth, while the segmented base displays additional carvings of moths and animal skulls. The artwork is enclosed within an antique parchment frame adorned with skull emblems in the upper corners and a stylized eye symbol at the bottom center.",
+    "extracted_data": {
+      "entity_name": "Chalice Of Ashdeep",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_diadem_of_sorrowgate.png": {
+    "description": "This dark fantasy illustration features an ornate, aged-gold crown resting on draped dark purple fabric, adorned with a striking serpent rearing over a central dark purple gemstone. The piece is enclosed within an embellished sepia frame featuring small circular medallions in each corner that depict a human skull, a hooded figure, and ruined gothic spires. At the bottom center of the border, a spiked circular crest contains a coiled snake emblem.",
+    "extracted_data": {
+      "entity_name": "Diadem Of Sorrowgate",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_edge_of_gloamreach.png": {
+    "description": "An ornate, gothic fantasy dagger lies diagonally across folds of dark, draped fabric. The weapon features a jagged, serrated blade with weathered metallic texturing, a complex spiked crossguard inset with a dark central orb, a wrapped grip, and a sharp, cage-like pommel. Framing the composition is an aged parchment-style border embellished with spiky wheel emblems and four circular corner medallions depicting a skull, a cloaked figure, and dark castle spires.",
+    "extracted_data": {
+      "entity_name": "Edge Of Gloamreach",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_gauntlet_of_sorrowfell.png": {
+    "description": "The artwork features a highly detailed, dark metal gauntlet resting atop folded black fabric with gold-fringed trim. The forearm guard of the gauntlet displays a prominent, raised relief sculpture of a coiled, fanged serpent surrounded by intricate filigree engravings. Framing the central image is an aged, gothic-style border decorated with skulls and circular corner medallions depicting hooded figures, jagged mountains, and a dark castle spire.",
+    "extracted_data": {
+      "entity_name": "Gauntlet Of Sorrowfell",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_cinder_wrought_aegis.png": {
+    "description": "This artwork features a large, dark metallic round shield adorned with a prominent golden sunburst emblem with radiant, wavy rays at its center. The shield rests against dark, gold-trimmed draped fabric, accompanied on the lower left by a weathered human skull and a small burning candle. The entire composition is enclosed within an antiqued parchment border containing gothic circular vignettes at the top corners and intricate skull-and-star medallions at the bottom corners.",
+    "extracted_data": {
+      "entity_name": "The Cinder Wrought Aegis",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_crown_of_burned_names.png": {
+    "description": "An ornate, tarnished metal crown with sharp, tall gothic spikes rests upon dark, draped velvet lined with gold-embroidered trim. The center of the crown is decorated with a prominent relief of a coiled, fanged serpent with its mouth open in a strike pose. Framing the scene is a sepia-toned, intricately detailed border featuring a starburst skull emblem at the top, an eight-pointed star medallion at the bottom, and side pillars carved with skeletal figures and entwined snakes.",
+    "extracted_data": {
+      "entity_name": "The Crown Of Burned Names",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_hollow_edge.png": {
+    "description": "This dark fantasy artwork features a broad, ornate sword resting diagonally upon crumpled, dark brown fabric. Crafted from weathered dark metal with gold filigree, the blade has a hollowed-out central channel and prominent sunburst emblems featuring dark gemstones at the crossguard, blade, and pommel. The composition is set against an aged parchment background enclosed in an ornate square border with skull-adorned medallions in each corner.",
+    "extracted_data": {
+      "entity_name": "The Hollow Edge",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_psalter_of_seven_sorrows.png": {
+    "description": "This fantasy artwork depicts \"The Psalter Of Seven Sorrows,\" an ornate, dark metal-bound tome resting upon draped dark blue fabric with gold-patterned trim. The book's heavy cover is adorned with intricate gothic tracery, metal clasps, and a central emblem featuring a weeping, veiled face inside a spiked sunburst with surrounding teardrop motifs. The entire scene is framed by an elaborate parchment-style border embellished with gothic arches containing hooded statues, intricate filigree, and skulls positioned at the top, bottom, and lower corners.",
+    "extracted_data": {
+      "entity_name": "The Psalter Of Seven Sorrows",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_sceptre_of_final_winter.png": {
+    "description": "An ornate dark fantasy sceptre, featuring a glowing blue-white crystalline head encased in sharp metal prongs and carved roses, rests diagonally across folds of black draped fabric. The sceptre\u2019s metallic handle is wrapped in intricate thorned vines, secondary rose motifs, and terminates in a spiked pommel dripping with frost and icicles. The composition is framed within an aged parchment border embellished with Gothic thornwork, skull emblems at the top corners, and armored figures depicted in the bottom corners.",
+    "extracted_data": {
+      "entity_name": "The Sceptre Of Final Winter",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_silent_psalter.png": {
+    "description": "An ancient, dark grimoire lies rests atop draped dark purple fabric with subtle embroidered trim. The tome\u2019s heavily ornate cover features a large, raised, coiled serpent emblem surrounded by intricate gothic filigree, corner skull motifs, and a metallic clasp holding its thick, aged pages closed. Framing the illustration is a sculpted stone border decorated with circular serpent medallions at the corners, a skull centerpiece at the top, and skeletal statues standing within narrow side niches.",
+    "extracted_data": {
+      "entity_name": "The Silent Psalter",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_thrice_bound_edge.png": {
+    "description": "An ornate gothic dagger adorned with carved rose and thorn motifs along its blade and crossguard rests on dark, draped cloth, featuring metallic chains wrapped tightly around its leather-bound handle. Surrounding the central blade are sepia-toned framed vignettes, including a hooded figure kneeling in prayer before a sword bound in chains, an engraving of a thorny rose, and a dark gothic castle perched atop a rocky peak. At the bottom center, a circular emblem containing a rose encircled by a star of thorns anchors the composition, set against a backdrop of muted bronze, charcoal, and aged parchment tones.",
+    "extracted_data": {
+      "entity_name": "The Thrice Bound Edge",
+      "asset_type": "relic"
+    }
+  },
+  "atmo_relic_artifact_the_thrice_bound_lantern.png": {
+    "description": "The central focus is an ornate, dark metallic lantern wrapped in heavy metal chains, resting atop draped dark purple fabric. Illuminated from within, the lantern displays a prominent death's-head moth with a skull motif on its thorax, surmounted by an embossed crescent moon and star symbol. The artwork is framed within vintage, sepia-toned parchment borders featuring intricate gothic panels that depict moths, chains, lanterns, and a melting candle.",
+    "extracted_data": {
+      "entity_name": "The Thrice Bound Lantern",
+      "asset_type": "relic"
+    }
+  }
+}
