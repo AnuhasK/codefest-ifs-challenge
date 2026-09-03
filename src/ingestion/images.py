@@ -4,10 +4,12 @@ from uuid import uuid4
 import re
 import json
 import logging
+import time
 from PIL import Image
 
 from src.models.document import Asset
 from src.config import (
+    BASE_DIR,
     GEMINI_API_KEYS,
     GEMINI_API_KEY,
     LLM_MODEL,
@@ -144,7 +146,33 @@ def parse_plate_structured_data(ocr_text: str, entity_name: str) -> Dict[str, An
 
 
 # ---------------------------------------------------------------------------
-# Gemini Vision processing with Key Rotator & Rate Limiter
+# Persistent Local Disk Cache for Vision Descriptions
+# ---------------------------------------------------------------------------
+
+IMAGE_CACHE_FILE = BASE_DIR / "data" / "image_cache.json"
+
+
+def _load_image_cache() -> Dict[str, Any]:
+    """Load persistent image description cache from disk."""
+    try:
+        if IMAGE_CACHE_FILE.exists():
+            return json.loads(IMAGE_CACHE_FILE.read_text(encoding="utf-8"))
+    except Exception as e:
+        logger.warning("Could not read image cache: %s", e)
+    return {}
+
+
+def _save_image_cache(cache: Dict[str, Any]) -> None:
+    """Save persistent image description cache to disk."""
+    try:
+        IMAGE_CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        IMAGE_CACHE_FILE.write_text(json.dumps(cache, indent=2), encoding="utf-8")
+    except Exception as e:
+        logger.warning("Could not write image cache: %s", e)
+
+
+# ---------------------------------------------------------------------------
+# Gemini Vision processing with Key Rotator, Rate Limiter & Timeouts
 # ---------------------------------------------------------------------------
 
 def _process_plate_with_gemini(
@@ -153,8 +181,16 @@ def _process_plate_with_gemini(
     """
     Fallback: Extract structured data from a figure plate using Gemini Vision.
     Uses GeminiKeyRotator to respect 5 RPM and 20 RPD limits across keys.
+    Cached on disk so successful extractions are never recomputed.
     """
+    img_name = Path(image_path).name
+    cache = _load_image_cache()
+    if img_name in cache and not cache[img_name].get("extracted_data", {}).get("fallback"):
+        print(f"  [Image Cache] Reusing cached plate extraction for '{entity_name}'.", flush=True)
+        return (cache[img_name]["description"], cache[img_name]["extracted_data"])
+
     from google import genai
+    from google.genai import types
 
     rotator = get_shared_gemini_rotator()
     prompt = (
@@ -168,7 +204,7 @@ def _process_plate_with_gemini(
     prompt = rotator.enforce_token_limit(prompt)
     img = Image.open(image_path)
 
-    max_retries = max(3, rotator.available_count)
+    max_retries = max(5, rotator.available_count * 2)
     for _ in range(max_retries):
         key = rotator.next_key()
         if not key:
@@ -182,7 +218,10 @@ def _process_plate_with_gemini(
             )
 
         try:
-            client = genai.Client(api_key=key)
+            client = genai.Client(
+                api_key=key,
+                http_options=types.HttpOptions(timeout=30.0),
+            )
             response = client.models.generate_content(
                 model=LLM_MODEL,
                 contents=[img, prompt],
@@ -206,6 +245,10 @@ def _process_plate_with_gemini(
                 f"{extracted_data.get('provenance_note', '')}".strip()
             )
             print(f"  [Gemini Vision] Extracted plate '{entity_name}' via {key[:6]}...", flush=True)
+
+            cache = _load_image_cache()
+            cache[img_name] = {"description": description, "extracted_data": extracted_data}
+            _save_image_cache(cache)
             return (description, extracted_data)
 
         except Exception as e:
@@ -213,6 +256,10 @@ def _process_plate_with_gemini(
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
                 rotator.mark_exhausted(key, reason="429 Resource Exhausted")
                 print(f"  [Gemini Vision] Key {key[:6]}... hit quota. Rotating to next key...", flush=True)
+                continue
+            elif "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str or "timeout" in err_str.lower() or "timed out" in err_str.lower():
+                print(f"  [Gemini Vision] Model busy/timeout for '{entity_name}' ({e}). Pausing 5s before retrying...", flush=True)
+                time.sleep(5.0)
                 continue
             logger.error("Gemini plate extraction error for '%s': %s", entity_name, e)
             break
@@ -229,8 +276,16 @@ def _process_atmospheric_with_gemini(
     """
     Generate a detailed visual description of atmospheric art using Gemini Vision.
     Rotates through configured keys, respecting 5 RPM and 20 requests/day per key.
+    Includes 30s timeout and automatic disk caching of successful descriptions.
     """
+    img_name = Path(image_path).name
+    cache = _load_image_cache()
+    if img_name in cache and not cache[img_name].get("extracted_data", {}).get("fallback"):
+        print(f"  [Image Cache] Reusing cached description for '{entity_name}'.", flush=True)
+        return (cache[img_name]["description"], cache[img_name]["extracted_data"])
+
     from google import genai
+    from google.genai import types
 
     rotator = get_shared_gemini_rotator()
     prompt = (
@@ -242,7 +297,7 @@ def _process_atmospheric_with_gemini(
     prompt = rotator.enforce_token_limit(prompt)
     img = Image.open(image_path)
 
-    max_retries = max(3, rotator.available_count)
+    max_retries = max(5, rotator.available_count * 2)
     for _ in range(max_retries):
         key = rotator.next_key()
         if not key:
@@ -256,20 +311,32 @@ def _process_atmospheric_with_gemini(
             )
 
         try:
-            client = genai.Client(api_key=key)
+            client = genai.Client(
+                api_key=key,
+                http_options=types.HttpOptions(timeout=30.0),
+            )
             response = client.models.generate_content(
                 model=LLM_MODEL,
                 contents=[img, prompt],
             )
             description = (response.text or "").strip()
             print(f"  [Gemini Vision] Described '{entity_name}' via {key[:6]}...", flush=True)
-            return (description, {"entity_name": entity_name, "asset_type": asset_type})
+            extracted_data = {"entity_name": entity_name, "asset_type": asset_type}
+
+            cache = _load_image_cache()
+            cache[img_name] = {"description": description, "extracted_data": extracted_data}
+            _save_image_cache(cache)
+            return (description, extracted_data)
 
         except Exception as e:
             err_str = str(e)
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
                 rotator.mark_exhausted(key, reason="429 Resource Exhausted")
                 print(f"  [Gemini Vision] Key {key[:6]}... hit quota. Rotating to next key...", flush=True)
+                continue
+            elif "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str or "timeout" in err_str.lower() or "timed out" in err_str.lower():
+                print(f"  [Gemini Vision] Model busy/timeout for '{entity_name}' ({e}). Pausing 5s before retrying...", flush=True)
+                time.sleep(5.0)
                 continue
             logger.error("Gemini Vision failed for '%s': %s", entity_name, e)
             break
