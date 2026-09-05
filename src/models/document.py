@@ -60,7 +60,7 @@ class ExtractionResult(BaseModel):
 
 class Chunk(BaseModel):
     id: UUID = Field(default_factory=uuid4)
-    document_id: UUID
+    document_id: Optional[UUID] = None
     section_id: Optional[UUID] = None
     representation_id: Optional[UUID] = None
     content: str
@@ -91,7 +91,7 @@ class Asset(BaseModel):
 class Provenance(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     chunk_id: UUID
-    document_id: UUID
+    document_id: Optional[UUID] = None
     representation_id: Optional[UUID] = None
     source_file: str
     page_number: Optional[int] = None
