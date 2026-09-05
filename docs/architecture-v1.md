@@ -267,10 +267,10 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 | Pillow (PIL) | Image loading, format handling |
 | rapidocr-onnxruntime | Local OCR for figure plates — extracts printed text/numbers from data plates offline (~50ms/image on CPU, ~15MB, zero API calls) |
 | Gemini Vision | Visual description of atmospheric art (portraits, heraldry, landscapes, battle paintings, creatures, relics) |
-| spaCy + `en_core_web_trf` | Entity extraction (gazette EntityRuler + transformer NER) — zero LLM calls |
+| spaCy + `en_core_web_sm` | Corpus-aware entity extraction helper: POS tagging, pronoun detection (for contextualization), noun chunk candidate extraction, and gazette EntityRuler matching. **Not** the primary NER — the gazette is. `en_core_web_sm` only (~12MB, ~50ms/chunk on CPU). `en_core_web_trf` dropped: too heavy (~1.3GB) for RAM-constrained ingestion and unreliable on fictional vocabulary. |
 | Pydantic | Structured output schema enforcement for LLM relationship extraction |
 
-**Rationale:** These are the standard, well-maintained Python libraries for each format. Figure plates contain printed text and numbers that a lightweight local OCR library (`rapidocr-onnxruntime`) extracts with near-perfect accuracy on CPU — no API calls needed, making extraction deterministic and reproducible. Gemini Vision is reserved for atmospheric art where visual scene description genuinely requires a vision-language model. spaCy handles entity extraction offline using a gazette built from wiki/codex filenames + transformer NER for coverage, eliminating LLM calls for NER. Pydantic enforces structured output schemas when the LLM classifies relationships, preventing hallucinated relationship types. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
+**Rationale:** These are the standard, well-maintained Python libraries for each format. Figure plates contain printed text and numbers that a lightweight local OCR library (`rapidocr-onnxruntime`) extracts with near-perfect accuracy on CPU — no API calls needed, making extraction deterministic and reproducible. Gemini Vision is reserved for atmospheric art where visual scene description genuinely requires a vision-language model. The Gazette (built from wiki/codex filenames) is the primary NER layer — it provides near-100% recall for canonical entities without relying on a pretrained model trained on real-world text. spaCy `en_core_web_sm` acts as a lightweight helper: POS tagging for pronoun detection (contextualization), noun chunk extraction for candidate entities, and the EntityRuler for gazette pattern matching. `en_core_web_trf` is deliberately excluded — at ~1.3GB it strains the available RAM, and a BERT model trained on news/Wikipedia is unreliable on invented fictional vocabulary. Pydantic enforces structured output schemas when the LLM classifies relationships, preventing hallucinated relationship types. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
 
 ---
 
@@ -820,23 +820,54 @@ CREATE CONSTRAINT entity_id IF NOT EXISTS FOR (e:Entity) REQUIRE e.id IS UNIQUE;
 
 ---
 
-## 10. Entity & Claim Extraction — Hybrid Strategy
+## 10. Entity & Claim Extraction — Corpus-Aware Hybrid Strategy
 
-### Design Rationale: Why Not LLM-Only?
+### Design Rationale: Why Not Generic NER?
 
-The original approach called for LLM-based NER on every chunk (~2,000+ calls). On the Gemini free tier (~15 RPM), this alone would take ~2+ hours and consume budget better spent on contextual prefixes and answer generation — where LLMs are irreplaceable.
+The Ashen Era is an **entirely fictional world**. spaCy's pretrained NER models (`en_core_web_trf`, `en_core_web_sm`) are trained on real-world text (news, Wikipedia, OntoNotes). They produce unreliable or wrong labels for invented names like *Mournthrone*, *Vaelith*, *Ashen Spire*, and invented entity types like `FACTION`, `DYNASTY`, `ARTIFACT`, and `CREATURE` are not in their ontology at all.
 
-The hybrid approach, well-validated by the ML/NLP community, splits the work:
-- **Pattern matching** (gazette + spaCy) handles entity detection — a problem it's already good at
-- **LLM reasoning** (Gemini + structured output) handles relationship classification — a problem that requires understanding context
+The original approach called for LLM-based NER on every chunk (~2,000+ calls). On the Gemini free tier, this alone would take ~2+ hours and consume budget better spent on contextual prefixes and answer generation.
 
-### Layer 1: Named Entity Recognition — Gazette + spaCy (Core)
+The revised approach is **corpus-aware from the start**:
+- **The Gazette is the primary NER layer** — built from the corpus's own file structure, it has near-100% recall for canonical entities with zero model uncertainty
+- **spaCy `en_core_web_sm` is a lightweight helper** — used for POS tagging, pronoun detection, and noun chunk candidate extraction only; NOT the entity authority
+- **Targeted Gemini passes** handle the specific scenarios where deterministic methods fall short
+- **Alias resolution** collapses name variants before writing to Neo4j
 
-**Zero LLM calls. Fully offline.**
+> **Key insight:** `en_core_web_trf` is dropped entirely. At ~1.3GB it strains available RAM, and its BERT-based NER produces misclassified or missed entities on fictional vocabulary. The gazette does the job better with zero model overhead.
+
+### Entity Ontology (Fictional-World-Appropriate)
+
+Standard NER types (`PERSON`, `ORG`, `GPE`) are insufficient. The Ashen Era ontology:
+
+```
+PERSON         — named characters (Ser Vael, Ederon Fellgard)
+FACTION        — organized groups with political/military identity (Ashen Vanguard, Pale Covenant)
+PLACE          — locations (Red Vale, Greyfell Citadel, Ashen Spire)
+EVENT          — wars, accords, battles, purges (War of Drowned Light, Accord of Mournthrone)
+ARTIFACT       — named objects (Gauntlet of Sorrowfell, Thrice-Bound Edge)
+ORGANIZATION  — non-faction groups (Iron Ring Cartel, Silent Choir)
+CREATURE       — named species/individuals (Gravemaw Wyrm, Weeping Lurker)
+TITLE          — ranks, epithets (Last Warden, the Oathless, High Ember)
+DYNASTY        — ruling houses/lineages (House Morvain, Third House of Elar)
+DEITY          — gods, divine entities
+CONCEPT        — recurring fictional terms (Attunement, the Ashen Tide)
+DOCUMENT       — in-world named documents (Codex Vaeloria, Leaden Accord text)
+BUILDING       — named structures (Emberveil Keep, the Ossuary)
+MILITARY_UNIT — named armies/regiments
+UNKNOWN        — capitalized candidate not yet classified
+```
+
+---
+
+### Layer 1: Named Entity Recognition — Gazette-First Pipeline (Core)
+
+**Mostly zero LLM calls. Fully offline for gazette and rules. Targeted Gemini for off-gazette candidates only.**
 
 #### Step 1a: Build Gazette from Corpus Structure
 
-The corpus itself encodes entity names in its file structure:
+The corpus encodes entity names directly in its file structure. This is a **closed fictional corpus** — every entity that has a canonical definition has a wiki or codex file:
+
 ```
 wiki/wiki_person_ser_vael.md          → Person: "Ser Vael"
 wiki/wiki_faction_ashen_vanguard.md   → Faction: "Ashen Vanguard"
@@ -846,33 +877,125 @@ wiki/wiki_artifact_thrice_bound_edge.md → Artifact: "Thrice-Bound Edge"
 codex/codex_data_book_*.pdf           → Entity names from codex entries
 ```
 
-Parse ~95 wiki filenames + codex entries to build a **complete entity dictionary** with canonical names and types. This gives us a high-coverage gazette with zero guesswork.
+Parse ~95 wiki filenames + codex entries → **complete entity dictionary with canonical names and types**. This gazette has:
+- Near-100% recall for any entity with a wiki/codex article
+- Zero model uncertainty — it is the ground truth for canonical entities
+- No GPU, no download, no model load time
+- **API cost: 0 calls**
 
-#### Step 1b: spaCy EntityRuler + Transformer NER
+#### Step 1b: spaCy Gazette Matching + Rule-Based Candidates
 
-Apply a two-pass NER pipeline:
+Apply a two-pass offline pipeline using `en_core_web_sm` (small, fast, ~12MB):
+
 ```
 Pass 1: spaCy EntityRuler (gazette matching)
   - Load gazette patterns from wiki/codex filenames
   - Exact match + case-insensitive match
-  - Catches all entities that have wiki/codex articles
+  - Output: gazette entities with correct type labels
+  → All gazette entities captured with high confidence
 
-Pass 2: spaCy en_core_web_trf (transformer NER)
-  - Catches entities NOT in the gazette (characters mentioned only in novels/ephemera)
-  - Detects generic patterns: capitalized multi-word phrases, titles ("Ser", "Lord")
-  - Produces candidate entities for manual review or confidence filtering
+Pass 2: Capitalized Phrase Rule Extraction
+  - Extract capitalized 1–3 word noun chunks NOT already in gazette
+  - Apply title prefix patterns: "Ser ", "Lord ", "Lady ", "High ", "the "
+  - Tag as UNKNOWN (candidate, pending classification)
+  → Catches entities mentioned only in novels/ephemera
 ```
 
-**Combined output:**
+Note: Pass 2 deliberately does NOT use spaCy's pretrained NER classifier. The `en_core_web_sm` NER model is unreliable on fictional vocabulary and would produce wrong type labels. Only its tokenizer, POS tagger, and noun chunk extractor are used.
+
+**Example:**
 ```
-Input:  "Ser Vael of the Ashen Vanguard rode to Red Vale..."
-Output: [Person: "Ser Vael" (gazette), Faction: "Ashen Vanguard" (gazette), Place: "Red Vale" (gazette)]
+Input:  "Ser Vael of the Ashen Vanguard rode to Red Vale, seeking Lord Drovenath."
+
+Pass 1 output (gazette): [
+  Person: "Ser Vael"        (gazette, confidence: 1.0)
+  Faction: "Ashen Vanguard" (gazette, confidence: 1.0)
+  Place: "Red Vale"         (gazette, confidence: 1.0)
+]
+
+Pass 2 output (rules): [
+  UNKNOWN: "Lord Drovenath" (candidate, title prefix "Lord" detected)
+]
 ```
 
-- Store as Neo4j nodes
-- Link each entity to the chunks/documents where it appears
+- Gazette entities stored as Neo4j nodes immediately
+- `UNKNOWN` candidates collected for Step 1c
 - **This alone enables:** entity-based retrieval, basic cross-document linking
 - **API cost: 0 calls**
+
+#### Step 1c: Targeted Gemini Entity Pass for Off-Gazette Candidates
+
+Not all entities have wiki articles. Characters introduced only in novels, ephemera (letters, tavern ballads, announcements), or in-passing references must be discovered differently.
+
+**Which chunks get LLM entity extraction:**
+
+| Trigger condition | Rationale | Est. chunk count |
+|---|---|---|
+| Chunk has 4+ `UNKNOWN` candidate phrases | Rule extraction found many unclassified names | ~50–100 |
+| Chunk is from an ephemera document | Letters/ballads introduce the most off-gazette characters | ~20–40 docs |
+| Chunk mentions title prefixes ("Ser", "Lord") with names not in gazette | High signal for off-gazette persons | ~30–60 |
+
+**Gemini prompt for targeted entity extraction:**
+```
+This is a chunk from a fictional fantasy corpus called "Ashen Era".
+The following candidate names were detected by pattern matching:
+{candidates}
+
+For each candidate, classify it using ONLY these types:
+PERSON, FACTION, PLACE, EVENT, ARTIFACT, ORGANIZATION, CREATURE, 
+TITLE, DYNASTY, DEITY, CONCEPT, DOCUMENT, BUILDING, MILITARY_UNIT, UNKNOWN
+
+Also identify any other named entities you see that were missed.
+
+Return JSON only:
+{"entities": [{"mention": "...", "canonical_name": "...", "type": "...", "confidence": 0.0-1.0}]}
+
+Do not invent entities. Only extract what is explicitly present in the text.
+
+Chunk text:
+{chunk_text}
+```
+
+- Store classified entities as Neo4j nodes with `confidence` score
+- Add `canonical_name` to alias table (see Step 1d)
+- **API cost: ~80–150 calls**
+
+#### Step 1d: Alias Resolution — Collapse Name Variants
+
+Across 270+ documents, the same entity may appear under many surface forms:
+```
+"Lord Vaelith"
+"Vaelith"
+"Lord V."
+"the Lord of Mournthrone"
+"Vaelith of the Third House"
+```
+
+Without alias resolution, Neo4j will have 5 separate nodes that are actually the same person. This breaks multi-hop reasoning.
+
+**Resolution pipeline (no extra LLM calls):**
+```
+1. Exact match        → same entity
+2. Prefix/suffix strip ("Lord ", " the Oathless") → compare core name
+3. Levenshtein distance ≤ 2 → likely same entity (typo/variant)
+4. Embedding similarity ≥ 0.92 → possible alias (semantic variant)
+   (uses already-computed chunk embeddings, zero extra API calls)
+5. Remaining ambiguous pairs → flag for manual or LLM verification
+```
+
+Output: **alias table** mapping every surface form to a canonical entity ID.
+
+```
+Alias Table:
+"Lord Vaelith"            → entity_id: uuid-vaelith  (canonical: "Vaelith")
+"Lord V."                 → entity_id: uuid-vaelith
+"the Lord of Mournthrone" → entity_id: uuid-vaelith
+"Vaelith of the Third House" → entity_id: uuid-vaelith
+```
+
+In Neo4j, each entity node carries an `aliases` property (list of all surface forms). All mentions throughout the corpus resolve to a single node, enabling accurate graph traversal.
+
+---
 
 ### Layer 2: Relationship Extraction — Co-occurrence + LLM (Core)
 
@@ -898,9 +1021,11 @@ Output: {"relationships": [{"source": "Ser Vael", "target": "Ashen Vanguard",
 
 The structured output schema forces the LLM to only emit relationships from the predefined type set (`MEMBER_OF`, `LED`, `WON`, `PARTICIPATED_IN`, etc.), preventing hallucinated relationship types.
 
-- Store as Neo4j edges with evidence references
+- Store as Neo4j edges with evidence chunk references
 - **This enables:** 2-3 hop graph traversal for multi-document questions
 - **API cost: ~500-800 calls** (only chunks with 2+ entities)
+
+---
 
 ### Layer 3: Claim Extraction (Stretch)
 
@@ -919,28 +1044,33 @@ Key constraint: `accused_of` must NOT automatically become `committed`. The dist
 
 - **This enables:** conflict detection, source reliability comparison, nuanced answers
 
-### LLM Budget Summary (Gemini Free Tier)
+---
 
-| Task | Method | API Calls | With 3 Keys @ 15 RPM |
+### LLM Budget Summary (Gemini Free Tier — Revised)
+
+| Task | Method | API Calls | With 4 Keys @ 100 RPM |
 |---|---|---|---|
-| Entity extraction (Layer 1) | Gazette + spaCy | **0** | N/A |
-| Contextual prefixes (entity-rich chunks) | Template (metadata + spaCy entities) | **0** | N/A |
-| Contextual prefixes (pronoun-heavy chunks) | LLM | **~500-800** | ~11-18 min |
-| Relationship extraction (Layer 2) | Co-occurrence + LLM | **~500-800** | ~11-18 min |
-| Image processing — figure plates (§7) | RapidOCR (local, offline) | **0** | N/A |
-| Image processing — atmospheric art (§7) | Gemini Vision (irreplaceable) | **~55** | ~1.5 min |
+| Entity extraction — gazette + rules (Layer 1a/1b) | Gazette + spaCy `en_core_web_sm` | **0** | N/A |
+| Entity extraction — off-gazette candidates (Layer 1c) | Targeted Gemini pass | **~80–150** | ~2–3 min |
+| Alias resolution (Layer 1d) | String matching + embeddings | **0** | N/A |
+| Contextual prefixes (entity-rich chunks) | Template (metadata + gazette entities) | **0** | N/A |
+| Contextual prefixes (pronoun-heavy chunks) | LLM | **~3** | <1 min |
+| Relationship extraction (Layer 2) | Co-occurrence + LLM | **~500–800** | ~5–8 min |
+| Image processing — figure plates | RapidOCR (local, offline) | **0** | N/A |
+| Image processing — atmospheric art | Gemini Vision | **~55** | ~1.5 min |
 | Answer generation | LLM (irreplaceable) | **1/query** | Real-time |
-| **Total ingestion** | | **~1,055-1,655** | **~23-36 min** |
+| **Total ingestion** | | **~638–1,008** | **~9–13 min** |
 
-Compare to LLM-only approach: ~4,500+ calls → ~100+ min with 3 keys. The hybrid approach saves ~65% of the API budget. Local OCR for figure plates additionally saves ~15 Vision calls and makes plate extraction fully deterministic.
+> **Previously:** ~1,055–1,655 calls with 3 keys. The corpus-aware revision saves an additional ~40% of the LLM budget by eliminating untargeted NER calls and replacing `en_core_web_trf` with the gazette + rule approach. Alias resolution now happens using already-computed embeddings, costing 0 extra API calls.
 
 ### Why phased?
 
-1. Each layer adds value independently — if time runs out, Layer 1 + Layer 2 still works
-2. Layer 1 is fast, reliable, completely offline, and has the highest ROI
-3. Layer 2 is optimized: LLM only classifies relationships, not discovers entities
-4. Layer 3 is the most LLM-intensive and error-prone
-5. A working system with Layer 1+2 + good hybrid retrieval answers most 1B questions
+1. Each layer adds value independently — if time runs out, Layer 1a/1b + Layer 2 still produce a working system
+2. The gazette (Layer 1a) has the highest ROI: near-100% recall for canonical entities, zero cost
+3. Layer 1c is scoped to only the chunks/documents that genuinely need it (~150 max)
+4. Alias resolution (Layer 1d) runs after ingestion before Neo4j writes — no extra API calls
+5. Layer 2 is optimized: LLM only classifies relationships between already-identified entities
+6. Layer 3 is the most LLM-intensive — a stretch goal if time permits
 
 ---
 

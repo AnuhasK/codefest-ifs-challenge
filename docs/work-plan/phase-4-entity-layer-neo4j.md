@@ -1,7 +1,7 @@
 # Phase 4 — Entity Layer + Neo4j
 
 **Timeline: Days 4–5**  
-**Goal:** Entities (already extracted in Phase 2 via gazette + spaCy) stored in Neo4j, deduplicated, resolved, and entity-aware retrieval integrated into the hybrid pipeline.
+**Goal:** Entities (extracted and alias-resolved in Phase 2 via gazette + rules + targeted Gemini + alias resolution) stored in Neo4j with correct type labels, MENTIONED_IN edges, and alias properties. Entity-aware retrieval integrated into the hybrid pipeline.
 
 ---
 
@@ -10,8 +10,9 @@
 - Phase 3 complete — all acceptance criteria met
 - Hybrid retrieval pipeline working (BM25 + dense + contextual + RRF + reranker)
 - Neo4j running via Docker Compose (should be up since Phase 1)
-- **Entities already extracted in Phase 2** via gazette + spaCy (stored as entity list + chunk_id → entities mapping)
-- spaCy pipeline already built and tested (from Phase 2)
+- **Entities already extracted in Phase 2** via gazette + rules + targeted Gemini (Step 2.3)
+- **Alias resolution already completed in Phase 2** (Step 2.3, Step 1d) — alias table available
+- Entity types use the Ashen Era 15-type ontology: PERSON, FACTION, PLACE, EVENT, ARTIFACT, ORGANIZATION, CREATURE, TITLE, DYNASTY, DEITY, CONCEPT, DOCUMENT, BUILDING, MILITARY_UNIT, UNKNOWN
 
 ---
 
@@ -86,19 +87,20 @@ class KnowledgeGraph:
 
 ### 4.3 — Load & Store Entities in Neo4j (`src/ingestion/entities.py`)
 
-Entities were already extracted in **Phase 2** (gazette + spaCy, zero LLM calls). This step loads those results and persists them to Neo4j.
+Entities were extracted in **Phase 2** (gazette + rules + targeted Gemini, Steps 2.3a–2.3c). Alias resolution was also performed in Phase 2 (Step 1d). This step loads those results and persists them to Neo4j.
 
 ```python
 def store_entities_in_neo4j(
     entities: list[ExtractedEntity],
+    alias_table: dict[str, str],  # surface_form -> canonical_entity_id
     chunk_entities: dict[str, list[ExtractedEntity]],
     graph: KnowledgeGraph
 ) -> None:
     """
-    Load entities extracted in Phase 2 and persist to Neo4j.
+    Persist Phase 2 entity extraction results to Neo4j.
     
-    1. Deduplicate entities (see 4.4)
-    2. Create entity nodes in Neo4j
+    1. Load alias table (already computed in Phase 2 Step 1d)
+    2. Create entity nodes with aliases property populated
     3. Create MENTIONED_IN edges from entities to chunks/documents
     """
 ```
@@ -106,10 +108,11 @@ def store_entities_in_neo4j(
 **Cypher for entity creation:**
 ```cypher
 MERGE (e:Entity {id: $id})
-SET e.name = $name,
+SET e.name = $canonical_name,
     e.type = $type,
     e.aliases = $aliases,
     e.source = $source,
+    e.confidence = $confidence,
     e.mention_count = $mention_count
 
 // For each chunk reference:
@@ -121,126 +124,75 @@ MERGE (d:Document {id: $doc_id})
 MERGE (e)-[:APPEARS_IN]->(d)
 ```
 
-**Note:** Entity extraction itself (gazette building, spaCy NER, chunk annotation) was completed in Phase 2 step 2.3. This step only handles graph persistence.
+**Note:** Entity extraction and alias resolution were completed in Phase 2. This step only handles graph persistence.
 
-**Expected entity counts (from Phase 2):**
-- ~95 entities from gazette (wiki filenames)
-- ~100-200 unique Person entities total (gazette + spaCy NER)
-- ~20-40 Faction/Organization entities
-- ~30-50 Place entities
-- ~15-30 Event entities
-- ~20-40 Artifact entities
-- ~10-15 Creature entities
+**Expected entity counts:**
+- ~95 entities from gazette (wiki filenames), confidence=1.0, source="gazette"
+- ~50-150 additional entities from targeted Gemini pass, source="gemini_ner"
+- ~20-40 FACTION/ORGANIZATION entities
+- ~30-50 PLACE entities
+- ~15-30 EVENT entities
+- ~20-40 ARTIFACT entities
+- ~10-15 CREATURE entities
 
 **Test:**
-- All entities stored in Neo4j with correct properties (name, type, source)
+- All entities stored in Neo4j with correct type labels (using the 15-type ontology)
+- Entity `aliases` property populated from Phase 2 alias table
 - MENTIONED_IN edges exist for each chunk reference
 - Querying by entity type returns expected counts
-- Entity source tracking preserved (gazette vs spacy_ner)
+- Source tracking preserved (gazette vs rules vs gemini_ner)
 
 ---
 
-### 4.4 — Entity Deduplication & Merging
+### 4.4 — Verify Alias Table & Update Neo4j Aliases
 
-After extracting from all chunks, merge duplicate entities:
+Alias resolution was performed in Phase 2 (Step 1d) using string matching + embedding similarity (zero extra API calls). In this step, we verify the alias table and ensure Neo4j entity nodes have their `aliases` property fully populated.
 
 ```python
-def deduplicate_entities(entities: list[ExtractedEntity]) -> list[Entity]:
+def verify_and_apply_alias_table(
+    alias_table: dict[str, str],  # surface_form -> canonical_entity_id (from Phase 2)
+    graph: KnowledgeGraph
+) -> dict[str, int]:
     """
-    Merge entities that refer to the same thing.
+    Verify alias resolution from Phase 2 and apply to Neo4j.
     
-    Strategy:
-    1. Exact name match → merge
-    2. Case-insensitive match → merge
-    3. Substring match (e.g., "Ser Vael" and "Vael") → candidate for merge (manual review or LLM verification)
+    1. Load alias table produced in Phase 2 Step 1d
+    2. For each canonical entity in Neo4j, update aliases property
+    3. Log any UNKNOWN_ALIAS flags for manual review
+    4. Return statistics: {resolved: N, flagged: M}
     """
 ```
+
+**Alias table from Phase 2 (example):**
+```
+"Lord Vaelith"             -> uuid-vaelith  (canonical: "Vaelith")
+"Lord V."                  -> uuid-vaelith
+"the Lord of Mournthrone"  -> uuid-vaelith
+"Vaelith of the Third House" -> uuid-vaelith
+```
+
+All mentions throughout the corpus resolve to a single Neo4j node.
 
 **Entity model for Neo4j:**
 ```python
 class Entity:
-    id: str  # UUID
-    name: str  # canonical name
-    aliases: list[str]  # all known names/spellings
-    entity_type: str
-    source_documents: list[str]  # document_ids where this entity appears
-    source_chunks: list[str]  # chunk_ids where this entity appears
+    id: str          # UUID
+    name: str        # canonical name (from gazette or Gemini)
+    aliases: list[str]  # all surface forms (from alias table)
+    entity_type: str # from the 15-type Ashen Era ontology
+    source: str      # "gazette", "rules", or "gemini_ner"
+    confidence: float
+    source_documents: list[str]
+    source_chunks: list[str]
     mention_count: int
 ```
 
 **Test:**
-- "Isolde Mournvale" appearing in 5 chunks → merged into 1 entity with 5 chunk references
-- "the Ashen Vanguard" and "Ashen Vanguard" → merged (case-insensitive / article stripping)
+- Entity nodes have `aliases` property listing all surface forms
+- "the Ashen Vanguard" and "Ashen Vanguard" resolve to the same entity node
+- UNKNOWN_ALIAS flags are logged for manual review
+- No duplicate canonical entity nodes for the same entity
 
----
-
-### 4.5 — Store Entities in Neo4j
-
-Persist all deduplicated entities:
-
-```python
-def store_entities_in_neo4j(entities: list[Entity], graph: KnowledgeGraph) -> None:
-    """
-    For each entity:
-    1. Create entity node in Neo4j
-    2. Create MENTIONED_IN edges to chunk/document nodes
-    """
-```
-
-**Cypher for entity creation:**
-```cypher
-MERGE (e:Entity {id: $id})
-SET e.name = $name,
-    e.type = $type,
-    e.aliases = $aliases,
-    e.mention_count = $mention_count
-
-// For each chunk reference:
-MERGE (c:Chunk {id: $chunk_id})
-MERGE (e)-[:MENTIONED_IN]->(c)
-
-// For each document reference:
-MERGE (d:Document {id: $doc_id})
-MERGE (e)-[:APPEARS_IN]->(d)
-```
-
-**Test:**
-- All entities stored in Neo4j
-- Entity nodes have correct properties (name, type, aliases)
-- MENTIONED_IN edges exist for each chunk reference
-- Querying by entity type returns expected counts
-
----
-
-### 4.6 — Basic Entity Resolution (`src/knowledge/entity_resolution.py`)
-
-Handle alias resolution — different names for the same entity:
-
-```python
-def resolve_entity_aliases(
-    entities: list[Entity],
-    graph: KnowledgeGraph,
-    llm: LLMProvider | None = None
-) -> dict[str, str]:
-    """
-    Attempt to resolve aliases. Returns a mapping of alias → canonical entity ID.
-    
-    Strategy:
-    1. Exact match after normalization (lowercase, strip articles/titles)
-    2. Wiki article filename match (wiki article title often IS the canonical name)
-    3. LLM-assisted resolution for ambiguous cases (optional, stretch)
-    """
-```
-
-**Practical approach for this corpus:**
-- Wiki filenames are the best source of canonical names (e.g., `ederon_fellgard.md` → "Ederon Fellgard" is canonical)
-- Titles like "the Oathless" or "the Ashen" are epithets, not separate entities
-- Create `SAME_AS` edges in Neo4j between alias entities and their canonical entity
-
-**Test:**
-- "The Ashen Vanguard" resolves to same entity as "Ashen Vanguard"
-- Wiki article names match extracted entity names
-- Resolution mapping is stored and queryable
 
 ---
 
@@ -326,14 +278,17 @@ Focus especially on the 1B sample questions that mention specific characters/fac
 > **Do NOT proceed to Phase 5 unless ALL of the following are met:**
 
 - [ ] Neo4j connection works and entities can be created/queried
-- [ ] Entities from Phase 2 loaded and stored in Neo4j with correct types and chunk/document references
-- [ ] Entity source tracking preserved (gazette vs spaCy NER from Phase 2)
-- [ ] Entity deduplication merges obvious duplicates (exact + case-insensitive matches)
-- [ ] Basic entity resolution resolves common aliases
+- [ ] Entities from Phase 2 loaded and stored in Neo4j with correct types (15-type Ashen Era ontology)
+- [ ] Entity `aliases` property populated from Phase 2 alias table
+- [ ] Source tracking preserved (gazette vs rules vs gemini_ner)
+- [ ] No duplicate canonical entity nodes for the same entity
+- [ ] MENTIONED_IN and APPEARS_IN edges exist for all entities
+- [ ] Alias table from Phase 2 applied — all surface forms resolve to canonical entity IDs
+- [ ] UNKNOWN_ALIAS flags logged for any unresolved ambiguous pairs
 - [ ] Entity search returns relevant chunks for queries mentioning entity names
-- [ ] Entity search is integrated into the hybrid retrieval pipeline via RRF fusion
+- [ ] Entity search integrated into the hybrid retrieval pipeline via RRF fusion
 - [ ] Hybrid + entity retrieval shows improvement on entity-heavy 1B questions
-- [ ] Entity count statistics are logged (total entities, per type, per source, per document)
+- [ ] Entity count statistics are logged (total, per type, per source)
 - [ ] All unit tests pass: `pytest tests/test_entity_search.py tests/test_neo4j.py tests/test_entity_resolution.py`
 - [ ] Experiment 6 results documented with comparison to Experiment 5
 
