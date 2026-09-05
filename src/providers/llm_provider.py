@@ -84,7 +84,10 @@ class GeminiLLMProvider(LLMProvider):
             if not key:
                 break
             try:
-                client = genai.Client(api_key=key)
+                client = genai.Client(
+                    api_key=key,
+                    http_options=types.HttpOptions(timeout=30000),
+                )
                 response = client.models.generate_content(
                     model=chosen_model,
                     contents=safe_prompt,
@@ -98,9 +101,20 @@ class GeminiLLMProvider(LLMProvider):
             except Exception as e:
                 err_str = str(e)
                 if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                    # 429 is temporary per-minute rate limit (TPM/RPM). Pause 15s + retry.
                     # ONLY mark exhausted if error message explicitly denotes daily quota exhaustion.
-                    if any(term in err_str.lower() for term in ("daily", "per day", "quota_limit_value: 0", "day limit")):
+                    if any(
+                        term in err_str.lower()
+                        for term in (
+                            "daily",
+                            "per day",
+                            "perday",
+                            "perproject",
+                            "quotafailure",
+                            "free_tier_requests",
+                            "quota_limit_value: 0",
+                            "day limit",
+                        )
+                    ):
                         self.rotator.mark_exhausted(key, reason="Daily quota exceeded")
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
@@ -135,7 +149,10 @@ class GeminiLLMProvider(LLMProvider):
             if not key:
                 break
             try:
-                client = genai.Client(api_key=key)
+                client = genai.Client(
+                    api_key=key,
+                    http_options=types.HttpOptions(timeout=30000),
+                )
                 response = client.models.generate_content(
                     model=chosen_model,
                     contents=safe_prompt,
@@ -149,7 +166,19 @@ class GeminiLLMProvider(LLMProvider):
             except Exception as e:
                 err_str = str(e)
                 if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                    if any(term in err_str.lower() for term in ("daily", "per day", "quota_limit_value: 0", "day limit")):
+                    if any(
+                        term in err_str.lower()
+                        for term in (
+                            "daily",
+                            "per day",
+                            "perday",
+                            "perproject",
+                            "quotafailure",
+                            "free_tier_requests",
+                            "quota_limit_value: 0",
+                            "day limit",
+                        )
+                    ):
                         self.rotator.mark_exhausted(key, reason="Daily quota exceeded")
                     else:
                         time.sleep(15.0 + (attempt * 2.0))

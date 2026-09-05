@@ -1,0 +1,238 @@
+{
+  "timestamp": "2026-09-06 00:43:53",
+  "total_questions": 2,
+  "standard_avg_retrieval_sec": 0.1305,
+  "contextual_avg_retrieval_sec": 0.1115,
+  "standard_avg_tokens": 3033.0,
+  "contextual_avg_tokens": 2744.5,
+  "results": [
+    {
+      "qid": "1a_v12",
+      "track": "1A: Rich Answers, Not Just Text",
+      "question": "What is the central emblem on the banner of House Morvain?",
+      "experiment": "standard",
+      "retrieval_time_sec": 0.0684,
+      "generation_time_sec": 2.07,
+      "total_time_sec": 2.1384,
+      "retrieved_chunk_ids": [
+        "b0f0f1a5-d9dc-4fa2-9d1c-9dd3d130818c",
+        "97352d4e-f051-458d-8d2a-0859eb67698d",
+        "00357df2-8be4-4965-80be-23e3fc099ff7",
+        "a90fbb32-5930-4801-9ae2-a2cf7e9caf8c",
+        "bb0b7f10-cbbb-4f7d-9f2a-18764cbd1af6",
+        "7fe383b9-1de7-4fbb-8b15-4b9a158eb5d2",
+        "b4220a31-27fc-4ca1-b3a2-9c69973dcf8f",
+        "5cb1e2dd-9cb0-4a7b-9280-b1aff6a793e7",
+        "987bff37-1343-4fcc-b448-36c31896be23",
+        "81f7c72d-3a84-447a-ab67-c8b1534b6f52"
+      ],
+      "retrieved_scores": [
+        0.8435,
+        0.7773,
+        0.6793,
+        0.6735,
+        0.6667,
+        0.6654,
+        0.6653,
+        0.6618,
+        0.655,
+        0.6535
+      ],
+      "retrieved_titles": [
+        "House Morvain",
+        "House Morvain",
+        "House Morvain",
+        "The Annals Of The Ashen Era",
+        "House Morvain",
+        "House Morvain",
+        "House Morvain",
+        "House Morvain",
+        "The Annals Of The Ashen Era",
+        "House Morvain"
+      ],
+      "answer": "The central emblem on the banner of House Morvain is an ornate golden shield displaying two crossed golden keys against a dark field [EVIDENCE_2].",
+      "citation_count": 1,
+      "citations": [
+        {
+          "evidence_id": "EVIDENCE_2",
+          "document_title": "House Morvain",
+          "source_path": "C:\\Users\\Anuhas\\Documents\\Code\\codefest-ifs-challenge\\project\\Ashen_Era_Archive\\wiki\\house_morvain.md",
+          "page": null,
+          "excerpt": "Visual Archive Record: House Morvain\nAsset Type: Heraldry\nDescription: This artwork depicts a tattered, vertically split black-and-cream heraldic banner suspended from an ornate horizontal bar topped ..."
+        }
+      ],
+      "tokens_used": 2577
+    },
+    {
+      "qid": "1a_v12",
+      "track": "1A: Rich Answers, Not Just Text",
+      "question": "What is the central emblem on the banner of House Morvain?",
+      "experiment": "contextual",
+      "retrieval_time_sec": 0.1175,
+      "generation_time_sec": 1.345,
+      "total_time_sec": 1.4625,
+      "retrieved_chunk_ids": [
+        "b0f0f1a5-d9dc-4fa2-9d1c-9dd3d130818c",
+        "97352d4e-f051-458d-8d2a-0859eb67698d",
+        "bb0b7f10-cbbb-4f7d-9f2a-18764cbd1af6",
+        "a90fbb32-5930-4801-9ae2-a2cf7e9caf8c",
+        "00357df2-8be4-4965-80be-23e3fc099ff7",
+        "987bff37-1343-4fcc-b448-36c31896be23",
+        "7fe383b9-1de7-4fbb-8b15-4b9a158eb5d2",
+        "aef896e8-ce28-4415-912b-a552b6f8fec5",
+        "bf031988-bf71-473f-b8ee-6fb89b273a93",
+        "5cb1e2dd-9cb0-4a7b-9280-b1aff6a793e7"
+      ],
+      "retrieved_scores": [
+        0.7714,
+        0.738,
+        0.6567,
+        0.6396,
+        0.6381,
+        0.6346,
+        0.6315,
+        0.6304,
+        0.6302,
+        0.6289
+      ],
+      "retrieved_titles": [
+        "House Morvain",
+        "House Morvain",
+        "House Morvain",
+        "The Annals Of The Ashen Era",
+        "House Morvain",
+        "The Annals Of The Ashen Era",
+        "House Morvain",
+        "The Annals Of The Ashen Era",
+        "Halvard Vane The Grave Sworn",
+        "House Morvain"
+      ],
+      "answer": "The central emblem on the banner of House Morvain is an ornate golden shield displaying two crossed golden keys against a dark field [EVIDENCE_2].",
+      "citation_count": 1,
+      "citations": [
+        {
+          "evidence_id": "EVIDENCE_2",
+          "document_title": "House Morvain",
+          "source_path": "C:\\Users\\Anuhas\\Documents\\Code\\codefest-ifs-challenge\\project\\Ashen_Era_Archive\\wiki\\house_morvain.md",
+          "page": null,
+          "excerpt": "Visual Archive Record: House Morvain\nAsset Type: Heraldry\nDescription: This artwork depicts a tattered, vertically split black-and-cream heraldic banner suspended from an ornate horizontal bar topped ..."
+        }
+      ],
+      "tokens_used": 2195
+    },
+    {
+      "qid": "1a_v06",
+      "track": "1A: Rich Answers, Not Just Text",
+      "question": "In the portrait of Ignatz Ashgrove the Oathless, what object are they holding?",
+      "experiment": "standard",
+      "retrieval_time_sec": 0.1925,
+      "generation_time_sec": 1.6399,
+      "total_time_sec": 1.8324,
+      "retrieved_chunk_ids": [
+        "13491fd7-cefa-40da-8540-30fda6e2c1d2",
+        "8f333e89-7301-4539-96b1-d227efaf433a",
+        "daa41a73-1c0c-4217-b13a-5aa2070d3493",
+        "68baffe9-cc4d-46e5-95af-6403eb42f1b6",
+        "7ada9d1d-6e5c-42ca-a885-059b2c47eb40",
+        "69728814-5300-48ac-b24f-a2b95e2dac0b",
+        "69b69ff7-b2e2-47b0-a229-4600d9548316",
+        "bf2a61bd-071d-4f10-b753-72b464976477",
+        "5642eeda-75ce-434d-96ed-c860e9a06773",
+        "7928e3cc-7dec-4d0c-900e-a2680f68ca14"
+      ],
+      "retrieved_scores": [
+        0.8272,
+        0.7719,
+        0.7259,
+        0.7251,
+        0.7219,
+        0.7159,
+        0.7156,
+        0.7116,
+        0.7024,
+        0.701
+      ],
+      "retrieved_titles": [
+        "Ignatz Ashgrove The Oathless",
+        "Ignatz Ashgrove The Oathless",
+        "Ignatz Ashgrove The Oathless",
+        "The Annals Of The Ashen Era",
+        "Ignatz Ashgrove The Oathless",
+        "The Ashen Chronicles Volume Iv The Silent Accounting",
+        "Ignatz Ashgrove The Oathless",
+        "The Ashen Chronicles Volume Iv The Silent Accounting",
+        "Ignatz Ashgrove The Oathless",
+        "Ignatz Ashgrove The Oathless"
+      ],
+      "answer": "In the portrait of Ignatz Ashgrove the Oathless, he is depicted holding a large rolled scroll secured with a red wax seal in his right hand [EVIDENCE_2]. Additionally, his left hand is shown resting near the skull pommel of a sword [EVIDENCE_2].",
+      "citation_count": 1,
+      "citations": [
+        {
+          "evidence_id": "EVIDENCE_2",
+          "document_title": "Ignatz Ashgrove The Oathless",
+          "source_path": "C:\\Users\\Anuhas\\Documents\\Code\\codefest-ifs-challenge\\project\\Ashen_Era_Archive\\wiki\\ignatz_ashgrove_the_oathless.md",
+          "page": null,
+          "excerpt": "Visual Archive Record: Ignatz Ashgrove The Oathless\nAsset Type: Portrait\nDescription: A stern, gaunt knight stands gripping a large rolled scroll secured with a red wax seal in his right hand, while h..."
+        }
+      ],
+      "tokens_used": 3489
+    },
+    {
+      "qid": "1a_v06",
+      "track": "1A: Rich Answers, Not Just Text",
+      "question": "In the portrait of Ignatz Ashgrove the Oathless, what object are they holding?",
+      "experiment": "contextual",
+      "retrieval_time_sec": 0.1055,
+      "generation_time_sec": 1.5,
+      "total_time_sec": 1.6055,
+      "retrieved_chunk_ids": [
+        "13491fd7-cefa-40da-8540-30fda6e2c1d2",
+        "8f333e89-7301-4539-96b1-d227efaf433a",
+        "68baffe9-cc4d-46e5-95af-6403eb42f1b6",
+        "9e0b3e33-c808-481c-8a51-480980454cf3",
+        "7ada9d1d-6e5c-42ca-a885-059b2c47eb40",
+        "daa41a73-1c0c-4217-b13a-5aa2070d3493",
+        "e6a4a310-9cea-407f-b648-285086cbbea0",
+        "d666014f-16b6-4294-baa5-86769c75fcb8",
+        "9ebbd9b8-c98a-430a-9314-90fd536b29a0",
+        "bf2a61bd-071d-4f10-b753-72b464976477"
+      ],
+      "retrieved_scores": [
+        0.82,
+        0.7628,
+        0.7043,
+        0.6978,
+        0.6925,
+        0.69,
+        0.6875,
+        0.685,
+        0.6836,
+        0.6822
+      ],
+      "retrieved_titles": [
+        "Ignatz Ashgrove The Oathless",
+        "Ignatz Ashgrove The Oathless",
+        "The Annals Of The Ashen Era",
+        "The Ashen Chronicles Volume Iv The Silent Accounting",
+        "Ignatz Ashgrove The Oathless",
+        "Ignatz Ashgrove The Oathless",
+        "Ignatz Marrowgate",
+        "The Annals Of The Ashen Era",
+        "The Ashen Chronicles Volume Ii The Long Reprisal",
+        "The Ashen Chronicles Volume Iv The Silent Accounting"
+      ],
+      "answer": "In the portrait of Ignatz Ashgrove the Oathless, he is depicted holding a large rolled scroll secured with a red wax seal in his right hand [EVIDENCE_2]. Additionally, his left hand is shown resting near the skull pommel of a sword [EVIDENCE_2].",
+      "citation_count": 1,
+      "citations": [
+        {
+          "evidence_id": "EVIDENCE_2",
+          "document_title": "Ignatz Ashgrove The Oathless",
+          "source_path": "C:\\Users\\Anuhas\\Documents\\Code\\codefest-ifs-challenge\\project\\Ashen_Era_Archive\\wiki\\ignatz_ashgrove_the_oathless.md",
+          "page": null,
+          "excerpt": "Visual Archive Record: Ignatz Ashgrove The Oathless\nAsset Type: Portrait\nDescription: A stern, gaunt knight stands gripping a large rolled scroll secured with a red wax seal in his right hand, while h..."
+        }
+      ],
+      "tokens_used": 3294
+    }
+  ]
+}
