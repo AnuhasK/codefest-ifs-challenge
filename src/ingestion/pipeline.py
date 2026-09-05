@@ -304,6 +304,10 @@ def run_ingestion(
             wiki_slug = re.sub(r"^atmo_[a-z]+_[a-z]+_", "", stem)
             if wiki_slug in doc_by_stem:
                 asset.document_id = doc_by_stem[wiki_slug].id
+        elif stem.startswith("plate_"):
+            plate_slug = re.sub(r"^plate_\d+_", "", stem)
+            if plate_slug in doc_by_stem:
+                asset.document_id = doc_by_stem[plate_slug].id
 
         img_chunk = create_image_chunk(asset)
         all_chunks.append(img_chunk)
@@ -322,19 +326,20 @@ def run_ingestion(
     print(f"Processed {len(assets)} visual assets ({plate_count} plates, {art_count} art).", flush=True)
     print(f"Total chunks created: {len(all_chunks)} ({len(all_chunks) - len(assets)} text, {len(assets)} image chunks).", flush=True)
 
-    # 4. Phase 2: Offline Gazette + spaCy Entity Extraction
-    print("Running Gazette + spaCy entity extraction...", flush=True)
+    # 4. Phase 2: Corpus-Aware Entity Extraction (Gazette + Rules + Targeted Gemini)
+    print("Running Corpus-Aware entity extraction (Gazette + Rules + Targeted Gemini)...", flush=True)
     nlp = spacy.load("en_core_web_sm")
+    llm = get_llm_provider() if use_contextual_llm else None
     all_extracted_entities, chunk_to_entities = extract_entities_from_corpus(
         chunks=all_chunks,
         corpus_path=corpus_root,
+        llm=llm,
         nlp=nlp,
     )
-    print(f"Extracted {len(all_extracted_entities)} entity occurrences across chunks (0 LLM calls).", flush=True)
+    print(f"Extracted {len(all_extracted_entities)} entity occurrences across chunks (aliases resolved).", flush=True)
 
     # 5. Phase 2: Hybrid Contextual Prefix Generation
     print("Generating hybrid contextual prefixes (Tier 1 Template + Tier 2 LLM)...", flush=True)
-    llm = get_llm_provider() if use_contextual_llm else None
     docs_map = {str(d.id): d.title for d in documents}
     ctx_stats = contextualize_all_chunks(
         chunks=all_chunks,
@@ -348,24 +353,26 @@ def run_ingestion(
 
     # 6. Phase 2: Embedding Generation (Standard + Contextual)
     if generate_embeddings_flag:
-        print("Generating dual embeddings via Voyage AI (raw text & contextual text)...", flush=True)
         provider = get_embedding_provider()
+        provider_name = type(provider).__name__
+        embed_batch_size = 5 if "gemini" in provider_name.lower() else 16
+        print(f"Generating dual embeddings via {provider_name} (batch_size={embed_batch_size})...", flush=True)
         
         # Batch raw text embeddings
         raw_texts = [c.content for c in all_chunks]
-        raw_vectors = provider.embed_texts(raw_texts, batch_size=16)
+        raw_vectors = provider.embed_texts(raw_texts, batch_size=embed_batch_size)
         for c, vec in zip(all_chunks, raw_vectors):
             c.embedding = vec
 
         # Batch contextual text embeddings
         ctx_texts = [c.contextualized_content or c.content for c in all_chunks]
-        ctx_vectors = provider.embed_texts(ctx_texts, batch_size=16)
+        ctx_vectors = provider.embed_texts(ctx_texts, batch_size=embed_batch_size)
         for c, vec in zip(all_chunks, ctx_vectors):
             c.contextual_embedding = vec
 
         # Embed visual asset descriptions
         asset_texts = [a.description or a.entity_name or "visual asset" for a in assets]
-        asset_vectors = provider.embed_texts(asset_texts, batch_size=16)
+        asset_vectors = provider.embed_texts(asset_texts, batch_size=embed_batch_size)
         for a, vec in zip(assets, asset_vectors):
             a.embedding = vec
 
