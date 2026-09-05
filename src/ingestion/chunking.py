@@ -258,7 +258,7 @@ def create_image_chunk(asset: Asset) -> Chunk:
 
     return Chunk(
         id=uuid4(),
-        document_id=asset.document_id or asset.id,
+        document_id=asset.document_id,
         content=content,
         section_title=f"{asset.asset_type.title()} - {asset.entity_name}",
         position=0,
