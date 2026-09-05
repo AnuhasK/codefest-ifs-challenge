@@ -38,12 +38,19 @@ GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "")
 
 # Gemini Rate & Quota Limits (Free Tier Protection)
-GEMINI_MAX_RPM_PER_KEY = int(os.getenv("GEMINI_MAX_RPM_PER_KEY", "5"))
-GEMINI_MAX_DAILY_PER_KEY = int(os.getenv("GEMINI_MAX_DAILY_PER_KEY", "20"))
+GEMINI_MAX_RPM_PER_KEY = int(os.getenv("GEMINI_MAX_RPM_PER_KEY", "15"))
+GEMINI_MAX_DAILY_PER_KEY = int(os.getenv("GEMINI_MAX_DAILY_PER_KEY", "1000"))
 GEMINI_MAX_INPUT_TOKENS = int(os.getenv("GEMINI_MAX_INPUT_TOKENS", "100000"))
 
+# Cache Path
+EMBEDDINGS_CACHE_PATH = BASE_DIR / "data" / "embeddings_cache.sqlite"
+
 # Models
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "voyage-3-large")
+EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "gemini").lower()
+EMBEDDING_MODEL = os.getenv(
+    "EMBEDDING_MODEL",
+    "gemini-embedding-001" if EMBEDDING_PROVIDER == "gemini" else "voyage-3-large"
+)
 EMBEDDING_DIMENSION = 1024
 LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.6-flash")
 LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.6-flash")
