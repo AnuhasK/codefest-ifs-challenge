@@ -1,4 +1,5 @@
 from uuid import uuid4
+import spacy
 from src.models.document import Chunk
 from src.ingestion.entities import ExtractedEntity
 from src.ingestion.contextualization import (
@@ -27,7 +28,7 @@ def test_build_template_prefix():
     entities = [
         ExtractedEntity(
             name="Ser Vael",
-            entity_type="Person",
+            entity_type="PERSON",
             mentions=["Ser Vael"],
             chunk_id=str(chunk.id),
             document_id=str(chunk.document_id),
@@ -35,7 +36,7 @@ def test_build_template_prefix():
         ),
         ExtractedEntity(
             name="Ashen Vanguard",
-            entity_type="Faction",
+            entity_type="FACTION",
             mentions=["Ashen Vanguard"],
             chunk_id=str(chunk.id),
             document_id=str(chunk.document_id),
@@ -58,8 +59,11 @@ def test_build_template_prefix():
     assert "Ashen Vanguard" in prefix
 
 
-def test_needs_llm_prefix_detection():
-    # Pronoun heavy chunk with 0 named entities
+def test_needs_llm_prefix_detection_with_spacy():
+    """Verify pronoun detection using spaCy POS tagger and regex fallback."""
+    nlp = spacy.load("en_core_web_sm")
+
+    # Pronoun-heavy chunk with 0 named entities
     chunk_pronoun = Chunk(
         id=uuid4(),
         document_id=uuid4(),
@@ -75,26 +79,30 @@ def test_needs_llm_prefix_detection():
         token_count=18,
     )
 
-    assert needs_llm_prefix(chunk_pronoun, []) is True
+    # With spaCy NLP
+    assert needs_llm_prefix(chunk_pronoun, [], nlp=nlp) is True
+    # Without spaCy NLP (regex fallback)
+    assert needs_llm_prefix(chunk_pronoun, [], nlp=None) is True
 
-    # Entity rich chunk
+    # Entity-rich chunk (2+ entities -> False)
     entities = [
         ExtractedEntity(
             name="Ederon Fellgard",
-            entity_type="Person",
+            entity_type="PERSON",
             chunk_id=str(chunk_pronoun.id),
             document_id=str(chunk_pronoun.document_id),
             source="gazette",
         ),
         ExtractedEntity(
             name="Iron Ring",
-            entity_type="Faction",
+            entity_type="FACTION",
             chunk_id=str(chunk_pronoun.id),
             document_id=str(chunk_pronoun.document_id),
             source="gazette",
         ),
     ]
-    assert needs_llm_prefix(chunk_pronoun, entities) is False
+    assert needs_llm_prefix(chunk_pronoun, entities, nlp=nlp) is False
+    assert needs_llm_prefix(chunk_pronoun, entities, nlp=None) is False
 
 
 def test_contextualize_all_chunks():
@@ -117,7 +125,17 @@ def test_contextualize_all_chunks():
 
     stats = contextualize_all_chunks(
         chunks=[chunk],
-        chunk_entities={str(cid): [ExtractedEntity(name="Red Vale", entity_type="Place", chunk_id=str(cid), document_id=str(did), source="gazette")]},
+        chunk_entities={
+            str(cid): [
+                ExtractedEntity(
+                    name="Red Vale",
+                    entity_type="PLACE",
+                    chunk_id=str(cid),
+                    document_id=str(did),
+                    source="gazette",
+                )
+            ]
+        },
         documents_map={str(did): "Chronicle of Drowned Light"},
         llm=None,
         use_llm_tier=False,
@@ -125,6 +143,7 @@ def test_contextualize_all_chunks():
 
     assert stats["total_chunks"] == 1
     assert stats["template_prefixes"] == 1
+    assert stats["llm_prefixes"] == 0
     assert chunk.contextualized_content is not None
     assert "From Chronicle of Drowned Light" in chunk.contextualized_content
     assert "The battle raged for three days at Red Vale." in chunk.contextualized_content

@@ -290,7 +290,7 @@ def _process_plate_with_gemini(
         try:
             client = genai.Client(
                 api_key=key,
-                http_options=types.HttpOptions(timeout=30.0),
+                http_options=types.HttpOptions(timeout=60000),
             )
             response = client.models.generate_content(
                 model=LLM_MODEL,
@@ -324,8 +324,10 @@ def _process_plate_with_gemini(
         except Exception as e:
             err_str = str(e)
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                rotator.mark_exhausted(key, reason="429 Resource Exhausted")
-                print(f"  [Gemini Vision] Key {key[:6]}... hit quota. Rotating to next key...", flush=True)
+                if any(term in err_str.lower() for term in ("daily", "per day", "quota_limit_value: 0", "day limit")):
+                    rotator.mark_exhausted(key, reason="Daily quota exceeded")
+                else:
+                    time.sleep(15.0)
                 continue
             elif "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str or "timeout" in err_str.lower() or "timed out" in err_str.lower():
                 print(f"  [Gemini Vision] Model busy/timeout for '{entity_name}' ({e}). Pausing 5s before retrying...", flush=True)
@@ -383,7 +385,7 @@ def _process_atmospheric_with_gemini(
         try:
             client = genai.Client(
                 api_key=key,
-                http_options=types.HttpOptions(timeout=30.0),
+                http_options=types.HttpOptions(timeout=60000),
             )
             response = client.models.generate_content(
                 model=LLM_MODEL,
@@ -401,8 +403,10 @@ def _process_atmospheric_with_gemini(
         except Exception as e:
             err_str = str(e)
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                rotator.mark_exhausted(key, reason="429 Resource Exhausted")
-                print(f"  [Gemini Vision] Key {key[:6]}... hit quota. Rotating to next key...", flush=True)
+                if any(term in err_str.lower() for term in ("daily", "per day", "quota_limit_value: 0", "day limit")):
+                    rotator.mark_exhausted(key, reason="Daily quota exceeded")
+                else:
+                    time.sleep(15.0)
                 continue
             elif "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str or "timeout" in err_str.lower() or "timed out" in err_str.lower():
                 print(f"  [Gemini Vision] Model busy/timeout for '{entity_name}' ({e}). Pausing 5s before retrying...", flush=True)

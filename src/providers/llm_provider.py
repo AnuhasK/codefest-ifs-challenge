@@ -98,7 +98,12 @@ class GeminiLLMProvider(LLMProvider):
             except Exception as e:
                 err_str = str(e)
                 if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                    self.rotator.mark_exhausted(key, reason="429 Resource Exhausted")
+                    # 429 is temporary per-minute rate limit (TPM/RPM). Pause 15s + retry.
+                    # ONLY mark exhausted if error message explicitly denotes daily quota exhaustion.
+                    if any(term in err_str.lower() for term in ("daily", "per day", "quota_limit_value: 0", "day limit")):
+                        self.rotator.mark_exhausted(key, reason="Daily quota exceeded")
+                    else:
+                        time.sleep(15.0 + (attempt * 2.0))
                     continue
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini generate call failed: {e}") from e
@@ -144,7 +149,10 @@ class GeminiLLMProvider(LLMProvider):
             except Exception as e:
                 err_str = str(e)
                 if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                    self.rotator.mark_exhausted(key, reason="429 Resource Exhausted")
+                    if any(term in err_str.lower() for term in ("daily", "per day", "quota_limit_value: 0", "day limit")):
+                        self.rotator.mark_exhausted(key, reason="Daily quota exceeded")
+                    else:
+                        time.sleep(15.0 + (attempt * 2.0))
                     continue
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini structured generate call failed: {e}") from e
@@ -175,7 +183,10 @@ class GeminiLLMProvider(LLMProvider):
             except Exception as e:
                 err_str = str(e)
                 if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                    self.rotator.mark_exhausted(key, reason="429 Resource Exhausted")
+                    if any(term in err_str.lower() for term in ("daily", "per day", "quota_limit_value: 0", "day limit")):
+                        self.rotator.mark_exhausted(key, reason="Daily quota exceeded")
+                    else:
+                        time.sleep(15.0 + (attempt * 2.0))
                     continue
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini vision call failed for {image_path}: {e}") from e

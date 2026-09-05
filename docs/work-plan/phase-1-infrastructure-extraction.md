@@ -139,7 +139,7 @@ CREATE TABLE chunks (
     section_title TEXT,
     position INTEGER,
     token_count INTEGER,
-    embedding vector(1024),  -- filled in Phase 2 (Voyage AI voyage-3-large = 1024 dims)
+    embedding vector(1024),  -- filled in Phase 2 (Gemini gemini-embedding-001 = 1024 dims)
     contextual_embedding vector(1024),  -- filled in Phase 2
     metadata JSONB DEFAULT '{}'
 );
@@ -190,12 +190,13 @@ Central configuration using environment variables + `.env` file:
 # - POSTGRES_URL
 # - NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD
 # - CORPUS_PATH (path to Ashen_Era_Archive)
-# - VOYAGE_API_KEY (for Voyage AI embeddings)
-# - GEMINI_API_KEY (for Google Gemini LLM + Vision)
-# - EMBEDDING_MODEL = "voyage-3-large"  # 1024 dims
+# - GEMINI_API_KEYS (comma-separated list for key rotation; primary embedding + LLM provider)
+# - VOYAGE_API_KEY (optional, for future experimentation — not used by default)
+# - EMBEDDING_MODEL = "gemini-embedding-001"  # 1024 dims, primary provider
 # - LLM_MODEL = "gemini-2.5-flash"  # for batch processing
 # - LLM_MODEL_STRONG = "gemini-2.5-pro"  # for answer generation
 # - CHUNK_MAX_TOKENS, CHUNK_OVERLAP_TOKENS
+# - EMBEDDINGS_CACHE_PATH = "data/embeddings_cache.sqlite"  # disk cache for embeddings
 ```
 
 **Deliverable:** `config.py` that loads from `.env` with sensible defaults.
@@ -544,6 +545,7 @@ def validate_corpus(chunks: list[Chunk], documents: list[Document]) -> Validatio
 - [ ] All chunks (including synthetic image chunks) are stored in PostgreSQL with provenance records
 - [ ] All unit tests pass: `pytest tests/test_discovery.py tests/test_extraction.py tests/test_chunking.py tests/test_image_processing.py`
 - [ ] Ingestion report shows the expected document, chunk, and image counts
+- [ ] **`en_core_web_sm` is listed in pyproject.toml / requirements (NOT `en_core_web_trf`)**
 
 ### Expected Numbers (approximate)
 
