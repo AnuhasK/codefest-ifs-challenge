@@ -20,6 +20,7 @@ def main():
     report = run_baseline_evaluation(
         top_k=args.top_k,
         output_dir=out_dir,
+        limit=args.limit,
     )
 
     print("\n================ BASELINE EVALUATION SUMMARY ================")

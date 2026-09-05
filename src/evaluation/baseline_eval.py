@@ -103,12 +103,16 @@ def run_baseline_evaluation(
     questions: Optional[List[Dict[str, Any]]] = None,
     top_k: int = 10,
     output_dir: Optional[Path] = None,
+    limit: Optional[int] = None,
 ) -> BaselineExperimentReport:
     """
     Run Experiment A (Standard Dense) and Experiment B (Contextual Dense) across sample questions.
     """
     if questions is None:
         questions = load_sample_questions()
+
+    if limit is not None and limit > 0:
+        questions = questions[:limit]
 
     provider = get_embedding_provider()
     llm = get_llm_provider()
