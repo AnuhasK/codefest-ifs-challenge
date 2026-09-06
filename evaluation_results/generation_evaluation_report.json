@@ -1,0 +1,63 @@
+{
+  "timestamp": "2026-09-06T23:32:23Z",
+  "total_questions": 4,
+  "metrics": {
+    "citation_accuracy_pct": 100.0,
+    "total_conflicts_detected": 2,
+    "verification_pass_rate_pct": 100.0,
+    "unsupported_claim_rate_pct": 0.0,
+    "average_latency_s": 121.47,
+    "max_latency_s": 273.15,
+    "latency_under_45s_pass": false
+  },
+  "question_results": [
+    {
+      "id": "q1_multihop_ederon",
+      "question": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "category": "multi_hop_track1b",
+      "latency_s": 57.17,
+      "evidence_status": "MEDIUM",
+      "citation_count": 4,
+      "conflict_count": 0,
+      "is_verified": true,
+      "unsupported_claim_count": 0,
+      "resolved_answer_snippet": "Based on the provided archive evidence, there is insufficient information to answer this question.\n\nThe archive establishes that Ederon Fellgard is a member of the faction known as **The Iron-Ring Cartel** [Ederon Fellgard], [Ederon Fellgard], [Edero..."
+    },
+    {
+      "id": "q2_multihop_isolde",
+      "question": "Which war did the faction containing Isolde Fellgard win?",
+      "category": "multi_hop_track1b",
+      "latency_s": 273.15,
+      "evidence_status": "MEDIUM",
+      "citation_count": 4,
+      "conflict_count": 0,
+      "is_verified": true,
+      "unsupported_claim_count": 0,
+      "resolved_answer_snippet": "Based on the provided archive evidence, there is insufficient information to answer this question.\n\nWhile the archive records that Isolde Fellgard the Unforgiven was affiliated with and fought for House Morvain (specifically during The Purge of Black..."
+    },
+    {
+      "id": "q3_conflict_fenspire",
+      "question": "What do the archive records and ballad state regarding Fenspire in the Gloaming Reach?",
+      "category": "contradiction_nuance",
+      "latency_s": 22.39,
+      "evidence_status": "HIGH",
+      "citation_count": 6,
+      "conflict_count": 0,
+      "is_verified": true,
+      "unsupported_claim_count": 0,
+      "resolved_answer_snippet": "Based on the compiled archive records, gazetteers, ledgers, chronicles, and folk balladry, the sources state the following regarding Fenspire:\n\n### Foundation, Location, and Status\n* **Founding & Classification:** Fenspire is classified as a fortifie..."
+    },
+    {
+      "id": "q4_insufficient_lore",
+      "question": "Where is the lost sapphire crown of the ancient star emperor hidden?",
+      "category": "insufficient_evidence",
+      "latency_s": 133.18,
+      "evidence_status": "HIGH",
+      "citation_count": 0,
+      "conflict_count": 2,
+      "is_verified": true,
+      "unsupported_claim_count": 0,
+      "resolved_answer_snippet": "Based on the provided archive evidence, there is insufficient information to answer this question."
+    }
+  ]
+}
