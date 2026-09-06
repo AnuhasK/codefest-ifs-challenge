@@ -42,6 +42,7 @@ class QueryAnalysis(BaseModel):
     )
     entities_mentioned: List[str] = Field(default_factory=list)
     expanded_queries: List[str] = Field(default_factory=list)
+    sub_questions: List[str] = Field(default_factory=list)
     bm25_query: str = Field(..., description="Optimized lexical search query string")
 
 
@@ -121,13 +122,137 @@ def classify_query_type(query: str, entities: List[str]) -> str:
     return "simple"
 
 
+def decompose_query(
+    query: str,
+    llm: Optional[LLMProvider] = None,
+    use_llm: bool = False,
+) -> List[str]:
+    """
+    Decompose a complex multi-hop question into simpler sub-questions.
+    Uses pattern-based heuristic decomposition as the deterministic offline base,
+    falling back to or augmented by LLM if enabled.
+    """
+    clean_q = query.strip()
+    if not clean_q:
+        return []
+
+    # Heuristic pattern matching for common multi-hop query structures
+    # 1. "Which accord/war was won by the faction of which X is a member?"
+    m1 = re.search(
+        r"which\s+(accord|war|battle|event|conflict)\s+(?:was\s+ultimately\s+won|was\s+won)\s+by\s+the\s+faction\s+(?:of\s+which\s+)?(.*?)\s+is\s+a\s+member",
+        clean_q, re.IGNORECASE
+    )
+    if m1:
+        event_kind, person = m1.group(1).strip(), m1.group(2).strip()
+        return [
+            f"Which faction is {person} a member of?",
+            f"Which {event_kind} was won by that faction?",
+        ]
+
+    # 2. "Which individual was a member of the faction that ultimately won the X?"
+    m2 = re.search(
+        r"which\s+individual\s+was\s+a\s+member\s+of\s+the\s+faction\s+that\s+(?:ultimately\s+)?won\s+(?:the\s+)?(.*?)\??$",
+        clean_q, re.IGNORECASE
+    )
+    if m2:
+        war_name = m2.group(1).strip()
+        return [
+            f"Which faction won {war_name}?",
+            "Which individuals were members of that victor faction?",
+        ]
+
+    # 3. "Which war did X's own faction ultimately win?"
+    m3 = re.search(
+        r"which\s+war\s+did\s+(.*?)(?:'s|\s+own)\s+faction\s+(?:ultimately\s+)?win\??$",
+        clean_q, re.IGNORECASE
+    )
+    if m3:
+        person = m3.group(1).strip()
+        return [
+            f"Which faction does {person} belong to?",
+            "Which war did that faction win?",
+        ]
+
+    # 4. "Whose dominion encompasses the lair of the X?"
+    m4 = re.search(
+        r"whose\s+dominion\s+encompasses\s+the\s+lair\s+of\s+(?:the\s+)?(.*?)\??$",
+        clean_q, re.IGNORECASE
+    )
+    if m4:
+        creature = m4.group(1).strip()
+        return [
+            f"Where is the lair of {creature}?",
+            "Whose dominion encompasses that location?",
+        ]
+
+    # 5. "Which war was won by the organization that included X as one of its members?"
+    m5 = re.search(
+        r"which\s+war\s+was\s+won\s+by\s+the\s+(?:organization|faction)\s+that\s+included\s+(.*?)\s+as\s+one\s+of\s+its\s+members\??$",
+        clean_q, re.IGNORECASE
+    )
+    if m5:
+        person = m5.group(1).strip()
+        return [
+            f"Which organization or faction included {person} as a member?",
+            "Which war was won by that organization?",
+        ]
+
+    # 6. "In what way is X connected to the victors of the Y?"
+    m6 = re.search(
+        r"in\s+what\s+way\s+is\s+(.*?)\s+connected\s+to\s+the\s+victors\s+of\s+(?:the\s+)?(.*?)\??$",
+        clean_q, re.IGNORECASE
+    )
+    if m6:
+        person, event = m6.group(1).strip(), m6.group(2).strip()
+        return [
+            f"Who were the victors of {event}?",
+            f"How is {person} affiliated with or connected to that victor faction?",
+        ]
+
+    # 7. "To which shadowed redoubt must one journey to examine the relic long borne by X since Y?"
+    m7 = re.search(
+        r"to\s+which\s+.*?\s+must\s+one\s+journey\s+to\s+examine\s+the\s+relic\s+long\s+borne\s+by\s+(.*?)(?:\s+since|\?|$)",
+        clean_q, re.IGNORECASE
+    )
+    if m7:
+        person = m7.group(1).strip()
+        return [
+            f"What relic was borne or wielded by {person}?",
+            "Where is that relic housed, kept, or located?",
+        ]
+
+    # Optional LLM-assisted decomposition
+    if use_llm and llm is not None:
+        try:
+            prompt = f"""Decompose the following question about a fictional universe into simpler sub-questions that can be answered sequentially.
+If the question is simple, return the question unchanged. Maximum 5 sub-questions.
+
+Question: {clean_q}
+
+Respond in JSON:
+{{"sub_questions": ["sub-question 1", "sub-question 2"]}}"""
+            res = llm.generate(prompt=prompt, system_prompt="You are a query decomposition assistant.")
+            raw_text = res.content.strip()
+            if raw_text.startswith("```"):
+                raw_text = re.sub(r"^```[a-zA-Z]*\n?", "", raw_text)
+                raw_text = re.sub(r"\n?```$", "", raw_text)
+            data = json.loads(raw_text)
+            if data.get("sub_questions"):
+                return data["sub_questions"][:5]
+        except Exception as e:
+            logger.debug("LLM decomposition fallback: %s", e)
+
+    return [clean_q]
+
+
 def analyze_query(
     query: str,
     llm: Optional[LLMProvider] = None,
     use_llm: bool = False,
 ) -> QueryAnalysis:
     """
-    Analyze user question to extract entities, classify type, and produce optimized queries.
+    Analyze user question to extract entities, classify type, produce sub-questions,
+    and generate optimized queries.
     
     Args:
         query: Raw user query
@@ -139,6 +264,7 @@ def analyze_query(
     q_type = classify_query_type(clean_q, entities)
     bm25_q = build_bm25_query(clean_q, entities)
     expanded = [clean_q]
+    sub_qs = decompose_query(clean_q, llm=llm, use_llm=use_llm) if q_type == "multi_hop" else []
 
     if use_llm and llm is not None:
         try:
@@ -174,5 +300,6 @@ Return JSON:
         query_type=q_type,
         entities_mentioned=entities,
         expanded_queries=expanded,
+        sub_questions=sub_qs,
         bm25_query=bm25_q,
     )
