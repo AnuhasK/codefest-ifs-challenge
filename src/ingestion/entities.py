@@ -907,3 +907,10 @@ def extract_entities_from_corpus(
     resolve_aliases(all_entities)
 
     return all_entities, chunk_to_entities
+
+
+# Re-export graph persistence function for Phase 4 compatibility
+def store_entities_in_neo4j(*args, **kwargs):
+    from src.ingestion.graph_storage import store_entities_in_neo4j as _store
+    return _store(*args, **kwargs)
+
