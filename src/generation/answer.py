@@ -1,11 +1,30 @@
 import re
+import time
+import logging
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field
 
 from src.models.search import SearchResult
-from src.providers.llm_provider import LLMProvider, get_llm_provider
-from src.generation.prompts import SYSTEM_PROMPT_BASELINE_RAG, QA_USER_PROMPT_TEMPLATE
+from src.models.evidence import FinalAnswer, EvidenceRecord, Conflict, VerificationResult
+from src.knowledge.evidence import EvidenceManager, assess_evidence_sufficiency
+from src.knowledge.conflict import detect_conflicts
+from src.generation.citations import CitationResolver
+from src.generation.verification import verify_answer
 from src.generation.context_builder import build_evidence_context
+from src.generation.prompts import (
+    SYSTEM_PROMPT_BASELINE_RAG,
+    QA_USER_PROMPT_TEMPLATE,
+    SYSTEM_PROMPT_PHASE6,
+    QA_USER_PROMPT_PHASE6_TEMPLATE,
+)
+from src.providers.llm_provider import LLMProvider, get_llm_provider
+from src.providers.embeddings import EmbeddingProvider
+from src.providers.reranker_provider import RerankerProvider
+from src.retrieval.orchestrator import retrieve, retrieve_with_multihop, RetrievalConfig
+from src.retrieval.query_analyzer import analyze_query, QueryAnalysis
+from src.knowledge.graph import KnowledgeGraph
+
+logger = logging.getLogger(__name__)
 
 
 class Citation(BaseModel):
@@ -35,7 +54,7 @@ def generate_grounded_answer(
     model: Optional[str] = None,
 ) -> GroundedAnswer:
     """
-    Generate an evidence-grounded answer with deterministic citation resolution.
+    Generate an evidence-grounded answer with deterministic citation resolution (legacy baseline).
     """
     if not evidence:
         return GroundedAnswer(
@@ -94,4 +113,175 @@ def generate_grounded_answer(
         tokens_used=response.tokens_used,
         model_used=response.model,
         evidence_count=len(evidence),
+    )
+
+
+def answer_question(
+    query: str,
+    config: Optional[RetrievalConfig] = None,
+    embedding_provider: Optional[EmbeddingProvider] = None,
+    reranker_provider: Optional[RerankerProvider] = None,
+    llm: Optional[LLMProvider] = None,
+    graph: Optional[KnowledgeGraph] = None,
+    model: Optional[str] = None,
+    source_category: Optional[str] = None,
+) -> FinalAnswer:
+    """
+    End-to-End Answer Pipeline (Phase 6):
+    1. Query Analysis (heuristics / decomposition)
+    2. Multi-Hop Hybrid Retrieval (orchestrator)
+    3. Register Evidence with EvidenceManager (assign sequential deterministic IDs)
+    4. Source Classification (epistemological metadata)
+    5. Conflict Detection (contradiction / qualification analysis)
+    6. Evidence Sufficiency Scoring (with immediate refusal fast-path if INSUFFICIENT)
+    7. Enhanced Context Construction (evidence IDs, conflicts, source notes)
+    8. LLM Grounded Answer Generation
+    9. Automated Post-Generation Answer Verification
+    10. Deterministic Citation Resolution
+    11. Return FinalAnswer with complete observability trace
+    """
+    start_time = time.time()
+    trace: Dict[str, Any] = {"query": query, "start_time": start_time}
+
+    if config is None:
+        config = RetrievalConfig(enable_multihop=True)
+
+    if llm is None:
+        llm = get_llm_provider()
+
+    # Step 1: Query Analysis
+    q_analysis = analyze_query(query)
+    trace["query_type"] = q_analysis.query_type
+    trace["entities"] = q_analysis.entities_mentioned
+
+    # Step 2: Retrieval
+    retrieval_start = time.time()
+    if config.enable_multihop and (q_analysis.query_type == "multi_hop" or q_analysis.sub_questions):
+        state = retrieve_with_multihop(
+            query=query,
+            query_analysis=q_analysis,
+            config=config,
+            embedding_provider=embedding_provider,
+            reranker_provider=reranker_provider,
+            graph=graph,
+            source_category=source_category,
+            llm=llm,
+        )
+        candidates = state.retrieved_evidence
+        trace["retrieval_hops"] = len(state.traversal_hops)
+    else:
+        candidates = retrieve(
+            query=query,
+            query_analysis=q_analysis,
+            config=config,
+            embedding_provider=embedding_provider,
+            reranker_provider=reranker_provider,
+            source_category=source_category,
+        )
+        trace["retrieval_hops"] = 1
+    trace["retrieval_time_s"] = round(time.time() - retrieval_start, 2)
+    trace["candidate_count"] = len(candidates)
+
+    # Step 3: Register in EvidenceManager & Deduplicate
+    manager = EvidenceManager()
+    for c in candidates:
+        manager.register_evidence(c)
+    manager.deduplicate()
+    trace["evidence_count"] = len(manager.evidence)
+
+    # Step 4: Conflict Detection
+    conflict_start = time.time()
+    conflicts = detect_conflicts(manager.evidence, llm=llm)
+    trace["conflict_count"] = len(conflicts)
+    trace["conflict_detection_time_s"] = round(time.time() - conflict_start, 2)
+
+    # Step 5: Evidence Sufficiency Assessment
+    sufficiency = assess_evidence_sufficiency(query, manager, llm=llm)
+    trace["sufficiency_level"] = sufficiency.level
+    trace["sufficiency_coverage"] = sufficiency.coverage
+
+    # Early exit fast-path: Refuse if evidence is completely INSUFFICIENT
+    if sufficiency.level == "INSUFFICIENT" or not manager.evidence:
+        elapsed = round(time.time() - start_time, 2)
+        trace["elapsed_time_s"] = elapsed
+        trace["tokens_used"] = 0
+        return FinalAnswer(
+            question=query,
+            answer_text="Based on the provided archive evidence, there is insufficient information to answer this question.",
+            raw_answer_text="Based on the provided archive evidence, there is insufficient information to answer this question.",
+            evidence=manager.evidence,
+            citations=[],
+            conflicts=conflicts,
+            evidence_status="INSUFFICIENT",
+            verification_result=VerificationResult(
+                is_verified=True,
+                claim_checks=[],
+                citation_issues=[],
+                conflict_acknowledgements=[],
+                unsupported_claims=[],
+            ),
+            query_trace=trace,
+        )
+
+    # Step 6: Build Enhanced Context
+    formatted_context, _ = build_evidence_context(
+        evidence=manager,
+        conflicts=conflicts,
+        sufficiency=sufficiency,
+    )
+
+    # Step 7: LLM Answer Generation
+    gen_start = time.time()
+    user_prompt = QA_USER_PROMPT_PHASE6_TEMPLATE.format(
+        question=query,
+        context=formatted_context,
+    )
+
+    response = llm.generate(
+        prompt=user_prompt,
+        system_prompt=SYSTEM_PROMPT_PHASE6,
+        model=model,
+    )
+    raw_answer = response.content.strip()
+    trace["generation_time_s"] = round(time.time() - gen_start, 2)
+    trace["tokens_used"] = response.tokens_used
+    trace["model_used"] = response.model
+
+    # Step 8: Answer Verification
+    verify_start = time.time()
+    v_result = verify_answer(
+        answer=raw_answer,
+        evidence_manager=manager,
+        llm=llm,
+        conflicts=conflicts,
+    )
+    trace["verification_time_s"] = round(time.time() - verify_start, 2)
+    trace["is_verified"] = v_result.is_verified
+
+    # Step 9: Citation Resolution
+    resolver = CitationResolver(manager)
+    resolved_answer = resolver.resolve_citations(raw_answer)
+
+    # Compile structured citation details for all cited tokens
+    cited_nums = set(re.findall(r"EVIDENCE_(\d+)", raw_answer, flags=re.IGNORECASE))
+    resolved_citations: List[Dict[str, Any]] = []
+    for cid in sorted(cited_nums, key=int):
+        full_eid = f"EVIDENCE_{int(cid):03d}"
+        details = resolver.get_citation_details(full_eid)
+        if details.get("found"):
+            resolved_citations.append(details)
+
+    elapsed_total = round(time.time() - start_time, 2)
+    trace["elapsed_time_s"] = elapsed_total
+
+    return FinalAnswer(
+        question=query,
+        answer_text=resolved_answer,
+        raw_answer_text=raw_answer,
+        evidence=manager.evidence,
+        citations=resolved_citations,
+        conflicts=conflicts,
+        evidence_status=sufficiency.level,
+        verification_result=v_result,
+        query_trace=trace,
     )
