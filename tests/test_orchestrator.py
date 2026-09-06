@@ -62,8 +62,12 @@ def test_orchestrator_toggle_options():
 def test_orchestrator_entity_search_flag():
     cfg = RetrievalConfig()
     assert hasattr(cfg, "enable_entity_search")
-    assert cfg.enable_entity_search is False
+    assert cfg.enable_entity_search is True
     assert cfg.entity_top_k == 50
+
+    # With enable_entity_search=False, toggle works cleanly
+    cfg_disabled = RetrievalConfig(enable_entity_search=False)
+    assert cfg_disabled.enable_entity_search is False
 
     # With enable_entity_search=True, should run cleanly without error
     cfg_with_entity = RetrievalConfig(

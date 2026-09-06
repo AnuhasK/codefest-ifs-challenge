@@ -1,8 +1,8 @@
 # Architecture Document v1 — Ashen Era Archive Intelligence System
 
 **Track: 1B — Connecting Facts Across Thousands of Pages**  
-**Date: Seppt 5 A2026**  
-**Status: Approved (v1.1 — image processing + provider lock-in)**
+**Date: Sept 5, 2026**  
+**Status: Approved (v1.2 — evaluation metric ceiling effect documented; Joint Multi-Target Recall scoped for Phase 5)**
 
 ---
 
@@ -1382,11 +1382,14 @@ The 19 sample questions from `sample_questions.json` form the initial evaluation
 
 | Category | Metrics |
 |---|---|
-| **Retrieval** | Recall@K, Precision@K, MRR, nDCG |
+| **Retrieval (single-document)** | Hit@K (binary: any keyword match in top-K), MRR |
+| **Retrieval (multi-document / Phase 5+)** | **Joint Multi-Target Recall@K** — requires *all* hop evidence documents (hop-1 AND hop-2) to appear in top-K. This is the correct metric for Track 1B multi-hop questions. |
 | **Cross-document** | Multi-hop success rate, evidence completeness |
 | **Answer** | Answer correctness, completeness, hallucination rate |
 | **Citation** | Citation accuracy, citation completeness |
 | **System** | Latency, LLM calls, cost per query |
+
+> **Note on metric saturation (Phase 4 finding):** The current `compute_recall_at_k` in `src/evaluation/metrics.py` is technically **Hit@K** — it returns `1.0` if *any single keyword* from the target list appears in *any* top-K chunk. Because the FlashRank cross-encoder reranker reliably places the primary chunk at Rank 1, all Phase 3–4 experiments score Hit@K = 1.0 across all K. This is a ceiling effect, not a pipeline failure. For Phase 5, `metrics.py` will be enhanced with **Joint Multi-Target Recall** that requires both hop-1 and hop-2 evidence to be present in top-K, providing a granular signal for graph traversal improvements.
 
 ### Experimental progression
 
@@ -1397,8 +1400,10 @@ Experiment 2: + Contextual retrieval
 Experiment 3: + BM25 hybrid
 Experiment 4: + RRF fusion
 Experiment 5: + Cross-encoder reranking
-Experiment 6: + Entity retrieval
-Experiment 7: + Multi-hop traversal
+Experiment 6: + Entity retrieval (4-stream RRF)
+             └→ Hit@K saturated at 1.0 (ceiling effect — metric replaced in Phase 5)
+Experiment 7: + Multi-hop graph traversal
+             └→ Evaluated with Joint Multi-Target Recall@K (both hop docs in top-K)
 Experiment 8: + Claim/conflict detection (if time allows)
 ```
 

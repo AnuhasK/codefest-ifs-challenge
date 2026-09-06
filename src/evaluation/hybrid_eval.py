@@ -124,11 +124,12 @@ EXPERIMENT_CONFIGS = {
         ),
     },
     "exp_5_full_hybrid_rerank": {
-        "desc": "Full Hybrid + Cross-Encoder Reranker",
+        "desc": "Full Hybrid + Cross-Encoder Reranker (3 Streams)",
         "config": RetrievalConfig(
             enable_bm25=True,
             enable_dense=True,
             enable_contextual=True,
+            enable_entity_search=False,
             enable_diversity=True,
             enable_reranker=True,
             bm25_top_k=50,
@@ -138,7 +139,26 @@ EXPERIMENT_CONFIGS = {
             reranker_top_k=10,
         ),
     },
+    "exp_6_full_hybrid_with_entities": {
+        "desc": "Full Hybrid + Neo4j Entity Search (4 Streams + RRF + Reranker)",
+        "config": RetrievalConfig(
+            enable_bm25=True,
+            enable_dense=True,
+            enable_contextual=True,
+            enable_entity_search=True,
+            enable_diversity=True,
+            enable_reranker=True,
+            bm25_top_k=50,
+            dense_top_k=50,
+            contextual_top_k=50,
+            entity_top_k=50,
+            rrf_top_n=25,
+            reranker_top_k=10,
+        ),
+    },
 }
+
+HYBRID_EXPERIMENTS = EXPERIMENT_CONFIGS
 
 
 def evaluate_single_experiment(
