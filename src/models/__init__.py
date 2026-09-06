@@ -13,7 +13,18 @@ from src.models.document import (
     IngestionReport,
 )
 
-from src.models.entity import Entity
+from src.models.entity import (
+    Entity,
+    RelationshipType,
+    RelationshipOutput,
+    RelationshipExtractionResult,
+    ExtractedRelationship,
+)
+from src.models.query import (
+    HopResult,
+    SufficiencyScore,
+    QueryState,
+)
 
 __all__ = [
     "DiscoveredFile",
@@ -29,5 +40,12 @@ __all__ = [
     "ValidationReport",
     "IngestionReport",
     "Entity",
+    "RelationshipType",
+    "RelationshipOutput",
+    "RelationshipExtractionResult",
+    "ExtractedRelationship",
+    "HopResult",
+    "SufficiencyScore",
+    "QueryState",
 ]
 

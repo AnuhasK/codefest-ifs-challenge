@@ -22,6 +22,10 @@ class ExperimentMetrics(BaseModel):
     avg_recall_at_3: float
     avg_recall_at_5: float
     avg_recall_at_10: float
+    avg_joint_recall_at_1: float = 0.0
+    avg_joint_recall_at_3: float = 0.0
+    avg_joint_recall_at_5: float = 0.0
+    avg_joint_recall_at_10: float = 0.0
     avg_mrr: float
     avg_retrieval_time_sec: float
     avg_generation_time_sec: float
@@ -42,6 +46,10 @@ class HybridQuestionResult(BaseModel):
     recall_at_3: float
     recall_at_5: float
     recall_at_10: float
+    joint_recall_at_1: float = 0.0
+    joint_recall_at_3: float = 0.0
+    joint_recall_at_5: float = 0.0
+    joint_recall_at_10: float = 0.0
     mrr: float
     citation_grounded: bool
     evidence_supported: bool
@@ -156,6 +164,25 @@ EXPERIMENT_CONFIGS = {
             reranker_top_k=10,
         ),
     },
+    "exp_7_multihop_graph": {
+        "desc": "Hybrid + Entity + Multi-Hop Graph Traversal + Hop-2 Refinement",
+        "config": RetrievalConfig(
+            enable_bm25=True,
+            enable_dense=True,
+            enable_contextual=True,
+            enable_entity_search=True,
+            enable_multihop=True,
+            enable_diversity=True,
+            enable_reranker=True,
+            bm25_top_k=50,
+            dense_top_k=50,
+            contextual_top_k=50,
+            entity_top_k=50,
+            rrf_top_n=35,
+            reranker_top_k=10,
+            multihop_max_hops=3,
+        ),
+    },
 }
 
 HYBRID_EXPERIMENTS = EXPERIMENT_CONFIGS
@@ -232,6 +259,10 @@ def evaluate_single_experiment(
         recall_at_3=ret_metrics["recall_at_3"],
         recall_at_5=ret_metrics["recall_at_5"],
         recall_at_10=ret_metrics["recall_at_10"],
+        joint_recall_at_1=ret_metrics.get("joint_recall_at_1", ret_metrics["recall_at_1"]),
+        joint_recall_at_3=ret_metrics.get("joint_recall_at_3", ret_metrics["recall_at_3"]),
+        joint_recall_at_5=ret_metrics.get("joint_recall_at_5", ret_metrics["recall_at_5"]),
+        joint_recall_at_10=ret_metrics.get("joint_recall_at_10", ret_metrics["recall_at_10"]),
         mrr=ret_metrics["mrr"],
         citation_grounded=grounding_val["citation_grounded"],
         evidence_supported=support_val["evidence_supported"],
@@ -315,6 +346,10 @@ def run_hybrid_evaluation(
             avg_recall_at_3=round(sum(r.recall_at_3 for r in exp_res) / n, 4),
             avg_recall_at_5=round(sum(r.recall_at_5 for r in exp_res) / n, 4),
             avg_recall_at_10=round(sum(r.recall_at_10 for r in exp_res) / n, 4),
+            avg_joint_recall_at_1=round(sum(r.joint_recall_at_1 for r in exp_res) / n, 4),
+            avg_joint_recall_at_3=round(sum(r.joint_recall_at_3 for r in exp_res) / n, 4),
+            avg_joint_recall_at_5=round(sum(r.joint_recall_at_5 for r in exp_res) / n, 4),
+            avg_joint_recall_at_10=round(sum(r.joint_recall_at_10 for r in exp_res) / n, 4),
             avg_mrr=round(sum(r.mrr for r in exp_res) / n, 4),
             avg_retrieval_time_sec=round(sum(r.retrieval_time_sec for r in exp_res) / n, 4),
             avg_generation_time_sec=round(sum(r.generation_time_sec for r in exp_res) / n, 4),

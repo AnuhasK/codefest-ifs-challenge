@@ -24,6 +24,40 @@ GOLDEN_BENCHMARK_TARGETS: Dict[str, List[str]] = {
     "1c_003": ["Gauntlet of Sorrowfell", "Gauntlet Of Sorrowfell", "forged", "year"],
 }
 
+# Granular multi-hop targets for Track 1B questions.
+# Each entry specifies the sequential hop requirements:
+# [ [hop1_keywords/entities], [hop2_keywords/entities] ]
+MULTIHOP_BENCHMARK_TARGETS: Dict[str, List[List[str]]] = {
+    "1b_007": [
+        ["Ederon Fellgard", "ederon_fellgard"],
+        ["Leaden Accord", "the_leaden_accord", "Iron-Ring Cartel was a victor", "victor of The Leaden Accord"],
+    ],
+    "1b_006": [
+        ["War of Drowned Light", "the_war_of_drowned_light"],
+        ["the_silent_choir", "Ignatz Fellgard", "Brannoc Palefroth", "Thessaly Coldwater", "Lucan Hollowmere", "Tamsin Greyfen", "Ossric Ashgrove", "Ravena Stormwell", "Isolde Mournvale"],
+    ],
+    "1b_022": [
+        ["Ravena Stormwell", "ravena_stormwell"],
+        ["War of Drowned Light", "the_war_of_drowned_light", "Winter Reckoning", "the_winter_reckoning"],
+    ],
+    "1b_013": [
+        ["Gravemaw Wyrm", "gravemaw_wyrm"],
+        ["Marrowwell Abbey", "marrowwell_abbey", "Gareth Ironmere", "Bleeding Crown"],
+    ],
+    "1b_005": [
+        ["Isolde Mournvale", "isolde_mournvale"],
+        ["War of Drowned Light", "the_war_of_drowned_light", "Winter Reckoning", "the_winter_reckoning"],
+    ],
+    "1b_009": [
+        ["Purge of Blackport", "the_purge_of_blackport"],
+        ["Halvard Crowhurst", "halvard_crowhurst"],
+    ],
+    "1b_003": [
+        ["Cerys Sablewood", "cerys_sablewood_the_ashen"],
+        ["the_cinder_wrought_aegis", "Cinder-Wrought Aegis", "Gloamreach"],
+    ],
+}
+
 
 def item_matches_targets(item_text: str, item_title: str, expected_targets: List[str]) -> bool:
     """Check if a retrieved item's title or text contains any of the target identifiers."""
@@ -40,10 +74,10 @@ def compute_recall_at_k(
     k: int,
 ) -> float:
     """
-    Compute Recall@K:
-    Returns 1.0 if at least one relevant passage/target appears in the top K results; else 0.0.
+    Compute standard Hit@K (backward compatible with Phase 1-4).
+    Returns 1.0 if ANY expected target appears in the top-K items; otherwise 0.0.
     """
-    if not retrieved_items or not expected_targets:
+    if not retrieved_items or not expected_targets or k <= 0:
         return 0.0
 
     top_slice = retrieved_items[:k]
@@ -54,6 +88,70 @@ def compute_recall_at_k(
             return 1.0
 
     return 0.0
+
+
+def compute_joint_recall_at_k(
+    retrieved_items: List[Dict[str, Any]],
+    hop_targets: List[List[str]],
+    k: int,
+    require_distinct: bool = True,
+) -> float:
+    """
+    Compute Joint Multi-Target Recall@K for multi-hop cross-document retrieval.
+    Requires at least one chunk for Hop 1 AND at least one chunk for Hop 2 in the top-K,
+    with distinct documents supporting each hop when require_distinct=True.
+    """
+    if not retrieved_items or not hop_targets or k <= 0:
+        return 0.0
+
+    top_slice = retrieved_items[:k]
+
+    # Single-hop fallback: behaves identically to standard Hit@K
+    if len(hop_targets) == 1:
+        return compute_recall_at_k(retrieved_items, hop_targets[0], k)
+
+    # For multi-hop (e.g. 2 hops):
+    # Find which items in top_slice match which hops
+    hop_matching_item_indices: List[set] = []
+    for hop_keywords in hop_targets:
+        matching_indices = set()
+        for idx, item in enumerate(top_slice):
+            txt = item.get("content", "")
+            title = item.get("document_title", "")
+            if item_matches_targets(txt, title, hop_keywords):
+                matching_indices.add(idx)
+        if not matching_indices:
+            return 0.0
+        hop_matching_item_indices.append(matching_indices)
+
+    if not require_distinct:
+        return 1.0
+
+    # Helper to resolve document identity
+    def get_doc_id(idx: int) -> str:
+        item = top_slice[idx]
+        return str(item.get("document_id") or item.get("document_title") or idx)
+
+    # Verify distinct document assignment for 2 hops:
+    if len(hop_targets) == 2:
+        h1_matches = hop_matching_item_indices[0]
+        h2_matches = hop_matching_item_indices[1]
+        for i in h1_matches:
+            for j in h2_matches:
+                if get_doc_id(i) != get_doc_id(j):
+                    return 1.0
+        return 0.0
+
+    # General greedy distinct document check for N >= 3 hops
+    used_docs = set()
+    for matching_indices in hop_matching_item_indices:
+        matching_docs = {get_doc_id(idx) for idx in matching_indices}
+        available = matching_docs - used_docs
+        if not available:
+            return 0.0
+        used_docs.add(next(iter(available)))
+
+    return 1.0
 
 
 def compute_mrr(
@@ -82,19 +180,26 @@ def compute_retrieval_metrics(
 ) -> Dict[str, float]:
     """Compute complete suite of objective retrieval metrics for a question."""
     targets = GOLDEN_BENCHMARK_TARGETS.get(qid, [])
-    if not targets:
-        return {
-            "recall_at_1": 0.0,
-            "recall_at_3": 0.0,
-            "recall_at_5": 0.0,
-            "recall_at_10": 0.0,
-            "mrr": 0.0,
-        }
+    hop_targets = MULTIHOP_BENCHMARK_TARGETS.get(qid)
 
-    return {
+    metrics = {
         "recall_at_1": compute_recall_at_k(retrieved_items, targets, k=1),
         "recall_at_3": compute_recall_at_k(retrieved_items, targets, k=3),
         "recall_at_5": compute_recall_at_k(retrieved_items, targets, k=5),
         "recall_at_10": compute_recall_at_k(retrieved_items, targets, k=10),
         "mrr": compute_mrr(retrieved_items, targets),
     }
+
+    if hop_targets:
+        metrics["joint_recall_at_1"] = compute_joint_recall_at_k(retrieved_items, hop_targets, k=1)
+        metrics["joint_recall_at_3"] = compute_joint_recall_at_k(retrieved_items, hop_targets, k=3)
+        metrics["joint_recall_at_5"] = compute_joint_recall_at_k(retrieved_items, hop_targets, k=5)
+        metrics["joint_recall_at_10"] = compute_joint_recall_at_k(retrieved_items, hop_targets, k=10)
+    else:
+        # Single-hop question: joint recall is identical to standard recall
+        metrics["joint_recall_at_1"] = metrics["recall_at_1"]
+        metrics["joint_recall_at_3"] = metrics["recall_at_3"]
+        metrics["joint_recall_at_5"] = metrics["recall_at_5"]
+        metrics["joint_recall_at_10"] = metrics["recall_at_10"]
+
+    return metrics

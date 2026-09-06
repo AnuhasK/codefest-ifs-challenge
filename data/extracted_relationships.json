@@ -1,0 +1,1232 @@
+[
+  {
+    "source_entity": "Aldous Wrenfield the Last Warden",
+    "target_entity": "The Iron-Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: The Iron-Ring Cartel",
+    "chunk_id": null,
+    "document_id": "aldous_wrenfield_the_last_warden",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Aldous Wrenfield the Last Warden",
+    "target_entity": "Fenspire since 336 AS",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox commands: Fenspire since 336 AS",
+    "chunk_id": null,
+    "document_id": "aldous_wrenfield_the_last_warden",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Aldous Wrenfield the Last Warden",
+    "target_entity": "The Silent Psalter since 341 AS",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Infobox wields: The Silent Psalter since 341 AS",
+    "chunk_id": null,
+    "document_id": "aldous_wrenfield_the_last_warden",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Aldous Wrenfield the Last Warden",
+    "target_entity": "Thessaly Coldwater",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "Infobox mentor of: Thessaly Coldwater",
+    "chunk_id": null,
+    "document_id": "aldous_wrenfield_the_last_warden",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ashfall Colossus (creature)",
+    "target_entity": "Embermarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Embermarch]]",
+    "chunk_id": null,
+    "document_id": "ashfall_colossus",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "Ashreach",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "ashreach",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "Blackford",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "blackford",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: Member of [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "brannoc_ironmere_the_red_handed",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Blackford",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Blackford]] since 285 AS",
+    "chunk_id": null,
+    "document_id": "brannoc_ironmere_the_red_handed",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Bryony Nightbrook",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: The Bleeding Crown",
+    "chunk_id": null,
+    "document_id": "bryony_nightbrook",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Caedmon Hollowmere",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "caedmon_hollowmere",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Cerys Sablewood the Ashen",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "cerys_sablewood_the_ashen",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Cerys Sablewood the Ashen",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: [[Cindermere Hold]], since 359 AS",
+    "chunk_id": null,
+    "document_id": "cerys_sablewood_the_ashen",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Cerys Sablewood the Ashen",
+    "target_entity": "The Cinder-Wrought Aegis",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Infobox wields: [[The Cinder-Wrought Aegis]], since 356 AS",
+    "chunk_id": null,
+    "document_id": "cerys_sablewood_the_ashen",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Cerys Sablewood the Ashen",
+    "target_entity": "Halvard Sablewood",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "Infobox mentor of: [[Halvard Sablewood]]",
+    "chunk_id": null,
+    "document_id": "cerys_sablewood_the_ashen",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "cindermere_hold",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Cinder Shrike (creature)",
+    "target_entity": "Mournwatch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Mournwatch]]",
+    "chunk_id": null,
+    "document_id": "cinder_shrike",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Corvus Hollowmere the Pale",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: Member of [[The Silent Choir]]",
+    "chunk_id": null,
+    "document_id": "corvus_hollowmere_the_pale",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Corvus Hollowmere the Pale",
+    "target_entity": "Palewell Abbey",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Palewell Abbey]] since 374 AS",
+    "chunk_id": null,
+    "document_id": "corvus_hollowmere_the_pale",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "Crookgate Keep",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "crookgate_keep",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ederon Coldwater",
+    "target_entity": "House Morvain",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: House Morvain",
+    "chunk_id": null,
+    "document_id": "ederon_coldwater",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ederon Fellgard",
+    "target_entity": "The Iron-Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: [[The Iron-Ring Cartel]]",
+    "chunk_id": null,
+    "document_id": "ederon_fellgard",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Silent Choir",
+    "target_entity": "Embercrag Fortress",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Silent Choir]]",
+    "chunk_id": null,
+    "document_id": "embercrag_fortress",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Emberdeep",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "emberdeep",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Embermarch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "embermarch",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "Fenspire",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Iron-Ring Cartel]]",
+    "chunk_id": null,
+    "document_id": "fenspire",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "Fenthrone",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "fenthrone",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Gareth Ironmere",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "gareth_ironmere",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Gareth Ironmere",
+    "target_entity": "Marrowwell Abbey",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Marrowwell Abbey]] since 322 AS",
+    "chunk_id": null,
+    "document_id": "gareth_ironmere",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "Gloamreach",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[House Morvain]]",
+    "chunk_id": null,
+    "document_id": "gloamreach",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Gravemaw Wyrm",
+    "target_entity": "Marrowwell Abbey",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Marrowwell Abbey]]",
+    "chunk_id": null,
+    "document_id": "gravemaw_wyrm",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[House Morvain]]",
+    "chunk_id": null,
+    "document_id": "greyfell_citadel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Greythrone",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "greythrone",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Halvard Vane the Grave-Sworn",
+    "target_entity": "Crookvale",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Crookvale]] since 362 AS",
+    "chunk_id": null,
+    "document_id": "halvard_vane_the_grave_sworn",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Hesper Wrenfield",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "hesper_wrenfield",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Hollowvale",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "hollowvale",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "Ironfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox seat: [[Ironfell Citadel]]",
+    "chunk_id": null,
+    "document_id": "house_morvain",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "The War of Endless Vigil",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerent in: [[The War of Endless Vigil]]; [[The Purge of Blackport]]",
+    "chunk_id": null,
+    "document_id": "house_morvain",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "The Purge of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerent in: [[The War of Endless Vigil]]; [[The Purge of Blackport]]",
+    "chunk_id": null,
+    "document_id": "house_morvain",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "Nymeria Palefroth",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox known members: [[Nymeria Palefroth]]; [[Isolde Thornwald]]; [[Castellan Fellgard]]",
+    "chunk_id": null,
+    "document_id": "house_morvain",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "Isolde Thornwald",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox known members: [[Nymeria Palefroth]]; [[Isolde Thornwald]]; [[Castellan Fellgard]]",
+    "chunk_id": null,
+    "document_id": "house_morvain",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "Castellan Fellgard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox known members: [[Nymeria Palefroth]]; [[Isolde Thornwald]]; [[Castellan Fellgard]]",
+    "chunk_id": null,
+    "document_id": "house_morvain",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ignatz Ashgrove the Oathless",
+    "target_entity": "Ironfell Citadel",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Ironfell Citadel]] since 286 AS",
+    "chunk_id": null,
+    "document_id": "ignatz_ashgrove_the_oathless",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ignatz Cindervale",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: The Ashen Vanguard",
+    "chunk_id": null,
+    "document_id": "ignatz_cindervale",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Isolde Fellgard the Unforgiven",
+    "target_entity": "House Morvain",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[House Morvain]]",
+    "chunk_id": null,
+    "document_id": "isolde_fellgard_the_unforgiven",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Isolde Fellgard the Unforgiven",
+    "target_entity": "Gloammarch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Gloammarch]] since 310 AS",
+    "chunk_id": null,
+    "document_id": "isolde_fellgard_the_unforgiven",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Isolde Fellgard the Unforgiven",
+    "target_entity": "Ossric Ashgrove",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "Infobox mentor of: [[Ossric Ashgrove]]",
+    "chunk_id": null,
+    "document_id": "isolde_fellgard_the_unforgiven",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Isolde Mournvale",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[The Silent Choir]]",
+    "chunk_id": null,
+    "document_id": "isolde_mournvale",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Korvath Greyfen",
+    "target_entity": "House Morvain",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[House Morvain]]",
+    "chunk_id": null,
+    "document_id": "korvath_greyfen",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Korvath Nightbrook",
+    "target_entity": "House Morvain",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: Member of [[House Morvain]]",
+    "chunk_id": null,
+    "document_id": "korvath_nightbrook",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Lantern Moth Swarm (creature)",
+    "target_entity": "Ashreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Ashreach]]",
+    "chunk_id": null,
+    "document_id": "lantern_moth_swarm",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Maelis Harrowick the Pale",
+    "target_entity": "Embercrag Fortress",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Embercrag Fortress]] since 364 AS",
+    "chunk_id": null,
+    "document_id": "maelis_harrowick_the_pale",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Maelis Wrenfield",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: The Ashen Vanguard",
+    "chunk_id": null,
+    "document_id": "maelis_wrenfield",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "The Iron-Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[The Iron-Ring Cartel]]",
+    "chunk_id": null,
+    "document_id": "malchior_cindervale_the_flame_touched",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Fenspire",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: [[Fenspire]], since 321 AS",
+    "chunk_id": null,
+    "document_id": "malchior_cindervale_the_flame_touched",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Marrowwatch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "marrowwatch",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "Marrowwell Abbey",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "marrowwell_abbey",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Marsh Revenant (creature)",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: Greyfell Citadel",
+    "chunk_id": null,
+    "document_id": "marsh_revenant",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: Member of [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "morwenna_ashgrove",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Hollowvale",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Hollowvale]] since 311 AS",
+    "chunk_id": null,
+    "document_id": "morwenna_ashgrove",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Morwenna Morvain",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: [[The Silent Choir]]",
+    "chunk_id": null,
+    "document_id": "morwenna_morvain",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Morwenna Vane",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "morwenna_vane",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ossric Ravensmoor",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: The Silent Choir",
+    "chunk_id": null,
+    "document_id": "ossric_ravensmoor",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Pale Stag of Omens",
+    "target_entity": "Hollowreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Hollowreach]]",
+    "chunk_id": null,
+    "document_id": "pale_stag_of_omens",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ravena Stormwell",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member of: [[The Silent Choir]]",
+    "chunk_id": null,
+    "document_id": "ravena_stormwell",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Sabelle Blackspire",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: The Ashen Vanguard",
+    "chunk_id": null,
+    "document_id": "sabelle_blackspire",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Sabelle Mournvale the Twice-Crowned",
+    "target_entity": "Marrowwatch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox command: Commands [[Marrowwatch]] since 293 AS",
+    "chunk_id": null,
+    "document_id": "sabelle_mournvale_the_twice_crowned",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Salt-Blind Leviathan]] (creature)",
+    "target_entity": "Greythrone",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Greythrone]]",
+    "chunk_id": null,
+    "document_id": "salt_blind_leviathan",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Serathiel Vane",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox membership: [[The Bleeding Crown]]",
+    "chunk_id": null,
+    "document_id": "serathiel_vane",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Stormmarch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "stormmarch",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "The Accord of Mournthrone",
+    "relationship_type": "WON",
+    "evidence_text": "Infobox victor: [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "the_accord_of_mournthrone",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Accord of Mournthrone",
+    "target_entity": "Crookvale",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox waged at: [[Crookvale]] in 297 AS",
+    "chunk_id": null,
+    "document_id": "the_accord_of_mournthrone",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Accord of Mournthrone",
+    "target_entity": "Fenspire",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox devastated: [[Fenspire]] in 298 AS",
+    "chunk_id": null,
+    "document_id": "the_accord_of_mournthrone",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Accord of Mournthrone",
+    "target_entity": "Hollowvale",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox devastated: [[Hollowvale]] in 301 AS",
+    "chunk_id": null,
+    "document_id": "the_accord_of_mournthrone",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Accord of Mournthrone",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox waged at: [[Vharencrag Fortress]] in 301 AS",
+    "chunk_id": null,
+    "document_id": "the_accord_of_mournthrone",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Ashen Vanguard",
+    "target_entity": "Vharenford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox seat: Vharenford",
+    "chunk_id": null,
+    "document_id": "the_ashen_vanguard",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Halvard Cindervale",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: Halvard Cindervale; Voltaire Hollowmere; Orin Veyra",
+    "chunk_id": null,
+    "document_id": "the_ashen_vanguard",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Voltaire Hollowmere",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: Halvard Cindervale; Voltaire Hollowmere; Orin Veyra",
+    "chunk_id": null,
+    "document_id": "the_ashen_vanguard",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Orin Veyra",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: Halvard Cindervale; Voltaire Hollowmere; Orin Veyra",
+    "chunk_id": null,
+    "document_id": "the_ashen_vanguard",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "Blackford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox seat: [[Blackford]]",
+    "chunk_id": null,
+    "document_id": "the_bleeding_crown",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "The War of Endless Vigil",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerent in: [[The War of Endless Vigil]]; [[The Accord of Mournthrone]]",
+    "chunk_id": null,
+    "document_id": "the_bleeding_crown",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "The Accord of Mournthrone",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerent in: [[The War of Endless Vigil]]; [[The Accord of Mournthrone]]",
+    "chunk_id": null,
+    "document_id": "the_bleeding_crown",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Bleeding Crown",
+    "target_entity": "The War of Endless Vigil",
+    "relationship_type": "WON",
+    "evidence_text": "Infobox victor of: [[The War of Endless Vigil]]",
+    "chunk_id": null,
+    "document_id": "the_bleeding_crown",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Corvus Duskbane",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Corvus Duskbane]]; [[Halvard Sablewood]]",
+    "chunk_id": null,
+    "document_id": "the_bleeding_crown",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Halvard Sablewood",
+    "target_entity": "The Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Corvus Duskbane]]; [[Halvard Sablewood]]",
+    "chunk_id": null,
+    "document_id": "the_bleeding_crown",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Embermarch",
+    "target_entity": "The Cinder-Wrought Aegis",
+    "relationship_type": "CREATED",
+    "evidence_text": "Infobox place of forging: [[Embermarch]]",
+    "chunk_id": null,
+    "document_id": "the_cinder_wrought_aegis",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Cinder-Wrought Aegis",
+    "target_entity": "Gloamreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox place of housing: [[Gloamreach]]",
+    "chunk_id": null,
+    "document_id": "the_cinder_wrought_aegis",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "Hollowreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox seat: [[Hollowreach]]",
+    "chunk_id": null,
+    "document_id": "the_iron_ring_cartel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "The Winter Reckoning",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerent in: [[The Winter Reckoning]]; [[The Purge of Blackport]]; [[The Leaden Accord]]",
+    "chunk_id": null,
+    "document_id": "the_iron_ring_cartel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "The Purge of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerent in: [[The Winter Reckoning]]; [[The Purge of Blackport]]; [[The Leaden Accord]]",
+    "chunk_id": null,
+    "document_id": "the_iron_ring_cartel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "The Leaden Accord",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerent in: [[The Winter Reckoning]]; [[The Purge of Blackport]]; [[The Leaden Accord]]",
+    "chunk_id": null,
+    "document_id": "the_iron_ring_cartel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "The Winter Reckoning",
+    "relationship_type": "WON",
+    "evidence_text": "Infobox victor of: [[The Winter Reckoning]]; [[The Leaden Accord]]",
+    "chunk_id": null,
+    "document_id": "the_iron_ring_cartel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "The Leaden Accord",
+    "relationship_type": "WON",
+    "evidence_text": "Infobox victor of: [[The Winter Reckoning]]; [[The Leaden Accord]]",
+    "chunk_id": null,
+    "document_id": "the_iron_ring_cartel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Iron-Ring Cartel",
+    "target_entity": "Halvard Crowhurst",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox member: [[Halvard Crowhurst]]",
+    "chunk_id": null,
+    "document_id": "the_iron_ring_cartel",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Leaden Accord",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox major fighting: [[Vharencrag Fortress]] in 341 AS",
+    "chunk_id": null,
+    "document_id": "the_leaden_accord",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Leaden Accord",
+    "target_entity": "Voltaire Hollowmere",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox known participant: [[Voltaire Hollowmere]], fighting for [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "the_leaden_accord",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Leaden Accord",
+    "target_entity": "The Ashen Vanguard",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox known participant: [[Voltaire Hollowmere]], fighting for [[The Ashen Vanguard]]",
+    "chunk_id": null,
+    "document_id": "the_leaden_accord",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Iron-Ring Cartel",
+    "target_entity": "The Purge of Blackport",
+    "relationship_type": "WON",
+    "evidence_text": "Infobox victor: [[Iron-Ring Cartel]]",
+    "chunk_id": null,
+    "document_id": "the_purge_of_blackport",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Silent Choir",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox seat: [[Vharencrag Fortress]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Silent Choir",
+    "target_entity": "The War of Drowned Light",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerencies: [[The War of Drowned Light]]; [[The War of Endless Vigil]]; [[The Winter Reckoning]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Silent Choir",
+    "target_entity": "The War of Endless Vigil",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerencies: [[The War of Drowned Light]]; [[The War of Endless Vigil]]; [[The Winter Reckoning]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Silent Choir",
+    "target_entity": "The Winter Reckoning",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Infobox belligerencies: [[The War of Drowned Light]]; [[The War of Endless Vigil]]; [[The Winter Reckoning]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ignatz Fellgard",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Ignatz Fellgard]]; [[Brannoc Palefroth]]; [[Thessaly Coldwater]]; [[Lucan Hollowmere]]; [[Tamsin Greyfen]]; [[Ossric Ashgrove]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Brannoc Palefroth",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Ignatz Fellgard]]; [[Brannoc Palefroth]]; [[Thessaly Coldwater]]; [[Lucan Hollowmere]]; [[Tamsin Greyfen]]; [[Ossric Ashgrove]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Thessaly Coldwater",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Ignatz Fellgard]]; [[Brannoc Palefroth]]; [[Thessaly Coldwater]]; [[Lucan Hollowmere]]; [[Tamsin Greyfen]]; [[Ossric Ashgrove]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Lucan Hollowmere",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Ignatz Fellgard]]; [[Brannoc Palefroth]]; [[Thessaly Coldwater]]; [[Lucan Hollowmere]]; [[Tamsin Greyfen]]; [[Ossric Ashgrove]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Tamsin Greyfen",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Ignatz Fellgard]]; [[Brannoc Palefroth]]; [[Thessaly Coldwater]]; [[Lucan Hollowmere]]; [[Tamsin Greyfen]]; [[Ossric Ashgrove]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Ossric Ashgrove",
+    "target_entity": "The Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Infobox members: [[Ignatz Fellgard]]; [[Brannoc Palefroth]]; [[Thessaly Coldwater]]; [[Lucan Hollowmere]]; [[Tamsin Greyfen]]; [[Ossric Ashgrove]]",
+    "chunk_id": null,
+    "document_id": "the_silent_choir",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Silent Choir",
+    "target_entity": "The War of Drowned Light",
+    "relationship_type": "WON",
+    "evidence_text": "Infobox victor: [[The Silent Choir]]",
+    "chunk_id": null,
+    "document_id": "the_war_of_drowned_light",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The War of Drowned Light",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox waged at: [[Cindermere Hold]] in 228 AS; [[Greyfell Citadel]] in 233 AS",
+    "chunk_id": null,
+    "document_id": "the_war_of_drowned_light",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The War of Drowned Light",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox waged at: [[Cindermere Hold]] in 228 AS; [[Greyfell Citadel]] in 233 AS",
+    "chunk_id": null,
+    "document_id": "the_war_of_drowned_light",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The War of Drowned Light",
+    "target_entity": "Gloamreach",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox devastated: [[Gloamreach]] in 227 AS",
+    "chunk_id": null,
+    "document_id": "the_war_of_drowned_light",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The War of Endless Vigil",
+    "target_entity": "Crookvale",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox devastated: [[Crookvale]] in 249 AS; [[Thorncairn]] in 250 AS",
+    "chunk_id": null,
+    "document_id": "the_war_of_endless_vigil",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The War of Endless Vigil",
+    "target_entity": "Thorncairn",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox devastated: [[Crookvale]] in 249 AS; [[Thorncairn]] in 250 AS",
+    "chunk_id": null,
+    "document_id": "the_war_of_endless_vigil",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The War of Endless Vigil",
+    "target_entity": "Hollowreach",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox waged at: [[Hollowreach]] in 251 AS",
+    "chunk_id": null,
+    "document_id": "the_war_of_endless_vigil",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Winter Reckoning",
+    "target_entity": "Stormmarch",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox waged at: [[Stormmarch]] in 276 AS; [[Gloammarch]] in 277 AS",
+    "chunk_id": null,
+    "document_id": "the_winter_reckoning",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Winter Reckoning",
+    "target_entity": "Gloammarch",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox waged at: [[Stormmarch]] in 276 AS; [[Gloammarch]] in 277 AS",
+    "chunk_id": null,
+    "document_id": "the_winter_reckoning",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Winter Reckoning",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox devastated sites: [[Cindermere Hold]] in 271 AS; [[Marrowwell Abbey]] in 277 AS",
+    "chunk_id": null,
+    "document_id": "the_winter_reckoning",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Winter Reckoning",
+    "target_entity": "Marrowwell Abbey",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Infobox devastated sites: [[Cindermere Hold]] in 271 AS; [[Marrowwell Abbey]] in 277 AS",
+    "chunk_id": null,
+    "document_id": "the_winter_reckoning",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Thorn Wraith]] (creature)",
+    "target_entity": "Ironfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Ironfell Citadel]]",
+    "chunk_id": null,
+    "document_id": "thorn_wraith",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Vault Chitin]] (creature)",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Greyfell Citadel]]",
+    "chunk_id": null,
+    "document_id": "vault_chitin",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "The Silent Choir",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Infobox ruled by: [[The Silent Choir]]",
+    "chunk_id": null,
+    "document_id": "vharencrag_fortress",
+    "confidence": 1.0,
+    "source": "infobox"
+  },
+  {
+    "source_entity": "Weeping Lurker (creature)",
+    "target_entity": "Embermarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Infobox lair: [[Embermarch]]",
+    "chunk_id": null,
+    "document_id": "weeping_lurker",
+    "confidence": 1.0,
+    "source": "infobox"
+  }
+]
