@@ -26,7 +26,11 @@ The README is **critical** — judges must be able to run the project from this 
 # Ashen Era Archive Intelligence System
 
 ## About
-Brief description — what this system does, which track it targets.
+Brief description — what this system does, which tracks it covers.
+
+## Track Coverage
+Primary: 1B (multi-document multi-hop reasoning).
+Also covers: 1A (multimodal responses with embedded images) and 1C (iterative agentic search with bounded retry).
 
 ## Architecture Overview
 High-level diagram (embed from docs/ or as ASCII art).
@@ -48,8 +52,8 @@ Link to full architecture doc.
 ### Running Tests
 pytest tests/ -v
 
-## Sub-track Choice
-Why we chose 1B and how our system addresses it.
+## Sub-track Coverage
+Primary: 1B. How our unified architecture also addresses 1A and 1C.
 
 ## Technical Decisions
 Link to docs/architecturev1.md for full rationale.
@@ -224,15 +228,16 @@ python scripts/evaluate.py
 Record a demo video (2-5 minutes) showing:
 
 1. **System startup** — `docker-compose up`, services starting
-2. **Simple question** — ask a direct question, show the answer with citations
+2. **Simple question (1A)** — ask a question about a figure plate (e.g. "What is the threat rating of the Weeping Lurker?"), show the answer with the **actual image embedded** alongside the text
 3. **1B multi-hop question** — ask one of the Track 1B questions, show:
    - The answer
    - Multi-document evidence
    - Graph traversal (how entities were connected)
    - Citation links to original documents
-4. **Conflict handling** — ask a question where sources disagree, show conflict detection
-5. **Evidence inspector** — show the evidence panel, source viewer, query trace
-6. **Architecture overview** — brief walkthrough of the architecture diagram
+4. **1C iterative retrieval** — ask a complex question, show the query trace revealing the Retrieve → Assess → Reformulate → Retry loop (evidence sufficiency states, iteration count)
+5. **Conflict handling** — ask a question where sources disagree, show conflict detection
+6. **Evidence inspector** — show the evidence panel, source viewer, query trace
+7. **Architecture overview** — brief walkthrough of the architecture diagram
 
 **Tips:**
 - Script the demo questions in advance
@@ -279,9 +284,9 @@ For each question, record:
 
 **Generate a summary table:**
 ```
-Track 1A: X/11 questions attempted (not our focus)
-Track 1B: Y/7 questions answered correctly
-Track 1C: Z/2 questions attempted
+Track 1A: X/11 questions — image/visual evidence embedded where applicable
+Track 1B: Y/7 questions — multi-hop graph traversal, multi-document citations
+Track 1C: (demonstrated via query trace — iterative retrieval loop visible)
 Overall:  W/19
 ```
 
@@ -332,7 +337,9 @@ Before submission, verify every item:
 - [ ] Ingestion runs without errors
 - [ ] UI is accessible and functional
 - [ ] All 19 sample questions produce answers (even if not all are correct)
-- [ ] Track 1B questions show multi-document evidence with citations
+- [ ] **Track 1A:** Questions about images/figure plates return the actual image embedded in the response
+- [ ] **Track 1B:** Multi-hop questions show multi-document evidence with citations and graph traversal
+- [ ] **Track 1C:** Query trace for complex questions shows the iterative retrieval loop (Retrieve → Assess → Retry)
 - [ ] Experiment results are documented with metrics and analysis
 - [ ] Architecture document explains all decisions with rationale
 - [ ] AI Usage Disclosure is complete

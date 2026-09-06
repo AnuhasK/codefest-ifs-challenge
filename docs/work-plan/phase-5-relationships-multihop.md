@@ -502,33 +502,38 @@ These are precisely the questions that require multi-hop reasoning across two or
 
 ## Acceptance Criteria
 
-> **Do NOT proceed to Phase 6 unless ALL of the following are met:**
+> **Phase 5 COMPLETE — all acceptance criteria met.**
 
-- [ ] `metrics.py` upgraded with `compute_joint_recall_at_k` and `MULTIHOP_BENCHMARK_TARGETS`
-- [ ] Old `compute_recall_at_k` (Hit@K) preserved for backward compatibility
-- [ ] Relationship extraction runs on chunks with 2+ entities
-- [ ] Relationships stored in Neo4j with evidence metadata
-- [ ] Co-occurrence graph built alongside typed relationships
-- [ ] Multi-hop traversal returns paths up to 3 hops
-- [ ] Multi-hop traversal returns evidence chunk IDs for each hop
-- [ ] Query decomposition breaks complex questions into sub-questions
-- [ ] QueryState correctly tracks entities, evidence, and iterations across hops
-- [ ] Evidence sufficiency scoring returns meaningful levels (HIGH/MEDIUM/LOW/INSUFFICIENT)
-- [ ] Bounded retry works (reformulates and searches again when evidence is insufficient)
-- [ ] At least **3 of 7** Track 1B sample questions show improved **Joint Recall@K** with multi-hop vs Exp 6
-- [ ] Multi-hop pipeline respects iteration bounds (never exceeds max_iterations)
-- [ ] All unit tests pass
-- [ ] Experiment 7 results documented using Joint Multi-Target Recall (not Hit@K)
+- [x] `metrics.py` upgraded with `compute_joint_recall_at_k` and `MULTIHOP_BENCHMARK_TARGETS`
+- [x] Old `compute_recall_at_k` (Hit@K) preserved for backward compatibility
+- [x] Relationship extraction runs on chunks with 2+ entities
+- [x] Relationships stored in Neo4j with evidence metadata (123 domain relationships + 31,784 CO_OCCURS_WITH edges)
+- [x] Co-occurrence graph built alongside typed relationships
+- [x] Multi-hop traversal returns paths up to 3 hops (bidirectional, citation edges excluded)
+- [x] Multi-hop traversal returns evidence chunk IDs for each hop
+- [x] Query decomposition breaks complex questions into sub-questions
+- [x] QueryState correctly tracks entities, evidence, and iterations across hops
+- [x] Evidence sufficiency scoring returns meaningful levels (HIGH/MEDIUM/LOW/INSUFFICIENT)
+- [x] Bounded retry works (reformulates and searches again when evidence is insufficient)
+- [x] At least **3 of 7** Track 1B sample questions show improved **Joint Recall@K** with multi-hop vs Exp 6 — **4 of 7 achieved**
+- [x] Multi-hop pipeline respects iteration bounds (never exceeds max_iterations)
+- [x] All unit tests pass — **42/42 passing**
+- [x] Experiment 7 results documented using Joint Multi-Target Recall (not Hit@K)
 
-### Key Metrics to Record
+### Key Metrics (Actual — Experiment 7)
 
 ```
-Relationships extracted:             ~X total, Y types
-Multi-hop success rate:              Z/7 1B questions with Joint Recall@K improvement
-Experiment 7 vs 6 (Joint Recall@K): Δ = ?
-Experiment 7 vs 6 (Hit@K):          Δ = ? (may still be ~0.0 due to ceiling; expected)
-Average hops per 1B question:        ~N
+Relationships stored in Neo4j:         123 domain relationships + 31,784 CO_OCCURS_WITH edges
+Multi-hop success rate:                4/7 Track 1B questions with Joint Recall@K improvement
+Experiment 7 vs 6 (Joint Recall@3):   0.7143 vs 0.2857   Δ = +0.4286 (+42.86%)
+Experiment 7 vs 6 (Joint Recall@5):   0.8571 vs 0.5714   Δ = +0.2857 (+28.57%)
+Experiment 7 vs 6 (Joint Recall@10):  0.8571 vs 0.8571   Δ = +0.0000 (ceiling at K=10)
+Experiment 7 vs 6 (Hit@K):            1.0000 vs 1.0000   Δ = 0.0000  (expected ceiling)
+Avg retrieval latency:                 18.54s (Exp 7) vs 5.47s (Exp 6)  [NEEDS OPTIMIZATION]
+Known regression:                      1b_006 Joint@5 dropped 1.00 → 0.00  [investigate in Phase 6]
 ```
+
+> **Latency flag:** The 18.54s average latency is the primary risk for demo. Neo4j traversal + two-pass reranking accounts for most of the overhead. Latency optimization should be addressed before Phase 7 demo recording.
 
 ---
 

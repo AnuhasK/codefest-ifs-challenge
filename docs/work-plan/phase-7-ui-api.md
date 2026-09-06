@@ -56,10 +56,19 @@ class QueryRequest(BaseModel):
     top_k: int = 20
     include_trace: bool = False
 
+class AssetReference(BaseModel):
+    asset_id: str
+    asset_type: str       # figure_plate, portrait, heraldry, landscape, etc.
+    file_path: str        # absolute path to original image in corpus
+    entity_name: str | None = None
+    description: str      # the synthetic text description (already generated in Phase 1)
+    extracted_data: dict | None = None  # structured data from figure plates (OCR)
+
 class QueryResponse(BaseModel):
     answer: str
     citations: list[Citation]
     evidence: list[EvidenceSummary]
+    asset_references: list[AssetReference] = []  # images relevant to the answer (Track 1A)
     conflicts: list[ConflictSummary]
     evidence_status: str  # HIGH, MEDIUM, LOW, INSUFFICIENT
     trace: dict | None = None  # query trace if requested
@@ -243,6 +252,49 @@ def render_evidence_panel(evidence: list[dict], conflicts: list[dict],
 
 ---
 
+### 7.6b — Image Evidence Panel (`app/components/image_evidence.py`) — Track 1A
+
+When a retrieved evidence piece traces back to an `assets` record (figure plate or atmospheric art), embed the actual image directly in the response. All image files and their paths are already stored in the `assets` table from Phase 1 processing.
+
+```python
+def render_image_evidence(asset_references: list[dict]):
+    """
+    Track 1A: Embed relevant images directly in the response.
+
+    Called when QueryResponse.asset_references is non-empty.
+    For each asset:
+      - If figure_plate: show image + overlay the extracted structured data
+      - If atmospheric art: show image + show the Gemini Vision description
+    """
+    if not asset_references:
+        return
+
+    st.subheader("📷 Relevant Images")
+    for asset in asset_references:
+        with st.expander(f"{asset['asset_type'].replace('_', ' ').title()}: {asset.get('entity_name', 'Unknown')}"):
+            # Embed the actual image file
+            st.image(asset["file_path"], caption=asset.get("entity_name", ""))
+
+            if asset["asset_type"] == "figure_plate" and asset.get("extracted_data"):
+                # Show the structured data extracted by RapidOCR
+                st.markdown("**Extracted Data:**")
+                for key, val in asset["extracted_data"].items():
+                    st.markdown(f"- **{key}:** {val}")
+            else:
+                # Show Gemini Vision description
+                st.caption(asset["description"])
+```
+
+**How `asset_references` is populated (API side):**
+When building `QueryResponse`, check each `SearchResult` in the evidence set: if the chunk's `metadata.asset_id` is non-null, fetch the full asset record from the `assets` table and include it in `asset_references`. No new retrieval logic needed — assets already flow through the hybrid retrieval pipeline as standard chunks.
+
+**Test:**
+- Question about a figure plate entity → `asset_references` contains the plate asset → image rendered in UI
+- Question with no image evidence → `asset_references` empty → component renders nothing
+- `st.image()` can load the file path from the corpus directory
+
+---
+
 ### 7.7 — Source Viewer (`app/components/source_viewer.py`)
 
 Allow users to view original source documents:
@@ -392,7 +444,10 @@ COPY . .
 - [ ] Citations in the answer link back to source documents
 - [ ] Docker Compose starts all services (`postgres`, `neo4j`, `api`, `ui`)
 - [ ] A judge could run `docker-compose up` and use the system without any code changes
-- [ ] **Live demo:** Ask 3 different questions and receive grounded answers with citations
+- [ ] **Track 1A:** When the top evidence for a question is a figure plate or atmospheric art image, the actual image is embedded in the response via `st.image()` alongside the text answer (not just a description of it)
+- [ ] **Track 1A:** `QueryResponse.asset_references` is populated when evidence chunks have `metadata.asset_id` set
+- [ ] **Track 1C:** For multi-hop questions, the query trace visibly shows iterative sub-question→retrieve→assess→retry loop steps (evidence of the "human expert search" pattern)
+- [ ] **Live demo:** Ask 3 different questions (at least one with image evidence, one multi-hop) and receive grounded answers with citations
 
 ---
 

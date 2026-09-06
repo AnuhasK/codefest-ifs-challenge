@@ -1,6 +1,7 @@
 # Architecture Document v1 — Ashen Era Archive Intelligence System
 
-**Track: 1B — Connecting Facts Across Thousands of Pages**  
+**Primary Track: 1B — Connecting Facts Across Thousands of Pages**  
+**Also Covers: 1A (Rich Multimodal Answers) · 1C (Iterative Agentic Search)**  
 **Date: Sept 5, 2026**  
 **Status: Approved (v1.2 — evaluation metric ceiling effect documented; Joint Multi-Target Recall scoped for Phase 5)**
 
@@ -39,6 +40,18 @@
 The Ashen Era Archive Intelligence System is an evidence-grounded document intelligence platform that answers questions whose answers are distributed across multiple documents within the Ashen Era Archive — a corpus of 270+ unique documents (~415 files including format variants) spanning novels, wiki articles, codex data books, in-world ephemera, and figure plates.
 
 The system is specifically designed for **Sub-track 1B**: questions that cannot be answered from any single document, requiring the system to discover, connect, and synthesize information across the entire archive.
+
+### Track Coverage
+
+The architecture is **1B-primary** but covers all three sub-tracks without separate systems:
+
+| Track | Core Requirement | Where It's Addressed |
+|---|---|---|
+| **1A — Rich Answers** | Embed actual images/tables in responses, not just text descriptions | Phase 1 processes images into searchable chunks + `assets` table. Phase 7 §7.6b renders matched assets via `st.image()` in responses. No extra component needed — assets flow through normal retrieval. |
+| **1B — Multi-Document** | Connect facts across 270+ documents via multi-hop reasoning | The entire pipeline: hybrid retrieval (§9), entity graph (§10), multi-hop traversal (§11), evidence management (§12). This is the primary design target. |
+| **1C — Iterative Search** | Read → learn → check gaps → search again, bounded | Phase 5 §5.7–5.8: `retrieve_with_multihop()` + evidence sufficiency scoring + bounded retry loop (max 3 iterations). `QueryState` (§11) tracks what's been found, what's missing, and what to search next. |
+
+> **Design decision:** We deliberately chose NOT to add named components like "Search Planner" or "Rich Response Builder." The iterative loop is a control flow pattern inside `retrieve_with_multihop()`, and image embedding is a 10-line check in the response layer. Naming them as components would add conceptual overhead without adding capability.
 
 ### What makes this problem hard
 
@@ -1087,6 +1100,8 @@ Step 3: Neo4j query → Faction X -[:WON]-> War Y
 Step 4: Retrieve evidence chunks for each hop
 Step 5: Assemble complete answer with citations from each document
 ```
+
+> **Track 1C coverage:** The bounded iteration loop below (Retrieve → Assess → Identify Gaps → Reformulate → Retrieve Again, max 3 rounds) is exactly the "searches, reads what it finds, realizes what's missing, goes looking for more" pattern that Track 1C describes. No separate "Search Planner" component is needed — this is a control flow pattern within `retrieve_with_multihop()` (Phase 5 §5.8).
 
 ### QueryState
 
