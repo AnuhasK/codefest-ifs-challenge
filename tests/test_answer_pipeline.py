@@ -77,7 +77,7 @@ def test_answer_pipeline_conflicting_evidence():
             chunk_id="c1",
             document_id="d1",
             document_title="Trial Record",
-            content="The accused, Ser Vael, was charged with betrayal.",
+            content="The accused, Ser Vael, was charged with betrayal of the Ashen Vanguard.",
             score=0.9,
             source_path="Ashen_Era_Archive/ephemera/trial_transcript_concerning_vael.pdf",
         ),
