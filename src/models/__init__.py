@@ -25,6 +25,15 @@ from src.models.query import (
     SufficiencyScore,
     QueryState,
 )
+from src.models.evidence import (
+    SourceCharacteristics,
+    EvidenceRecord,
+    Conflict,
+    CitationIssue,
+    ClaimCheck,
+    VerificationResult,
+    FinalAnswer,
+)
 
 __all__ = [
     "DiscoveredFile",
@@ -47,5 +56,12 @@ __all__ = [
     "HopResult",
     "SufficiencyScore",
     "QueryState",
+    "SourceCharacteristics",
+    "EvidenceRecord",
+    "Conflict",
+    "CitationIssue",
+    "ClaimCheck",
+    "VerificationResult",
+    "FinalAnswer",
 ]
 
