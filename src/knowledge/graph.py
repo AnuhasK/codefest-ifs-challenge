@@ -236,3 +236,80 @@ class KnowledgeGraph:
             logger.error("Failed to retrieve entity statistics: %s", e)
 
         return stats
+
+    def find_multihop_paths(
+        self,
+        start_name: str,
+        target_types: Optional[List[str]] = None,
+        max_hops: int = 3,
+        limit: int = 20,
+    ) -> List[Dict[str, Any]]:
+        """
+        Traverse bidirectional paths in Neo4j starting from a recognized entity or alias.
+        Filters out citation edges (MENTIONED_IN, APPEARS_IN) and returns clean path objects.
+        """
+        if not start_name or not start_name.strip():
+            return []
+
+        clean_hops = max(1, min(int(max_hops), 4))
+        clean_limit = max(1, min(int(limit), 50))
+
+        type_filter = ""
+        params: Dict[str, Any] = {
+            "name": start_name.strip(),
+            "limit": clean_limit,
+        }
+
+        if target_types:
+            clean_types = [t.strip().upper() for t in target_types]
+            type_filter = "AND target.type IN $target_types"
+            params["target_types"] = clean_types
+
+        cypher = f"""
+        MATCH (start:Entity)
+        WHERE toLower(start.name) = toLower($name)
+           OR ANY(a IN start.aliases WHERE toLower(a) = toLower($name))
+        MATCH path = (start)-[r*1..{clean_hops}]-(target:Entity)
+        WHERE ALL(rel IN r WHERE NOT type(rel) IN ['MENTIONED_IN', 'APPEARS_IN', 'CO_OCCURS_WITH'])
+          AND start <> target
+          {type_filter}
+        RETURN [n IN nodes(path) | {{id: n.id, name: n.name, type: n.type}}] AS nodes,
+               [rel IN relationships(path) | {{
+                   type: type(rel),
+                   evidence_chunk_id: rel.evidence_chunk_id,
+                   evidence_text: rel.evidence_text,
+                   source_document_id: rel.source_document_id,
+                   confidence: rel.confidence
+               }}] AS relationships,
+               length(path) AS hops
+        ORDER BY hops ASC
+        LIMIT $limit
+        """
+        try:
+            records = self.neo4j.execute_query(cypher, params)
+            return [
+                {
+                    "nodes": r.get("nodes", []),
+                    "relationships": r.get("relationships", []),
+                    "hops": r.get("hops", 1),
+                }
+                for r in records
+            ]
+        except Exception as e:
+            logger.error("Error executing find_multihop_paths for '%s': %s", start_name, e)
+            return []
+
+    def get_relationship_statistics(self) -> Dict[str, Any]:
+        """Collect count of domain relationships by relationship type."""
+        cypher = """
+        MATCH ()-[r]->()
+        WHERE NOT type(r) IN ['MENTIONED_IN', 'APPEARS_IN']
+        RETURN type(r) AS rel_type, count(r) AS cnt
+        ORDER BY cnt DESC
+        """
+        try:
+            records = self.neo4j.execute_query(cypher)
+            return {r["rel_type"]: r["cnt"] for r in records if r.get("rel_type")}
+        except Exception as e:
+            logger.error("Failed to query relationship statistics: %s", e)
+            return {}
