@@ -35,8 +35,10 @@ class RetrievalConfig(BaseModel):
     enable_bm25: bool = True
     enable_dense: bool = True
     enable_contextual: bool = True
+    enable_entity_search: bool = False
     enable_diversity: bool = True
     enable_reranker: bool = True
+    entity_top_k: int = 50
 
 
 def retrieve(
@@ -108,6 +110,21 @@ def retrieve(
         )
         if ctx_dense_results:
             search_streams.append(ctx_dense_results)
+
+    # Step 4b: Entity Search Stream (Phase 4 Knowledge Graph Hook)
+    if config.enable_entity_search:
+        try:
+            from src.retrieval.entity_search import entity_search
+            entity_results = entity_search(
+                query=query,
+                query_analysis=query_analysis,
+                top_k=config.entity_top_k,
+                source_category=source_category,
+            )
+            if entity_results:
+                search_streams.append(entity_results)
+        except (ImportError, Exception) as e:
+            logger.debug("Entity search stream bypassed or not yet implemented: %s", e)
 
     if not search_streams:
         return []
