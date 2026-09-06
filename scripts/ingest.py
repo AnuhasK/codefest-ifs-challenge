@@ -33,6 +33,11 @@ def main():
         help="Skip generating Voyage AI vector embeddings.",
     )
     parser.add_argument(
+        "--skip-neo4j",
+        action="store_true",
+        help="Skip persisting entities and graph edges to Neo4j.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Extract and validate corpus without writing to the PostgreSQL database.",
@@ -46,6 +51,7 @@ def main():
         generate_embeddings_flag=not args.skip_embeddings,
         use_contextual_llm=not args.no_contextual_llm,
         persist_db=not args.dry_run,
+        persist_neo4j=not args.skip_neo4j and not args.dry_run,
     )
 
     print("\n================ INGESTION SUMMARY REPORT ================")
