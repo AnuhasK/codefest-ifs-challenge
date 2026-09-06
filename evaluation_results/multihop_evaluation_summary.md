@@ -1,6 +1,6 @@
 # Phase 5 Evaluation Summary: Relationships & Multi-Hop Retrieval
 
-**Date:** 2026-09-06 21:10:44  
+**Date:** 2026-09-06 22:39:59  
 **Questions Evaluated:** 7 (Track 1B Multi-Hop Focus)  
 **Evaluation Mode:** Retrieval Only (Deterministic, Zero API Calls)  
 **Acceptance Threshold:** At least 3 of 7 Track 1B questions improved on Joint Recall@K.  
@@ -18,9 +18,9 @@
 | **Joint Recall@1** | 0.0000 | 0.0000 | **+0.0000** |
 | **Joint Recall@3** | 0.2857 | 0.7143 | **+0.4286** |
 | **Joint Recall@5** | 0.5714 | 0.8571 | **+0.2857** |
-| **Joint Recall@10** | 0.8571 | 0.8571 | **+0.0000** |
+| **Joint Recall@10** | 0.8571 | 1.0000 | **+0.1429** |
 | **Mean Reciprocal Rank (MRR)** | 1.0000 | 1.0000 | +0.0000 |
-| **Avg Retrieval Latency** | 5.4749s | 18.5427s | +13.0679s |
+| **Avg Retrieval Latency** | 9.0708s | 35.0235s | +25.9527s |
 
 ---
 
