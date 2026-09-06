@@ -51,3 +51,27 @@ def test_query_analyzer_integrates_sub_questions():
     analysis = analyze_query(q)
     assert analysis.query_type == "multi_hop"
     assert len(analysis.sub_questions) == 2
+
+
+def test_decompose_novel_unseen_questions():
+    """Verify generalization to previously unseen sentence structures."""
+    # Novel Structure A: commander that allied with House Morvain
+    q1 = "Which fortress was controlled by the commander that allied with House Morvain?"
+    sub1 = decompose_query(q1)
+    assert len(sub1) == 2
+    assert "House Morvain" in sub1[0]
+    assert "fortress" in sub1[1].lower()
+
+    # Novel Structure B: blacksmith who served King Lucan
+    q2 = "Which weapon was forged by the blacksmith who served King Lucan?"
+    sub2 = decompose_query(q2)
+    assert len(sub2) == 2
+    assert "King Lucan" in sub2[0]
+    assert "weapon" in sub2[1].lower()
+
+    # Novel Structure C: nested double possessive
+    q3 = "Who was the ruler of the stronghold of Ser Vael?"
+    sub3 = decompose_query(q3)
+    assert len(sub3) == 2
+    assert "Ser Vael" in sub3[0]
+    assert "ruler" in sub3[1].lower()
