@@ -35,7 +35,7 @@ class RetrievalConfig(BaseModel):
     enable_bm25: bool = True
     enable_dense: bool = True
     enable_contextual: bool = True
-    enable_entity_search: bool = False
+    enable_entity_search: bool = True
     enable_diversity: bool = True
     enable_reranker: bool = True
     entity_top_k: int = 50
