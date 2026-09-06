@@ -13,6 +13,8 @@ from src.models.document import (
     IngestionReport,
 )
 
+from src.models.entity import Entity
+
 __all__ = [
     "DiscoveredFile",
     "DocumentRepresentation",
@@ -26,4 +28,6 @@ __all__ = [
     "LogicalDocument",
     "ValidationReport",
     "IngestionReport",
+    "Entity",
 ]
+
