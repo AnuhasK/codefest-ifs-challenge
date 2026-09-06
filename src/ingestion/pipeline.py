@@ -21,6 +21,7 @@ from src.ingestion.ocr import ocr_scanned_pdf
 from src.ingestion.images import process_corpus_images
 from src.ingestion.chunking import chunk_document, create_image_chunk
 from src.ingestion.entities import extract_entities_from_corpus, ExtractedEntity
+from src.ingestion.graph_storage import store_entities_in_neo4j
 from src.ingestion.contextualization import contextualize_all_chunks
 from src.providers.embeddings import EmbeddingProvider, get_embedding_provider
 from src.providers.llm_provider import LLMProvider, get_llm_provider
@@ -223,6 +224,7 @@ def run_ingestion(
     generate_embeddings_flag: bool = True,
     use_contextual_llm: bool = True,
     persist_db: bool = True,
+    persist_neo4j: bool = True,
 ) -> IngestionReport:
     """
     Execute full offline ingestion pipeline:
@@ -312,6 +314,15 @@ def run_ingestion(
         img_chunk = create_image_chunk(asset)
         all_chunks.append(img_chunk)
 
+        # Determine extraction method accurately: RapidOCR for figure plates processed locally,
+        # Gemini Vision for atmospheric art / vision-described plates, or metadata parser
+        if asset.extracted_data and asset.extracted_data.get("ocr_source") == "rapidocr":
+            extraction_method = "rapidocr"
+        elif use_vision:
+            extraction_method = "gemini_vision"
+        else:
+            extraction_method = "metadata_parser"
+
         prov = Provenance(
             id=uuid4(),
             chunk_id=img_chunk.id,
@@ -319,7 +330,7 @@ def run_ingestion(
             representation_id=None,
             source_file=asset.file_path,
             page_number=None,
-            extraction_method="gemini_vision" if use_vision else "metadata_parser",
+            extraction_method=extraction_method,
         )
         provenance_records.append(prov)
 
@@ -390,6 +401,22 @@ def run_ingestion(
         if generate_embeddings_flag:
             print("Applying HNSW vector indexes...", flush=True)
             apply_vector_indexes()
+
+    # 9. Phase 4 Readiness: Persist Entities to Neo4j
+    if persist_neo4j:
+        print("Persisting entities and graph relationships to Neo4j...", flush=True)
+        neo4j_res = store_entities_in_neo4j(
+            entities=all_extracted_entities,
+            chunk_to_entities=chunk_to_entities,
+            documents=documents,
+        )
+        print(
+            f"Neo4j entity persistence status: {neo4j_res.get('status')} "
+            f"({neo4j_res.get('entities_saved', 0)} entities, "
+            f"{neo4j_res.get('chunk_links', 0)} chunk edges, "
+            f"{neo4j_res.get('doc_links', 0)} doc edges).",
+            flush=True,
+        )
 
     report = IngestionReport(
         documents_discovered=len(discovered_files),

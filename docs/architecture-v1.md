@@ -1,7 +1,7 @@
 # Architecture Document v1 — Ashen Era Archive Intelligence System
 
 **Track: 1B — Connecting Facts Across Thousands of Pages**  
-**Date: 31 August 2026**  
+**Date: Seppt 5 A2026**  
 **Status: Approved (v1.1 — image processing + provider lock-in)**
 
 ---
@@ -238,8 +238,8 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 **Decision:** Use **Google Gemini** as the primary LLM, behind a provider abstraction interface.
 
 **Model selection:**
-- **Gemini 2.5 Flash** — primary model for entity extraction, contextualization, relationship extraction (fast, cheap, high throughput for batch processing)
-- **Gemini 2.5 Pro** — for answer generation and verification (stronger reasoning when needed)
+- **Gemini 3.8 Flash** — primary model for entity extraction, contextualization, relationship extraction (fast, cheap, high throughput for batch processing)
+- **Gemini 3.8 Flash** — for answer generation and verification (stronger reasoning when needed)
 - **Gemini Flash with vision** — for image description and figure plate data extraction
 
 **Rationale:**

@@ -48,6 +48,9 @@ cd codefest-ifs-challenge/project
 # Install dependencies with uv
 uv sync
 
+# Download spaCy lightweight model required for entity extraction
+uv run python -m spacy download en_core_web_sm
+
 # Start PostgreSQL (pgvector) and Neo4j
 docker-compose up -d
 ```
@@ -77,11 +80,17 @@ uv run pytest tests/ -v
 
 ### 5. Run Ingestion Pipeline
 ```bash
-# Full ingestion with dual embeddings
+# Full ingestion with dual embeddings and Neo4j entity persistence
 uv run python scripts/ingest.py
 
 # Or fast metadata ingestion (skipping vector embeddings)
 uv run python scripts/ingest.py --skip-embeddings
+
+# Ingestion without Neo4j persistence
+uv run python scripts/ingest.py --skip-neo4j
+
+# Standalone sync of entities to Neo4j without re-embedding
+uv run python scripts/sync_entities_to_neo4j.py
 ```
 
 ---
