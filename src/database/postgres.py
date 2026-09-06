@@ -47,11 +47,15 @@ def get_db_connection():
 
 
 def init_postgres():
-    """Run database migration script to initialize tables."""
-    migration_file = Path(__file__).parent / "migrations" / "001_initial_schema.sql"
-    sql = migration_file.read_text(encoding="utf-8")
+    """Run database migration scripts in sequence to initialize tables, vector indexes, and FTS."""
+    migrations_dir = Path(__file__).parent / "migrations"
+    migration_files = sorted(migrations_dir.glob("*.sql"))
 
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql)
+            for mf in migration_files:
+                sql = mf.read_text(encoding="utf-8")
+                cur.execute(sql)
+                print(f"Applied migration: {mf.name}")
     print("PostgreSQL schema successfully initialized.")
+
