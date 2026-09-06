@@ -16,21 +16,31 @@ class Neo4jConnection:
         if self._driver is not None:
             self._driver.close()
 
+    def verify_connection(self) -> bool:
+        """Verify that Neo4j driver can reach the database instance."""
+        try:
+            self._driver.verify_connectivity()
+            return True
+        except Exception:
+            return False
+
     def execute_query(
-        self, cypher: str, parameters: Optional[Dict[str, Any]] = None
+        self, cypher: str, parameters: Optional[Dict[str, Any]] = None, params: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
         """Execute a read/general Cypher query and return list of result records as dicts."""
+        resolved_params = parameters if parameters is not None else (params or {})
         with self._driver.session() as session:
-            result = session.run(cypher, parameters or {})
+            result = session.run(cypher, resolved_params)
             return [record.data() for record in result]
 
     def execute_write(
-        self, cypher: str, parameters: Optional[Dict[str, Any]] = None
+        self, cypher: str, parameters: Optional[Dict[str, Any]] = None, params: Optional[Dict[str, Any]] = None
     ) -> Any:
         """Execute a write transaction in Cypher."""
+        resolved_params = parameters if parameters is not None else (params or {})
         with self._driver.session() as session:
             return session.execute_write(
-                lambda tx: tx.run(cypher, parameters or {}).consume()
+                lambda tx: tx.run(cypher, resolved_params).consume()
             )
 
     def init_schema(self):
