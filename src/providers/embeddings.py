@@ -98,6 +98,7 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
         self.model = model
         self.client = voyageai.Client(api_key=self.api_key)
         self._dim = EMBEDDING_DIMENSION
+        self.cache = EmbeddingDiskCache(dimension=self._dim)
 
     @property
     def dimension(self) -> int:
@@ -144,8 +145,13 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
         return all_embeddings
 
     def embed_query(self, query: str) -> List[float]:
-        """Embed a search query using input_type='query'."""
+        """Embed a search query using input_type='query' with disk caching."""
         cleaned_query = query.strip() if query and query.strip() else " "
+        cache_key = f"voyage:{self.model}:query:{cleaned_query}"
+        cached = self.cache.get_embedding(cache_key)
+        if cached is not None:
+            return cached
+
         retries = 10
         for attempt in range(retries):
             try:
@@ -154,7 +160,9 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
                     model=self.model,
                     input_type="query",
                 )
-                return result.embeddings[0]
+                vec = result.embeddings[0]
+                self.cache.set_embeddings([cache_key], [vec])
+                return vec
             except Exception as e:
                 err_msg = str(e).lower()
                 if "rate" in err_msg or "429" in err_msg:
