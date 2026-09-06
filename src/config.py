@@ -75,3 +75,13 @@ BM25_TOP_K = int(os.getenv("BM25_TOP_K", "50"))
 DENSE_TOP_K = int(os.getenv("DENSE_TOP_K", "50"))
 RERANKER_TOP_K = int(os.getenv("RERANKER_TOP_K", "20"))
 
+# Phase 7 — API Server Configuration
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_PORT = int(os.getenv("API_PORT", "8000"))
+API_URL = os.getenv("API_URL", "http://localhost:8000")
+API_CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("API_CORS_ORIGINS", "*").split(",")
+    if origin.strip()
+]
+
