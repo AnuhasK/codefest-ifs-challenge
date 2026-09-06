@@ -57,3 +57,25 @@ def test_orchestrator_toggle_options():
     )
     res_dense = retrieve(query, config=cfg_dense_only)
     assert len(res_dense) > 0
+
+
+def test_orchestrator_entity_search_flag():
+    cfg = RetrievalConfig()
+    assert hasattr(cfg, "enable_entity_search")
+    assert cfg.enable_entity_search is False
+    assert cfg.entity_top_k == 50
+
+    # With enable_entity_search=True, should run cleanly without error
+    cfg_with_entity = RetrievalConfig(
+        enable_bm25=True,
+        enable_dense=False,
+        enable_contextual=False,
+        enable_entity_search=True,
+        enable_reranker=False,
+        bm25_top_k=5,
+        rrf_top_n=5,
+        reranker_top_k=5,
+    )
+    res = retrieve("Vaelith", config=cfg_with_entity)
+    assert isinstance(res, list)
+
