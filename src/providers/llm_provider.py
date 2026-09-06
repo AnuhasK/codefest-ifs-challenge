@@ -119,9 +119,13 @@ class GeminiLLMProvider(LLMProvider):
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
                     continue
+                if any(err_code in err_str for err_code in ("404", "400", "403", "NOT_FOUND", "API_KEY_INVALID", "PERMISSION_DENIED")):
+                    self.rotator.mark_exhausted(key, reason=f"Invalid/inactive key: {err_str[:60]}")
+                    continue
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini generate call failed: {e}") from e
                 time.sleep(2 ** min(attempt, 3))
+
 
         return LLMResponse(content="", tokens_used=0, model=chosen_model)
 
@@ -183,6 +187,9 @@ class GeminiLLMProvider(LLMProvider):
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
                     continue
+                if any(err_code in err_str for err_code in ("404", "400", "403", "NOT_FOUND", "API_KEY_INVALID", "PERMISSION_DENIED")):
+                    self.rotator.mark_exhausted(key, reason=f"Invalid/inactive key: {err_str[:60]}")
+                    continue
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini structured generate call failed: {e}") from e
                 time.sleep(2 ** min(attempt, 3))
@@ -217,9 +224,13 @@ class GeminiLLMProvider(LLMProvider):
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
                     continue
+                if any(err_code in err_str for err_code in ("404", "400", "403", "NOT_FOUND", "API_KEY_INVALID", "PERMISSION_DENIED")):
+                    self.rotator.mark_exhausted(key, reason=f"Invalid/inactive key: {err_str[:60]}")
+                    continue
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini vision call failed for {image_path}: {e}") from e
                 time.sleep(2 ** min(attempt, 3))
+
         return ""
 
 

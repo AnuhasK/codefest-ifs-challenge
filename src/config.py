@@ -52,8 +52,9 @@ EMBEDDING_MODEL = os.getenv(
     "gemini-embedding-001" if EMBEDDING_PROVIDER == "gemini" else "voyage-3-large"
 )
 EMBEDDING_DIMENSION = 1024
-LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.8-flash-lite")
-LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.8-flash-lite")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.8-flash")
+LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.8-flash")
+
 
 # Chunking Parameters
 CHUNK_MAX_TOKENS = int(os.getenv("CHUNK_MAX_TOKENS", "512"))
@@ -64,3 +65,13 @@ CHUNK_MIN_TOKENS = int(os.getenv("CHUNK_MIN_TOKENS", "50"))
 # When True, figure plates are processed with RapidOCR (local, offline, zero API calls).
 # When False, falls back to Gemini Vision for all image processing.
 USE_LOCAL_OCR = os.getenv("USE_LOCAL_OCR", "true").lower() in ("true", "1", "yes")
+
+# Phase 3 — Hybrid Retrieval & Reranker Configuration
+RERANKER_PROVIDER = os.getenv("RERANKER_PROVIDER", "flashrank").lower()
+RERANKER_MODEL = os.getenv("RERANKER_MODEL", "ms-marco-MiniLM-L-12-v2")
+RRF_K = int(os.getenv("RRF_K", "60"))
+RETRIEVAL_MAX_CHUNKS_PER_DOC = int(os.getenv("RETRIEVAL_MAX_CHUNKS_PER_DOC", "3"))
+BM25_TOP_K = int(os.getenv("BM25_TOP_K", "50"))
+DENSE_TOP_K = int(os.getenv("DENSE_TOP_K", "50"))
+RERANKER_TOP_K = int(os.getenv("RERANKER_TOP_K", "20"))
+
