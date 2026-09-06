@@ -17,6 +17,58 @@
 
 ## Step-by-Step Implementation
 
+### 5.0 — Fix Evaluation Metric: Joint Multi-Target Recall (`src/evaluation/metrics.py`)
+
+**Why this is Step 0:** The current `compute_recall_at_k` in `src/evaluation/metrics.py` is technically **Hit@K** — it returns `1.0` if *any single keyword* from the target list appears in *any* top-K chunk. Because the FlashRank reranker puts the primary chunk at Rank 1, all Phase 3–4 experiments score 1.0 across the board (ceiling effect). This metric cannot detect Phase 5 improvements.
+
+Before evaluating Experiment 7, upgrade `metrics.py` with **Joint Multi-Target Recall** — the metric that actually measures multi-hop retrieval quality:
+
+```python
+def compute_joint_recall_at_k(
+    retrieved_items: List[Dict],
+    hop_targets: List[List[str]],  # [[hop1_keywords], [hop2_keywords]]
+    k: int
+) -> float:
+    """
+    Joint Multi-Target Recall@K.
+
+    Returns 1.0 ONLY if at least one chunk in top-K matches hop-1 targets
+    AND at least one (different) chunk in top-K matches hop-2 targets.
+
+    This is the correct metric for Track 1B multi-hop questions:
+    - Hit@K (old): 1.0 if Doc A is at Rank 1, even if Doc B was never retrieved
+    - Joint Recall@K (new): 1.0 only if BOTH Doc A and Doc B appear in top-K
+
+    Example for 1b_007 ("Which accord was won by the faction Ederon Fellgard belongs to?"):
+        hop_targets = [
+            ["Ederon Fellgard", "Iron Covenant", "member"],    # hop-1 chunk
+            ["Iron Covenant", "Sunken Accord", "won"]          # hop-2 chunk
+        ]
+    Returns 1.0 only if both chunks appear in top-K.
+    """
+    top_k_items = retrieved_items[:k]
+    for hop_keywords in hop_targets:
+        hop_found = any(
+            item_matches_targets(item["content"], item["document_title"], hop_keywords)
+            for item in top_k_items
+        )
+        if not hop_found:
+            return 0.0
+    return 1.0
+```
+
+**Also add `MULTIHOP_BENCHMARK_TARGETS`** — a new benchmark dict defining `hop_targets` for each 1B question (the two documents that must both appear in top-K).
+
+**Backward compatibility:** Keep the existing `compute_recall_at_k` (Hit@K) so Phase 2–4 experiment results remain reproducible. Add Joint Recall as an *additional* metric.
+
+**Test (`tests/test_metrics.py` — extend):**
+- Both hop chunks in top-K → `joint_recall = 1.0`
+- Only hop-1 chunk in top-K, hop-2 missing → `joint_recall = 0.0`
+- Neither hop chunk in top-K → `joint_recall = 0.0`
+- Single-hop question (only 1 hop target) → behaves identically to Hit@K
+
+---
+
 ### 5.1 — Relationship Extraction (Layer 2) (`src/ingestion/relationships.py`)
 
 Extract relationships between co-occurring entities using **co-occurrence pre-filtering + LLM structured output**.
@@ -428,21 +480,23 @@ def retrieve_with_multihop(
 
 ### 5.9 — Multi-Hop Evaluation
 
-Run evaluation focused on 1B sample questions:
+Run evaluation focused on 1B sample questions, using **Joint Multi-Target Recall** (the metric added in §5.0) as the primary measure.
 
-| Experiment | Description |
-|---|---|
-| Experiment 6 (from Phase 4) | Hybrid + entity search |
-| Experiment 7 | Hybrid + entity + relationships + multi-hop |
+| Experiment | Description | Primary Metric |
+|---|---|---|
+| Experiment 6 (from Phase 4) | Hybrid + entity search | Hit@K (saturated at 1.0) |
+| Experiment 7 | Hybrid + entity + relationships + multi-hop | **Joint Recall@K** (both hop docs in top-K) |
+
+**Why Experiment 6 is re-evaluated:** With Joint Multi-Target Recall, Exp 6 will likely score well below 1.0 on 1B questions (since it doesn't traverse the graph to collect hop-2 evidence). This gives Exp 7 a meaningful baseline to beat.
 
 Focus on the 7 Track 1B questions from `sample_questions.json`:
-- "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?"
-- "Which individual was a member of the faction that ultimately won the War of Drowned Light?"
-- "Which war did Ravena Stormwell's own faction ultimately win?"
-- "Whose dominion encompasses the lair of the Gravemaw Wyrm?"
+- `1b_007`: "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?"
+- `1b_xxx`: "Which individual was a member of the faction that ultimately won the War of Drowned Light?"
+- `1b_xxx`: "Which war did Ravena Stormwell's own faction ultimately win?"
+- `1b_xxx`: "Whose dominion encompasses the lair of the Gravemaw Wyrm?"
 - etc.
 
-These are precisely the questions that require multi-hop reasoning.
+These are precisely the questions that require multi-hop reasoning across two or more documents.
 
 ---
 
@@ -450,6 +504,8 @@ These are precisely the questions that require multi-hop reasoning.
 
 > **Do NOT proceed to Phase 6 unless ALL of the following are met:**
 
+- [ ] `metrics.py` upgraded with `compute_joint_recall_at_k` and `MULTIHOP_BENCHMARK_TARGETS`
+- [ ] Old `compute_recall_at_k` (Hit@K) preserved for backward compatibility
 - [ ] Relationship extraction runs on chunks with 2+ entities
 - [ ] Relationships stored in Neo4j with evidence metadata
 - [ ] Co-occurrence graph built alongside typed relationships
@@ -459,18 +515,19 @@ These are precisely the questions that require multi-hop reasoning.
 - [ ] QueryState correctly tracks entities, evidence, and iterations across hops
 - [ ] Evidence sufficiency scoring returns meaningful levels (HIGH/MEDIUM/LOW/INSUFFICIENT)
 - [ ] Bounded retry works (reformulates and searches again when evidence is insufficient)
-- [ ] At least **3 of 7** Track 1B sample questions show improved results with multi-hop
+- [ ] At least **3 of 7** Track 1B sample questions show improved **Joint Recall@K** with multi-hop vs Exp 6
 - [ ] Multi-hop pipeline respects iteration bounds (never exceeds max_iterations)
 - [ ] All unit tests pass
-- [ ] Experiment 7 results documented with comparison to Experiment 6
+- [ ] Experiment 7 results documented using Joint Multi-Target Recall (not Hit@K)
 
 ### Key Metrics to Record
 
 ```
-Relationships extracted:      ~X total, Y types
-Multi-hop success rate:       Z/7 1B questions correctly answered
-Experiment 7 vs 6:            1B answer quality Δ
-Average hops per 1B question: ~N
+Relationships extracted:             ~X total, Y types
+Multi-hop success rate:              Z/7 1B questions with Joint Recall@K improvement
+Experiment 7 vs 6 (Joint Recall@K): Δ = ?
+Experiment 7 vs 6 (Hit@K):          Δ = ? (may still be ~0.0 due to ceiling; expected)
+Average hops per 1B question:        ~N
 ```
 
 ---

@@ -294,6 +294,8 @@ Experiment 4 (+ contextual):                Recall@10 = ?, Δ vs baseline = ?
 Experiment 5 (+ reranker):                  Recall@10 = ?, Δ vs baseline = ?
 ```
 
+> **Metric ceiling note:** The `Recall@K` in `src/evaluation/metrics.py` is actually **Hit@K** (binary: does any target keyword appear in top-K?). Once the cross-encoder reranker pushes the primary chunk to Rank 1, all K-variants saturate at 1.0. If Experiments 3–5 all score 1.0, this is a metric saturation ceiling effect — not equal performance. Phase 5 will replace Hit@K with **Joint Multi-Target Recall** to properly measure multi-hop retrieval improvements.
+
 ---
 
 ## Testing Summary
