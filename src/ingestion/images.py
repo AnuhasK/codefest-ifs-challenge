@@ -37,32 +37,14 @@ def classify_image_type(filename: str) -> tuple[str, str]:
         entity_name = entity_slug.replace("_", " ").title()
         return ("figure_plate", entity_name)
 
-    elif name.startswith("atmo_portrait_character_"):
-        entity_slug = name.replace("atmo_portrait_character_", "")
-        return ("portrait", entity_slug.replace("_", " ").title())
+    # Generalized regex for atmospheric illustrations: atmo_<art_type>_<category>_<entity_slug>
+    m = re.match(r"^atmo_([a-z_]+?)_(?:character|faction|location|conflict|creature|artifact)_(.+)$", name)
+    if m:
+        art_type = m.group(1)
+        entity_slug = m.group(2)
+        return (art_type, entity_slug.replace("_", " ").title())
 
-    elif name.startswith("atmo_heraldry_faction_"):
-        entity_slug = name.replace("atmo_heraldry_faction_", "")
-        return ("heraldry", entity_slug.replace("_", " ").title())
-
-    elif name.startswith("atmo_landscape_location_"):
-        entity_slug = name.replace("atmo_landscape_location_", "")
-        return ("landscape", entity_slug.replace("_", " ").title())
-
-    elif name.startswith("atmo_battle_painting_conflict_"):
-        entity_slug = name.replace("atmo_battle_painting_conflict_", "")
-        return ("battle_painting", entity_slug.replace("_", " ").title())
-
-    elif name.startswith("atmo_creature_creature_"):
-        entity_slug = name.replace("atmo_creature_creature_", "")
-        return ("creature", entity_slug.replace("_", " ").title())
-
-    elif name.startswith("atmo_relic_artifact_"):
-        entity_slug = name.replace("atmo_relic_artifact_", "")
-        return ("relic", entity_slug.replace("_", " ").title())
-
-    else:
-        return ("illustration", name.replace("_", " ").title())
+    return ("illustration", name.replace("_", " ").title())
 
 
 # ---------------------------------------------------------------------------
@@ -430,9 +412,15 @@ def process_image(
 ) -> tuple[str, Dict[str, Any]]:
     """
     Process an image using the appropriate strategy:
-    - Figure plates: RapidOCR (local, offline, zero API calls) with Gemini Vision fallback
-    - Atmospheric art: Gemini Vision with key rotation (5 RPM, 20 RPD) & fallback
+    - Figure plates: RapidOCR (local, offline, zero API calls) with disk cache & Gemini Vision fallback
+    - Atmospheric art: Gemini Vision with key rotation (5 RPM, 20 RPD) & disk cache
     """
+    img_name = Path(image_path).name
+    cache = _load_image_cache()
+    if img_name in cache and not cache[img_name].get("extracted_data", {}).get("fallback"):
+        print(f"  [Image Cache] Reusing cached extraction for '{entity_name}'.", flush=True)
+        return (cache[img_name]["description"], cache[img_name]["extracted_data"])
+
     # ── Figure plates: try local OCR first ──
     if asset_type == "figure_plate" and USE_LOCAL_OCR:
         try:
@@ -467,6 +455,12 @@ def process_image(
                     f"  [RapidOCR] Extracted figure plate '{entity_name}': {all_vals_str} ({unit}) [0 API calls]",
                     flush=True,
                 )
+
+                # Persist to disk cache so subsequent runs skip OCR completely
+                cache = _load_image_cache()
+                cache[img_name] = {"description": description, "extracted_data": extracted_data}
+                _save_image_cache(cache)
+
                 return (description, extracted_data)
             else:
                 print(
@@ -530,7 +524,8 @@ def process_corpus_images(
 
         asset_type, entity_name = classify_image_type(img_path.name)
 
-        if use_vision:
+        # Figure plates use local RapidOCR (0 API calls); atmospheric art checks disk cache first
+        if asset_type == "figure_plate" or use_vision:
             description, extracted_data = process_image(
                 str(img_path), asset_type, entity_name
             )

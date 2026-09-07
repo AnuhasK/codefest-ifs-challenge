@@ -61,9 +61,19 @@ def build_template_prefix(
     parts.append(".")
 
     if entities_in_chunk:
-        unique_names = list(dict.fromkeys([e.name for e in entities_in_chunk if e.name]))
-        if unique_names:
-            parts.append(f" Mentions: {', '.join(unique_names)}.")
+        def _fmt_type(t: str) -> str:
+            if not t or t.upper() == "UNKNOWN":
+                return "Unknown"
+            return t.replace("_", " ").title()
+
+        typed_names = [
+            f"{e.name.strip()} [{_fmt_type(e.entity_type)}]"
+            for e in entities_in_chunk
+            if e.name and e.name.strip()
+        ]
+        unique_typed = list(dict.fromkeys(typed_names))
+        if unique_typed:
+            parts.append(f" Entities: {', '.join(unique_typed)}.")
 
     return "".join(parts)
 

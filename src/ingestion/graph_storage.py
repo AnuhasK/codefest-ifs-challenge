@@ -57,9 +57,10 @@ def store_entities_in_neo4j(
 
     conn = neo4j_conn or get_neo4j_connection()
 
-    # Verify Neo4j connectivity before proceeding
+    # Verify Neo4j connectivity and clean previous graph to avoid duplicates across runs
     try:
         conn.init_schema()
+        conn.execute_write("MATCH (n) DETACH DELETE n")
     except Exception as e:
         logger.warning("Failed to connect to Neo4j (%s). Skipping Neo4j entity persistence.", e)
         return {"entities_saved": 0, "chunk_links": 0, "doc_links": 0, "status": "connection_failed", "error": str(e)}
@@ -97,11 +98,15 @@ def store_entities_in_neo4j(
                 if m and m.strip():
                     rec["aliases"].add(m.strip())
 
-        # Update source if higher priority
+        # Update source and type if higher priority
         cur_prio = SOURCE_PRIORITY.get(ent.source, 0)
         if cur_prio > rec["source_priority"]:
             rec["source"] = ent.source
             rec["source_priority"] = cur_prio
+            if ent.entity_type and ent.entity_type != "UNKNOWN":
+                rec["type"] = ent.entity_type
+        elif rec["type"] == "UNKNOWN" and ent.entity_type and ent.entity_type != "UNKNOWN":
+            rec["type"] = ent.entity_type
 
         # Max confidence
         if ent.confidence is not None and ent.confidence > rec["confidence"]:
@@ -309,7 +314,11 @@ def build_cooccurrence_graph(
     entity_name_map: Dict[str, str] = {}
 
     for cid, raw_entities in chunk_to_entities.items():
-        unique_names = sorted(list(set(e.strip() for e in raw_entities if e and e.strip())))
+        unique_names = sorted(list(set(
+            (e.name if hasattr(e, "name") else str(e)).strip()
+            for e in raw_entities
+            if e and (e.name if hasattr(e, "name") else str(e)).strip()
+        )))
         for i in range(len(unique_names)):
             for j in range(i + 1, len(unique_names)):
                 n1, n2 = unique_names[i], unique_names[j]
@@ -360,3 +369,18 @@ def build_cooccurrence_graph(
             logger.error("Error storing CO_OCCURS_WITH batch: %s", e)
 
     return {"edges_saved": total_saved, "status": "success"}
+
+
+def clear_entity_graph(neo4j_conn: Optional[Neo4jConnection] = None) -> Dict[str, Any]:
+    """
+    Wipes all Entity, Chunk, Document, and relationship nodes from Neo4j (Option A).
+    Useful for clean re-ingestion and migration workflows.
+    """
+    conn = neo4j_conn or get_neo4j_connection()
+    try:
+        conn.execute_write("MATCH (n) DETACH DELETE n")
+        logger.info("Successfully wiped Neo4j graph for fresh entity repopulation.")
+        return {"status": "cleared", "details": "All nodes and relationships deleted."}
+    except Exception as e:
+        logger.error("Failed to clear Neo4j graph: %s", e)
+        return {"status": "error", "error": str(e)}

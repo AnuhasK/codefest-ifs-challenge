@@ -81,6 +81,9 @@ def save_to_database(
     """Persist all ingested objects into PostgreSQL within a single managed transaction."""
     with get_db_connection() as conn:
         with conn.cursor() as cur:
+            # Clean previous ingestion records to ensure clean, non-duplicate tables
+            cur.execute("TRUNCATE TABLE provenance, chunks, document_representations, assets, documents CASCADE;")
+
             # 1. Insert documents
             for doc in documents:
                 cur.execute(
@@ -415,6 +418,33 @@ def run_ingestion(
             f"({neo4j_res.get('entities_saved', 0)} entities, "
             f"{neo4j_res.get('chunk_links', 0)} chunk edges, "
             f"{neo4j_res.get('doc_links', 0)} doc edges).",
+            flush=True,
+        )
+
+        # Extract and persist domain relationships & co-occurrence
+        print("Extracting and persisting relationships in Neo4j...", flush=True)
+        from src.ingestion.relationships import extract_all_relationships
+        from src.ingestion.graph_storage import store_relationships_in_neo4j, build_cooccurrence_graph
+
+        relationships = extract_all_relationships(
+            chunks=all_chunks,
+            chunk_to_entities=chunk_to_entities,
+            llm=llm if use_contextual_llm else None,
+            corpus_path=corpus_root,
+        )
+        if relationships:
+            rel_res = store_relationships_in_neo4j(relationships)
+            print(
+                f"Neo4j relationship persistence status: {rel_res.get('status')} "
+                f"({rel_res.get('relationships_saved', 0)} relationships saved across types {rel_res.get('types')}).",
+                flush=True,
+            )
+
+        # Build co-occurrence graph
+        cooccur_res = build_cooccurrence_graph(chunk_to_entities, min_weight=2)
+        print(
+            f"Neo4j co-occurrence status: {cooccur_res.get('status')} "
+            f"({cooccur_res.get('edges_saved', 0)} edges created).",
             flush=True,
         )
 
