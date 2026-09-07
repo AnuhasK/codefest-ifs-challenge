@@ -15,6 +15,7 @@ from src.config import (
     EMBEDDING_MODEL,
     EMBEDDING_DIMENSION,
     EMBEDDINGS_CACHE_PATH,
+    VOYAGE_EMBEDDINGS_CACHE_PATH,
 )
 from src.providers.key_rotator import GeminiKeyRotator
 
@@ -86,9 +87,18 @@ class EmbeddingProvider(ABC):
 
 class VoyageEmbeddingProvider(EmbeddingProvider):
     """
-    Voyage AI embedding provider (e.g. voyage-3-large, 1024 dims).
-    Includes intelligent adaptive rate limit backoff for unpaid tier (3 RPM / 10K TPM)
-    and standard tier (300 RPM).
+    Voyage AI embedding provider (voyage-3-large, 1024 dims).
+    Primary embedding provider for the Ashen Era Archive system.
+
+    Uses a dedicated SQLite cache at data/embeddings_cache_voyage.sqlite —
+    completely separate from the Gemini embedding cache (embeddings_cache.sqlite)
+    which is left untouched. This allows both providers to coexist and makes
+    rollback straightforward.
+
+    Rate limit handling:
+    - batch_size=16 for standard tier (300 RPM)
+    - Adaptive backoff: 21s + 5s*attempt on 429/rate-limit errors
+    - Interrupted runs resume from disk cache (no redundant API calls)
     """
 
     def __init__(self, api_key: Optional[str] = None, model: str = EMBEDDING_MODEL):
@@ -98,7 +108,8 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
         self.model = model
         self.client = voyageai.Client(api_key=self.api_key)
         self._dim = EMBEDDING_DIMENSION
-        self.cache = EmbeddingDiskCache(dimension=self._dim)
+        # Voyage gets its own cache DB — does NOT share with GeminiEmbeddingProvider
+        self.cache = EmbeddingDiskCache(db_path=VOYAGE_EMBEDDINGS_CACHE_PATH, dimension=self._dim)
 
     @property
     def dimension(self) -> int:
@@ -107,17 +118,43 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
     def embed_texts(self, texts: List[str], batch_size: int = 16) -> List[List[float]]:
         """
         Embed document chunks in batches using input_type='document'.
-        Automatically handles rate limits with exponential / adaptive backoff.
+        Checks the Voyage-specific disk cache first — interrupted runs resume without
+        re-calling the API for already-processed chunks.
+        Cache is committed to SQLite immediately after each batch.
         """
         if not texts:
             return []
 
-        all_embeddings: List[List[float]] = []
-        total_batches = (len(texts) + batch_size - 1) // batch_size
+        results: List[Optional[List[float]]] = [None] * len(texts)
+        missing_indices: List[int] = []
+        missing_texts: List[str] = []
 
-        for b_idx, i in enumerate(range(0, len(texts), batch_size), start=1):
-            batch = texts[i : i + batch_size]
-            cleaned_batch = [t if t and t.strip() else " " for t in batch]
+        # 1. Check Voyage disk cache first
+        for idx, t in enumerate(texts):
+            cached = self.cache.get_embedding(t)
+            if cached is not None:
+                results[idx] = cached
+            else:
+                missing_indices.append(idx)
+                missing_texts.append(t)
+
+        if not missing_texts:
+            print(f"  [Voyage AI] All {len(texts)} embeddings loaded from disk cache (0 API calls).", flush=True)
+            return [r for r in results if r is not None]
+
+        if len(missing_texts) < len(texts):
+            print(
+                f"  [Voyage AI] Loaded {len(texts) - len(missing_texts)}/{len(texts)} from disk cache. "
+                f"Generating remaining {len(missing_texts)}...",
+                flush=True,
+            )
+
+        total_batches = (len(missing_texts) + batch_size - 1) // batch_size
+
+        for b_idx, i in enumerate(range(0, len(missing_texts), batch_size), start=1):
+            batch_texts = missing_texts[i : i + batch_size]
+            batch_orig_indices = missing_indices[i : i + batch_size]
+            cleaned_batch = [t if t and t.strip() else " " for t in batch_texts]
 
             retries = 10
             for attempt in range(retries):
@@ -127,9 +164,16 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
                         model=self.model,
                         input_type="document",
                     )
-                    all_embeddings.extend(result.embeddings)
+                    batch_vecs = result.embeddings
+
+                    # Store results and commit to SQLite cache immediately
+                    for orig_idx, vec in zip(batch_orig_indices, batch_vecs):
+                        results[orig_idx] = vec
+                    self.cache.set_embeddings(batch_texts, batch_vecs)
+
+                    done_count = (len(texts) - len(missing_texts)) + min(i + batch_size, len(missing_texts))
                     if b_idx % 5 == 0 or b_idx == total_batches:
-                        print(f"  [Voyage AI] Embedded {len(all_embeddings)}/{len(texts)} chunks (batch {b_idx}/{total_batches})...", flush=True)
+                        print(f"  [Voyage AI] Embedded {done_count}/{len(texts)} chunks (batch {b_idx}/{total_batches})...", flush=True)
                     break
                 except Exception as e:
                     err_msg = str(e).lower()
@@ -142,7 +186,7 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
                             raise RuntimeError(f"Failed embedding batch with Voyage AI: {e}") from e
                         time.sleep(2 ** attempt)
 
-        return all_embeddings
+        return [r for r in results if r is not None]
 
     def embed_query(self, query: str) -> List[float]:
         """Embed a search query using input_type='query' with disk caching."""

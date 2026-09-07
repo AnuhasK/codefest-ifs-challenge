@@ -86,7 +86,7 @@ class GeminiLLMProvider(LLMProvider):
             try:
                 client = genai.Client(
                     api_key=key,
-                    http_options=types.HttpOptions(timeout=30000),
+                    http_options=types.HttpOptions(timeout=120000),
                 )
                 response = client.models.generate_content(
                     model=chosen_model,
@@ -118,6 +118,12 @@ class GeminiLLMProvider(LLMProvider):
                         self.rotator.mark_exhausted(key, reason="Daily quota exceeded")
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
+                    continue
+                if "504" in err_str or "DEADLINE_EXCEEDED" in err_str or "timeout" in err_str.lower():
+                    time.sleep(5.0 + (attempt * 2.0))
+                    continue
+                if "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower():
+                    time.sleep(10.0 + (attempt * 3.0))
                     continue
                 if any(err_code in err_str for err_code in ("404", "400", "403", "NOT_FOUND", "API_KEY_INVALID", "PERMISSION_DENIED")):
                     self.rotator.mark_exhausted(key, reason=f"Invalid/inactive key: {err_str[:60]}")
@@ -155,7 +161,7 @@ class GeminiLLMProvider(LLMProvider):
             try:
                 client = genai.Client(
                     api_key=key,
-                    http_options=types.HttpOptions(timeout=30000),
+                    http_options=types.HttpOptions(timeout=120000),
                 )
                 response = client.models.generate_content(
                     model=chosen_model,
@@ -186,6 +192,12 @@ class GeminiLLMProvider(LLMProvider):
                         self.rotator.mark_exhausted(key, reason="Daily quota exceeded")
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
+                    continue
+                if "504" in err_str or "DEADLINE_EXCEEDED" in err_str or "timeout" in err_str.lower():
+                    time.sleep(5.0 + (attempt * 2.0))
+                    continue
+                if "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower():
+                    time.sleep(10.0 + (attempt * 3.0))
                     continue
                 if any(err_code in err_str for err_code in ("404", "400", "403", "NOT_FOUND", "API_KEY_INVALID", "PERMISSION_DENIED")):
                     self.rotator.mark_exhausted(key, reason=f"Invalid/inactive key: {err_str[:60]}")
