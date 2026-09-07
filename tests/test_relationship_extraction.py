@@ -97,3 +97,47 @@ def test_wiki_entity_cleaners():
     assert "Ignatz Fellgard" in parsed
     assert "Brannoc Palefroth" in parsed
     assert "Thessaly Coldwater" in parsed
+
+
+def test_extract_relationships_batch_with_mock_llm():
+    """Verify batch relationship extraction parses LLM response correctly."""
+    from src.ingestion.relationships import extract_relationships_batch
+    from src.providers.llm_provider import LLMProvider, LLMResponse
+
+    class MockBatchLLM(LLMProvider):
+        def generate(self, prompt: str, system_prompt: str = "", model=None) -> LLMResponse:
+            mock_json = """{
+                "0": [
+                    {
+                        "source": "Ser Vael",
+                        "target": "Ashen Vanguard",
+                        "type": "MEMBER_OF",
+                        "evidence": "Ser Vael rode with the Ashen Vanguard.",
+                        "confidence": 0.95
+                    }
+                ]
+            }"""
+            return LLMResponse(content=mock_json, tokens_used=50, model="mock-gemini")
+
+        def generate_structured(self, prompt: str, response_schema, system_prompt="", model=None):
+            return None
+
+        def describe_image(self, image_path: str, prompt: str, model=None) -> str:
+            return ""
+
+    c_id = uuid4()
+    chunk = Chunk(
+        id=c_id,
+        content="Ser Vael rode with the Ashen Vanguard across the scorched plains.",
+    )
+    items = [(chunk, ["Ser Vael", "Ashen Vanguard"])]
+    mock_llm = MockBatchLLM()
+
+    rels = extract_relationships_batch(items, llm=mock_llm)
+    assert len(rels) >= 1
+    r = rels[0]
+    assert r.source_entity == "Ser Vael"
+    assert r.target_entity == "Ashen Vanguard"
+    assert r.relationship_type == "MEMBER_OF"
+    assert r.confidence == 0.95
+    assert r.chunk_id == str(c_id)

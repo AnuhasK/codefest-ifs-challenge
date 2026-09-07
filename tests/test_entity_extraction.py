@@ -217,3 +217,52 @@ def test_strict_no_en_core_web_trf_in_codebase():
         assert "en_core_web_trf" not in content, (
             f"Found forbidden reference to 'en_core_web_trf' in {py_file}"
         )
+
+
+def test_alias_resolution_propagates_to_chunk_to_entities():
+    """Verify alias resolution propagates to chunk_to_entities and deduplicates within chunk."""
+    cid = str(uuid4())
+    did = str(uuid4())
+    e1 = ExtractedEntity(
+        name="Ser Vael",
+        entity_type="PERSON",
+        mentions=["Ser Vael"],
+        chunk_id=cid,
+        document_id=did,
+        source="gazette",
+        confidence=1.0,
+    )
+    e2 = ExtractedEntity(
+        name="Vael",
+        entity_type="UNKNOWN",
+        mentions=["Vael"],
+        chunk_id=cid,
+        document_id=did,
+        source="gemini_ner",
+        confidence=0.85,
+    )
+    chunk_to_entities = {cid: [e1, e2]}
+    all_entities = [e1, e2]
+    gazette = {"Ser Vael": "PERSON"}
+
+    alias_map = resolve_aliases(
+        all_entities=all_entities,
+        chunk_to_entities=chunk_to_entities,
+        gazette=gazette,
+    )
+
+    # Alias map resolves "Vael" to "Ser Vael"
+    assert alias_map["Vael"] == "Ser Vael"
+
+    # chunk_to_entities must be deduplicated to exactly ONE entity for this chunk
+    chunk_ents = chunk_to_entities[cid]
+    assert len(chunk_ents) == 1
+    assert chunk_ents[0].name == "Ser Vael"
+    assert chunk_ents[0].entity_type == "PERSON"
+    assert chunk_ents[0].source == "gazette"
+    assert "Ser Vael" in chunk_ents[0].mentions
+    assert "Vael" in chunk_ents[0].mentions
+
+    # all_entities must also reflect the deduplicated result
+    assert len(all_entities) == 1
+    assert all_entities[0].name == "Ser Vael"
