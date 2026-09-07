@@ -1,6 +1,6 @@
-# Phase 2 — Baseline RAG + Contextual Retrieval
+# Phase 2 â€” Baseline RAG + Contextual Retrieval
 
-**Timeline: Days 2–3**  
+**Timeline: Days 2â€“3**  
 **Goal:** Corpus-aware entity extraction (gazette + rules + targeted Gemini), hybrid contextual prefixes, standard and contextual embeddings, working question-answering. Establish baseline scores.
 
 > **Status Note (as of current work):** Embeddings (Steps 2.2 + 2.6), contextualization (Step 2.5), key rotation (Step 2.4), and the entity extraction scaffold (Step 2.3) are substantially built. The pipeline runs end-to-end. Phase 2 is currently in progress.
@@ -9,12 +9,12 @@
 
 ## Prerequisites
 
-- Phase 1 complete — all acceptance criteria met
+- Phase 1 complete â€” all acceptance criteria met
 - All chunks stored in PostgreSQL with metadata and provenance
 - Docker Compose running (PostgreSQL + Neo4j)
-- API keys configured: **Google Gemini** (GEMINI_API_KEYS — comma-separated list for key rotation)
+- API keys configured: **Google Gemini** (GEMINI_API_KEYS â€” comma-separated list for key rotation)
 - spaCy installed with `en_core_web_sm` model (`python -m spacy download en_core_web_sm`)
-- **Note:** `en_core_web_trf` is NOT used — see architecture-v1.md §10 for rationale
+- **Note:** `en_core_web_trf` is NOT used â€” see architecture-v1.md Â§10 for rationale
 
 ---
 
@@ -35,7 +35,7 @@ TITLE, DYNASTY, DEITY, CONCEPT, DOCUMENT, BUILDING, MILITARY_UNIT, UNKNOWN
 
 ## Step-by-Step Implementation
 
-### 2.1 — Embedding Provider Abstraction (`src/providers/embeddings.py`)
+### 2.1 â€” Embedding Provider Abstraction (`src/providers/embeddings.py`)
 
 ```python
 class EmbeddingProvider(ABC):
@@ -61,12 +61,12 @@ class GeminiEmbeddingProvider(EmbeddingProvider):
     ...
 
 class VoyageEmbeddingProvider(EmbeddingProvider):
-    """Voyage AI provider (voyage-3-large, 1024 dims). Keep for future use."""
+    """Voyage AI embedding provider (voyage-3-large, 1024 dims). Primary provider.`n    Dedicated disk cache: data/embeddings_cache_voyage.sqlite (separate from Gemini cache)."""
     ...
 ```
 
 **Disk Cache (critical for rate-limited free tier):**
-Every batch committed to `data/embeddings_cache.sqlite` immediately. On any restart, already-computed embeddings load from disk — zero API calls.
+Every batch committed to `data/embeddings_cache.sqlite` immediately. On any restart, already-computed embeddings load from disk â€” zero API calls.
 
 **Test:**
 - Embed a sample text ? verify vector dimension is 1024
@@ -75,7 +75,7 @@ Every batch committed to `data/embeddings_cache.sqlite` immediately. On any rest
 
 ---
 
-### 2.2 — Generate Standard Embeddings
+### 2.2 â€” Generate Standard Embeddings
 
 ```python
 def generate_embeddings(chunks: list[Chunk], provider: EmbeddingProvider) -> None:
@@ -91,7 +91,7 @@ def generate_embeddings(chunks: list[Chunk], provider: EmbeddingProvider) -> Non
 
 ---
 
-### 2.3 — Corpus-Aware Entity Extraction (`src/ingestion/entities.py`)
+### 2.3 â€” Corpus-Aware Entity Extraction (`src/ingestion/entities.py`)
 
 #### Step 1a: Build Gazette from Corpus Structure (0 API calls)
 
@@ -141,7 +141,7 @@ Pass 1: PERSON:"Ser Vael", FACTION:"Ashen Vanguard", PLACE:"Red Vale" (gazette)
 Pass 2: UNKNOWN:"Lord Drovenath" (title prefix "Lord" detected)
 ```
 
-#### Step 1c: Targeted Gemini Entity Pass (~80–150 calls)
+#### Step 1c: Targeted Gemini Entity Pass (~80â€“150 calls)
 
 Triggered only for specific chunks:
 
@@ -226,23 +226,25 @@ def extract_entities_from_corpus(
 ```
 
 **API cost summary:**
-- Step 1a: 0 calls | Step 1b: 0 calls | Step 1c: ~80-150 calls | Step 1d: 0 calls
+- Step 1a: 0 calls (Gazette build)
+- Step 1b: 0 calls (spaCy EntityRuler gazette matching)
+- Step 1c: ~43 batch calls (Gemini 3.8 Flash full-corpus NER @ 50 chunks/call)
+- Step 1d: 0 calls (Alias resolution with chunk_to_entities propagation fix)
 
 **Test (`tests/test_entity_extraction.py`):**
-- Gazette builds ~95 entities with correct types
-- "Ashen Vanguard" in text ? FACTION, confidence=1.0, source="gazette"
-- "Lord Drovenath" (not in gazette) ? UNKNOWN candidate from rules
-- `needs_llm_entity_pass` True for ephemera chunks; False for entity-rich chunks
-- Alias resolution: "Lord Vael" and "Ser Vael" ? same entity ID (if appropriate)
+- Gazette builds ~126 entities with correct types
+- "Ashen Vanguard" in text â†’ FACTION, confidence=1.0, source="gazette"
+- GeminiNERExtractor extracts off-gazette entities into 15-type ontology
+- Alias resolution propagates canonical names to `chunk_to_entities` and deduplicates within chunks
 - `en_core_web_trf` is NOT imported anywhere in the codebase
 
 ---
 
-### 2.4 — Gemini API Key Rotation (`src/providers/key_rotator.py`)
+### 2.4 â€” Gemini API Key Rotation (`src/providers/key_rotator.py`)
 
 ```python
 class GeminiKeyRotator:
-    def __init__(self, api_keys: list[str], max_rpm: int = 8, max_daily: int = 1000):
+    def __init__(self, api_keys: list[str], max_rpm: int = 5, max_daily: int = 20, max_tpm: int = 250000):
         ...
     def next_key(self) -> str:
         """Return next available key, respecting rate limits."""
@@ -250,13 +252,13 @@ class GeminiKeyRotator:
         """Mark key as exhausted. Use ONLY for genuine daily quota errors, NOT 429s."""
 ```
 
-Config: `GEMINI_API_KEYS=key1,key2,key3,key4`
+Config: `GEMINI_API_KEYS=key1,key2,...,key12` (recommended: 12 keys for 60 RPM throughput)
 
 **429 handling rule:** A `429 RESOURCE_EXHAUSTED` for per-minute TPM is temporary. Sleep 15s + retry the same key. Do NOT call `mark_exhausted()`.
 
 ---
 
-### 2.5 — Hybrid Contextual Prefix Generation (`src/ingestion/contextualization.py`)
+### 2.5 â€” Hybrid Contextual Prefix Generation (`src/ingestion/contextualization.py`)
 
 ```python
 def build_template_prefix(
@@ -267,10 +269,10 @@ def build_template_prefix(
     entities_in_chunk: list[ExtractedEntity]
 ) -> str:
     """
-    Tier 1: Template prefix from metadata + gazette entity names.
+    Tier 1: Template prefix from metadata + typed entity names.
     Zero API calls. Used for the vast majority of chunks.
     Output: "From The Ashen Chronicles Vol II, Chapter 7: The War Council at Red Vale.
-             Mentions: Ser Vael, Ashen Vanguard, Leaden Accord."
+             Entities: Ser Vael [Person], Ashen Vanguard [Faction], Leaden Accord [Event]."
     """
 
 def needs_llm_prefix(
@@ -285,7 +287,7 @@ def needs_llm_prefix(
 ```
 
 **Expected split (actual measured result from this corpus):**
-- ~99.9% template prefix (gazette coverage is high — most chunks have entities)
+- ~99.9% template prefix (gazette coverage is high â€” most chunks have entities)
 - ~0.1% LLM prefix (~3 calls)
 - Original estimate of ~500-800 LLM calls was for a corpus without a gazette
 
@@ -293,20 +295,20 @@ def needs_llm_prefix(
 
 ---
 
-### 2.6 — Generate Contextual Embeddings
+### 2.6 â€” Generate Contextual Embeddings
 
 ```python
 def generate_contextual_embeddings(chunks: list[Chunk], provider: EmbeddingProvider) -> None:
     """Embed contextualized_content (prefix + original) and store in contextual_embedding."""
 ```
 
-Disk cache handles deduplication — unchanged chunks won't re-embed.
+Disk cache handles deduplication â€” unchanged chunks won't re-embed.
 
 **Test:** All chunks have 1024-dim `contextual_embedding`; contextual != standard embedding.
 
 ---
 
-### 2.7 — pgvector Index Creation
+### 2.7 â€” pgvector Index Creation
 
 ```sql
 CREATE INDEX chunks_embedding_idx ON chunks 
@@ -321,7 +323,7 @@ CREATE INDEX assets_embedding_idx ON assets
 
 ---
 
-### 2.8 — Dense Search (`src/retrieval/dense_search.py`)
+### 2.8 â€” Dense Search (`src/retrieval/dense_search.py`)
 
 ```python
 def dense_search(
@@ -335,7 +337,7 @@ def dense_search(
 
 ---
 
-### 2.9 — LLM Provider Abstraction (`src/providers/llm_provider.py`)
+### 2.9 â€” LLM Provider Abstraction (`src/providers/llm_provider.py`)
 
 ```python
 class GeminiLLMProvider(LLMProvider):
@@ -348,7 +350,7 @@ class GeminiLLMProvider(LLMProvider):
 
 ---
 
-### 2.10 — Basic Answer Generation
+### 2.10 â€” Basic Answer Generation
 
 System prompt enforcing evidence-only answers with citations:
 ```
@@ -358,7 +360,7 @@ Do not use prior knowledge. Cite as [EVIDENCE_X]. If insufficient, say so.
 
 ---
 
-### 2.11 — Baseline Evaluation
+### 2.11 â€” Baseline Evaluation
 
 | Experiment | Search | Description |
 |---|---|---|
@@ -379,8 +381,8 @@ Do not use prior knowledge. Cite as [EVIDENCE_X]. If insufficient, say so.
 - [ ] Alias resolution produces surface_form ? canonical entity mapping
 - [ ] Entity-to-chunk mapping produced (chunk_id ? list of entities)
 - [ ] **`en_core_web_trf` is NOT installed or imported anywhere in the codebase**
-- [ ] Gemini embedding provider works (1024 dims)
-- [ ] Disk cache (`data/embeddings_cache.sqlite`) created and persists embeddings across runs
+- [ ] Voyage AI embedding provider works (`voyage-3-large`, 1024 dims)
+- [ ] Voyage disk cache (`data/embeddings_cache_voyage.sqlite`) created and persists embeddings across runs
 - [ ] 429 errors handled as temporary rate limits (15s pause + retry), NOT key exhaustion
 - [ ] All chunks have standard embeddings (1024 dims) in pgvector
 - [ ] All chunks have contextual prefixes (template or LLM) in `contextualized_content`
@@ -397,15 +399,15 @@ Do not use prior knowledge. Cite as [EVIDENCE_X]. If insufficient, say so.
 
 | Task | Calls |
 |---|---|
-| Gazette + rules entity extraction | **0** |
-| Targeted Gemini entity pass | **~80–150** |
-| Alias resolution | **0** |
+| Gazette build & spaCy EntityRuler matching | **0** |
+| Gemini NER (2,117 chunks @ 50/batch) | **~43 batches** |
+| Alias resolution & deduplication | **0** |
 | Contextual prefixes (template) | **0** |
-| Contextual prefixes (LLM) | **~3** |
-| Standard embeddings (2,117 chunks) | **~424** |
-| Contextual embeddings (2,117 chunks) | **~424** |
-| Image asset embeddings (70 assets) | **~14** |
-| **Phase 2 total** | **~945–1,015** |
+| Contextual prefixes (LLM) | **~1** |
+| Standard embeddings (2,117 chunks) â€” Voyage AI | **~133 batches** |
+| Contextual embeddings (2,117 chunks) â€” Voyage AI | **~133 batches** |
+| Image asset embeddings (70 assets) â€” Voyage AI | **~5 batches** |
+| **Phase 2 Gemini LLM calls** | **~44 calls** |
 
 ---
 
@@ -421,3 +423,4 @@ Do not use prior knowledge. Cite as [EVIDENCE_X]. If insufficient, say so.
 | `tests/test_baseline_rag.py` | End-to-end: question ? search ? generate ? answer |
 
 Run all tests: `pytest tests/ -v`
+

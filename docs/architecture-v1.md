@@ -280,10 +280,10 @@ The Cypher version is readable, flexible, and doesn't require pre-defined join p
 | Pillow (PIL) | Image loading, format handling |
 | rapidocr-onnxruntime | Local OCR for figure plates — extracts printed text/numbers from data plates offline (~50ms/image on CPU, ~15MB, zero API calls) |
 | Gemini Vision | Visual description of atmospheric art (portraits, heraldry, landscapes, battle paintings, creatures, relics) |
-| spaCy + `en_core_web_sm` | Corpus-aware entity extraction helper: POS tagging, pronoun detection (for contextualization), noun chunk candidate extraction, and gazette EntityRuler matching. **Not** the primary NER — the gazette is. `en_core_web_sm` only (~12MB, ~50ms/chunk on CPU). `en_core_web_trf` dropped: too heavy (~1.3GB) for RAM-constrained ingestion and unreliable on fictional vocabulary. |
+| spaCy + `en_core_web_sm` | POS tagging and pronoun detection for contextualization only — **NOT** used for NER. `en_core_web_sm` only (~12MB, ~50ms/chunk on CPU). `en_core_web_trf` dropped entirely. Entity extraction is driven by Gazette ground truth + Gemini full-corpus structured NER. |
 | Pydantic | Structured output schema enforcement for LLM relationship extraction |
 
-**Rationale:** These are the standard, well-maintained Python libraries for each format. Figure plates contain printed text and numbers that a lightweight local OCR library (`rapidocr-onnxruntime`) extracts with near-perfect accuracy on CPU — no API calls needed, making extraction deterministic and reproducible. Gemini Vision is reserved for atmospheric art where visual scene description genuinely requires a vision-language model. The Gazette (built from wiki/codex filenames) is the primary NER layer — it provides near-100% recall for canonical entities without relying on a pretrained model trained on real-world text. spaCy `en_core_web_sm` acts as a lightweight helper: POS tagging for pronoun detection (contextualization), noun chunk extraction for candidate entities, and the EntityRuler for gazette pattern matching. `en_core_web_trf` is deliberately excluded — at ~1.3GB it strains the available RAM, and a BERT model trained on news/Wikipedia is unreliable on invented fictional vocabulary. Pydantic enforces structured output schemas when the LLM classifies relationships, preventing hallucinated relationship types. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
+**Rationale:** These are the standard, well-maintained Python libraries for each format. Figure plates contain printed text and numbers that a lightweight local OCR library (`rapidocr-onnxruntime`) extracts with near-perfect accuracy on CPU — no API calls needed, making extraction deterministic and reproducible. Gemini Vision is reserved for atmospheric art where visual scene description genuinely requires a vision-language model. The Gazette (built from wiki/codex filenames) is the deterministic entity grounding layer, while Gemini 3.8 Flash performs full-corpus semantic NER across chunks to discover missing entities and classify them into the 15-type ontology. spaCy `en_core_web_sm` acts as a lightweight linguistic utility: POS tagging for pronoun detection in contextualization, and EntityRuler for gazette pattern matching. `en_core_web_trf` is deliberately excluded — at ~1.3GB it strains the available RAM, and a BERT model trained on news/Wikipedia is unreliable on invented fictional vocabulary. Pydantic enforces structured output schemas when the LLM classifies relationships, preventing hallucinated relationship types. No need for heavier solutions (Apache Tika, Unstructured.io) given the corpus size.
 
 ---
 
@@ -314,7 +314,7 @@ Structured data:                             Graph data:
 │   ├── contextual_embedding (vector)        │   └── Organization
 │   └── metadata (jsonb)                     │
 ├── provenance records                       ├── Relationship edges
-├── BM25 / FTS index (tsvector)             │   ├── MEMBER_OF
+├── BM25 / FTS index (tsvector)              │   ├── MEMBER_OF
 └── evidence records                         │   ├── LED
                                              │   ├── PARTICIPATED_IN
                                              │   ├── OCCURRED_AT
@@ -377,11 +377,11 @@ IMMUTABLE CORPUS (read-only)
         │
         ▼
   Entity Extraction (Layer 1)
-  (gazette + spaCy NER → entity annotations per chunk, zero LLM calls)
+  (Gazette + Gemini structured NER → typed entity candidates, alias-resolved to canonical names)
         │
         ▼
   Contextualization
-  (hybrid: template prefix using metadata + spaCy entities for most chunks,
+  (hybrid: template prefix using metadata + typed entities for most chunks,
    LLM prefix for pronoun-heavy chunks only — see §8)
         │
         ▼
@@ -394,7 +394,7 @@ IMMUTABLE CORPUS (read-only)
         │
         ▼
   Relationship Extraction (Layer 2)
-  (co-occurrence pre-filter + LLM structured output → Neo4j edges)
+  (co-occurrence pre-filter + batched LLM structured output [10 chunks/call] → Neo4j edges)
         │
         ▼
   Claim Extraction (Layer 3 — stretch)
@@ -632,8 +632,8 @@ Before embedding, we prepend a **contextual prefix** that situates the chunk:
 │                                             │
 │ "From The Ashen Chronicles Vol II,          │
 │  Chapter 7: The War Council at Red Vale.    │
-│  Mentions: Ser Vael, Leaden Accord,         │
-│  Ashen Vanguard.                            │
+│  Entities: Ser Vael [Person], Leaden        │
+│  Accord [Event], Ashen Vanguard [Faction].  │
 │                                             │
 │  He then broke the accord and fled to the   │
 │  eastern marshes."                          │
@@ -642,11 +642,11 @@ Before embedding, we prepend a **contextual prefix** that situates the chunk:
 
 ### How we generate contextual prefixes — Hybrid Approach
 
-We use a **two-tier** strategy that minimizes LLM calls by leveraging the entity extraction (gazette + spaCy) already performed earlier in the ingestion pipeline:
+We use a **two-tier** strategy that minimizes LLM calls by leveraging the entity extraction (Gazette + Gemini NER) already performed earlier in the ingestion pipeline:
 
 #### Tier 1: Template Prefix (majority of chunks, zero API calls)
 
-Built from chunk metadata (available from Phase 1) + spaCy entity annotations:
+Built from chunk metadata (available from Phase 1) + extracted typed entities:
 
 ```python
 def build_template_prefix(chunk, document, entities_in_chunk):
@@ -657,15 +657,17 @@ def build_template_prefix(chunk, document, entities_in_chunk):
         parts.append(f": {chunk.section_title}")
     parts.append(".")
     if entities_in_chunk:
-        entity_names = [e.name for e in entities_in_chunk]
-        parts.append(f" Mentions: {', '.join(entity_names)}.")
+        typed_names = [f"{e.name} [{e.entity_type.capitalize()}]" for e in entities_in_chunk if e.name]
+        unique_typed = list(dict.fromkeys(typed_names))
+        if unique_typed:
+            parts.append(f" Entities: {', '.join(unique_typed)}.")
     return "".join(parts)
 ```
 
 **Example output:**
 ```
 "From The Ashen Chronicles Vol II, Chapter 7: The War Council at Red Vale.
- Mentions: Ser Vael, Ashen Vanguard, Leaden Accord."
+ Entities: Ser Vael [Person], Ashen Vanguard [Faction], Leaden Accord [Event]."
 ```
 
 This captures the **biggest retrieval improvements** — the embedding now knows which document, section, and entities are involved.
@@ -898,23 +900,22 @@ Parse ~95 wiki filenames + codex entries → **complete entity dictionary with c
 
 #### Step 1b: spaCy Gazette Matching + Rule-Based Candidates
 
-Apply a two-pass offline pipeline using `en_core_web_sm` (small, fast, ~12MB):
+Apply an offline gazette matching pass followed by full-corpus semantic NER:
 
 ```
 Pass 1: spaCy EntityRuler (gazette matching)
-  - Load gazette patterns from wiki/codex filenames
-  - Exact match + case-insensitive match
-  - Output: gazette entities with correct type labels
-  → All gazette entities captured with high confidence
+  - Load gazette patterns from wiki/codex filenames (~126 entities)
+  - Exact match + case-insensitive token matching
+  - Output: canonical gazette entities with ground-truth ontology type labels
+  → All canonical gazette entities captured deterministically (confidence: 1.0)
 
-Pass 2: Capitalized Phrase Rule Extraction
-  - Extract capitalized 1–3 word noun chunks NOT already in gazette
-  - Apply title prefix patterns: "Ser ", "Lord ", "Lady ", "High ", "the "
-  - Tag as UNKNOWN (candidate, pending classification)
-  → Catches entities mentioned only in novels/ephemera
+Pass 2: Gemini Full-Corpus Structured NER (batched at 50 chunks/call)
+  - Evaluates all chunks with Gemini 3.8 Flash, utilizing the 250K TPM window (~33K tokens/call)
+  - Confirmed gazette entities provided in prompt as ground truth context
+  - Extracts both on-gazette and newly discovered off-gazette entities (characters, factions, artifacts, events)
+  - Classifies all entities into the 15-type Ashen Era ontology with confidence scores
+  → Complete semantic recall across novels, ephemera, and codex entries
 ```
-
-Note: Pass 2 deliberately does NOT use spaCy's pretrained NER classifier. The `en_core_web_sm` NER model is unreliable on fictional vocabulary and would produce wrong type labels. Only its tokenizer, POS tagger, and noun chunk extractor are used.
 
 **Example:**
 ```
@@ -926,51 +927,31 @@ Pass 1 output (gazette): [
   Place: "Red Vale"         (gazette, confidence: 1.0)
 ]
 
-Pass 2 output (rules): [
-  UNKNOWN: "Lord Drovenath" (candidate, title prefix "Lord" detected)
+Pass 2 output (Gemini NER): [
+  Person: "Ser Vael"        (ground truth, confidence: 1.0)
+  Faction: "Ashen Vanguard" (ground truth, confidence: 1.0)
+  Place: "Red Vale"         (ground truth, confidence: 1.0)
+  Person: "Lord Drovenath"  (discovered entity, confidence: 0.95)
 ]
 ```
 
-- Gazette entities stored as Neo4j nodes immediately
-- `UNKNOWN` candidates collected for Step 1c
-- **This alone enables:** entity-based retrieval, basic cross-document linking
-- **API cost: 0 calls**
+- Gazette + Gemini entities merged deterministically per chunk
+- Results cached persistently in `data/entity_extraction_cache.json` by chunk content hash
+- **API cost: ~43 batch calls across 2,117 chunks (50 chunks/batch)**
 
-#### Step 1c: Targeted Gemini Entity Pass for Off-Gazette Candidates
+#### Step 1c: Structured Output Schema & Ontology Enforcement
 
-Not all entities have wiki articles. Characters introduced only in novels, ephemera (letters, tavern ballads, announcements), or in-passing references must be discovered differently.
+The Gemini prompt presents confirmed gazette entities as ground truth and requires structured JSON output:
 
-**Which chunks get LLM entity extraction:**
-
-| Trigger condition | Rationale | Est. chunk count |
-|---|---|---|
-| Chunk has 4+ `UNKNOWN` candidate phrases | Rule extraction found many unclassified names | ~50–100 |
-| Chunk is from an ephemera document | Letters/ballads introduce the most off-gazette characters | ~20–40 docs |
-| Chunk mentions title prefixes ("Ser", "Lord") with names not in gazette | High signal for off-gazette persons | ~30–60 |
-
-**Gemini prompt for targeted entity extraction:**
-```
-This is a chunk from a fictional fantasy corpus called "Ashen Era".
-The following candidate names were detected by pattern matching:
-{candidates}
-
-For each candidate, classify it using ONLY these types:
-PERSON, FACTION, PLACE, EVENT, ARTIFACT, ORGANIZATION, CREATURE, 
-TITLE, DYNASTY, DEITY, CONCEPT, DOCUMENT, BUILDING, MILITARY_UNIT, UNKNOWN
-
-Also identify any other named entities you see that were missed.
-
-Return JSON only:
-{"entities": [{"mention": "...", "canonical_name": "...", "type": "...", "confidence": 0.0-1.0}]}
-
-Do not invent entities. Only extract what is explicitly present in the text.
-
-Chunk text:
-{chunk_text}
+```json
+{
+  "0": [
+    {"mention": "Lord Drovenath", "canonical_name": "Drovenath", "type": "PERSON", "confidence": 0.95}
+  ]
+}
 ```
 
-- Store classified entities as Neo4j nodes with `confidence` score
-- Add `canonical_name` to alias table (see Step 1d)
+Entities are normalized against the 15-type ontology, merged with gazette records, and passed to alias resolution.
 - **API cost: ~80–150 calls**
 
 #### Step 1d: Alias Resolution — Collapse Name Variants
@@ -1059,22 +1040,23 @@ Key constraint: `accused_of` must NOT automatically become `committed`. The dist
 
 ---
 
-### LLM Budget Summary (Gemini Free Tier — Revised)
+### LLM Budget Summary (Gemini 3.8 Flash — 5 RPM, 20 RPD, 250K TPM)
 
-| Task | Method | API Calls | With 4 Keys @ 100 RPM |
-|---|---|---|---|
-| Entity extraction — gazette + rules (Layer 1a/1b) | Gazette + spaCy `en_core_web_sm` | **0** | N/A |
-| Entity extraction — off-gazette candidates (Layer 1c) | Targeted Gemini pass | **~80–150** | ~2–3 min |
-| Alias resolution (Layer 1d) | String matching + embeddings | **0** | N/A |
-| Contextual prefixes (entity-rich chunks) | Template (metadata + gazette entities) | **0** | N/A |
-| Contextual prefixes (pronoun-heavy chunks) | LLM | **~3** | <1 min |
-| Relationship extraction (Layer 2) | Co-occurrence + LLM | **~500–800** | ~5–8 min |
-| Image processing — figure plates | RapidOCR (local, offline) | **0** | N/A |
-| Image processing — atmospheric art | Gemini Vision | **~55** | ~1.5 min |
-| Answer generation | LLM (irreplaceable) | **1/query** | Real-time |
-| **Total ingestion** | | **~638–1,008** | **~9–13 min** |
+| Task | Method | API Calls | Tokens/call | Wall-clock (12 keys @ 60 RPM) |
+|---|---|---|---|---|
+| Gazette building (Layer 1a) | Offline corpus parser | **0** | — | N/A |
+| Gazette matching (Layer 1b) | spaCy `en_core_web_sm` EntityRuler | **0** | — | N/A |
+| Gemini NER — 2,117 chunks @ 50/batch (Layer 1c) | Gemini 3.8 Flash (batched) | **~43** | ~33K | ~45 sec |
+| Alias resolution (Layer 1d) | String matching + graph canonicalization | **0** | — | N/A |
+| Contextual prefixes (entity-rich chunks) | Template (metadata + typed entities) | **0** | — | N/A |
+| Contextual prefixes (pronoun-heavy chunks) | Gemini 3.8 Flash | **~1** | ~8K | ~2 sec |
+| Relationship extraction (~800 chunks @ 10/batch) | Gemini 3.8 Flash (batched) | **~80** | ~12K | ~1.5 min |
+| Image processing — figure plates | RapidOCR (local, offline) | **0** | — | N/A |
+| Image processing — atmospheric art | Gemini Vision | **~55** | ~2K | ~1 min |
+| Answer generation | Gemini 3.8 Flash | **1/query** | varies | Real-time |
+| **Total ingestion calls** | | **~179** | | **~3.5 min** |
 
-> **Previously:** ~1,055–1,655 calls with 3 keys. The corpus-aware revision saves an additional ~40% of the LLM budget by eliminating untargeted NER calls and replacing `en_core_web_trf` with the gazette + rule approach. Alias resolution now happens using already-computed embeddings, costing 0 extra API calls.
+> **Key count recommendation:** 179 total ingestion calls ÷ 20 RPD = **9 keys minimum**. We recommend **12 keys** in `GEMINI_API_KEYS` to accommodate rate limit backoff and retries. At 12 keys × 5 RPM = 60 RPM total throughput, full ingestion finishes in under 4 minutes.
 
 ### Why phased?
 
