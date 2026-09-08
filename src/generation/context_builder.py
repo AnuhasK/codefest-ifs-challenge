@@ -39,10 +39,27 @@ def build_evidence_context(
         if isinstance(res, EvidenceRecord):
             ev_id = res.id
             doc_title = res.document_title or "Unknown Document"
+            meta = getattr(res, "metadata", {}) or {}
+            ref_loc = meta.get("reference_location")
+            line_start = meta.get("line_start")
+            line_end = meta.get("line_end")
+            para_start = meta.get("paragraph_start")
+
             loc_parts = []
-            if res.page:
-                loc_parts.append(f"p.{res.page}")
-            if res.section_title:
+            if line_start == "Plate" or meta.get("is_asset_chunk"):
+                loc_parts.append("Plate / Visual Record")
+            elif ref_loc:
+                loc_parts.append(ref_loc)
+            elif res.page:
+                if line_start and line_end:
+                    loc_parts.append(f"p.{res.page} (Lines {line_start}-{line_end})")
+                elif para_start:
+                    loc_parts.append(f"p.{res.page} (Para {para_start})")
+                else:
+                    loc_parts.append(f"p.{res.page}")
+            elif line_start:
+                loc_parts.append(f"Line {line_start}")
+            if res.section_title and not (ref_loc and "Section" in ref_loc):
                 loc_parts.append(f"Section: {res.section_title}")
             loc_str = f" ({', '.join(loc_parts)})" if loc_parts else ""
 
@@ -59,15 +76,29 @@ def build_evidence_context(
         elif isinstance(res, SearchResult):
             ev_id = f"EVIDENCE_{i}"
             doc_title = res.document_title or res.metadata.get("source_file", "Unknown Document")
+            meta = getattr(res, "metadata", {}) or {}
+            ref_loc = meta.get("reference_location")
+            line_start = meta.get("line_start")
+            line_end = meta.get("line_end")
+            para_start = meta.get("paragraph_start")
+
             loc_parts = []
-            if res.page_start:
-                if res.page_end and res.page_end != res.page_start:
+            if line_start == "Plate" or meta.get("is_asset_chunk"):
+                loc_parts.append("Plate / Visual Record")
+            elif ref_loc:
+                loc_parts.append(ref_loc)
+            elif res.page_start:
+                if line_start and line_end:
+                    loc_parts.append(f"p.{res.page_start} (Lines {line_start}-{line_end})")
+                elif res.page_end and res.page_end != res.page_start:
                     loc_parts.append(f"pp. {res.page_start}-{res.page_end}")
                 else:
                     loc_parts.append(f"p. {res.page_start}")
+            elif line_start:
+                loc_parts.append(f"Line {line_start}")
             if res.chapter:
                 loc_parts.append(f"Chapter: {res.chapter}")
-            if res.section_title:
+            if res.section_title and not (ref_loc and "Section" in ref_loc):
                 loc_parts.append(f"Section: {res.section_title}")
 
             loc_str = f" ({', '.join(loc_parts)})" if loc_parts else ""

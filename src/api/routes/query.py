@@ -142,13 +142,32 @@ async def query_endpoint(request: QueryRequest) -> QueryResponse:
         # 1. Map Citations
         citations: List[CitationItem] = []
         for c in final_answer.citations:
+            meta = c.get("metadata") or {}
+            page_val = c.get("page") or meta.get("page") or 1
+            ref_loc = c.get("reference_location") or meta.get("reference_location")
+            if not ref_loc:
+                l_start = c.get("line_start") or meta.get("line_start")
+                l_end = c.get("line_end") or meta.get("line_end")
+                p_start = meta.get("paragraph_start")
+                if l_start == "Plate" or meta.get("is_asset_chunk"):
+                    ref_loc = "Plate / Visual Record"
+                elif l_start and l_end:
+                    ref_loc = f"p. {page_val} (Lines {l_start}-{l_end})"
+                elif p_start:
+                    ref_loc = f"p. {page_val} (Para {p_start})"
+                else:
+                    ref_loc = f"p. {page_val}"
+
             citations.append(
                 CitationItem(
                     evidence_id=c.get("evidence_id", ""),
                     document_title=c.get("document_title", "Archive Document"),
-                    source_path=c.get("source_path"),
-                    page=c.get("page"),
-                    excerpt=c.get("excerpt", ""),
+                    source_path=c.get("source_path") or c.get("source_file"),
+                    page=page_val,
+                    excerpt=c.get("excerpt", "") or c.get("original_text", "")[:200],
+                    reference_location=ref_loc,
+                    line_start=c.get("line_start") or meta.get("line_start"),
+                    line_end=c.get("line_end") or meta.get("line_end"),
                 )
             )
 

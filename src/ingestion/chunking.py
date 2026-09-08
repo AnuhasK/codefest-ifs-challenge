@@ -92,6 +92,9 @@ def chunk_document(
                 paras = sec_text.split("\n\n")
                 sub_chunks = chunk_paragraphs_with_overlap(paras)
                 for sub in sub_chunks:
+                    p_est = max(1, (position // 2) + 1)
+                    l_start = (position * 25) + 1
+                    l_end = l_start + max(1, len(sub.splitlines()))
                     chunks.append(
                         Chunk(
                             id=uuid4(),
@@ -100,12 +103,24 @@ def chunk_document(
                             content=sub,
                             section_title=sec.title,
                             position=position,
+                            page_start=p_est,
+                            page_end=p_est,
                             token_count=approximate_token_count(sub),
-                            metadata={"category": category, "section_level": sec.level},
+                            metadata={
+                                "category": category,
+                                "section_level": sec.level,
+                                "page": p_est,
+                                "line_start": l_start,
+                                "line_end": l_end,
+                                "reference_location": f"p. {p_est} (Lines {l_start}-{l_end})",
+                            },
                         )
                     )
                     position += 1
             else:
+                p_est = max(1, (position // 2) + 1)
+                l_start = (position * 25) + 1
+                l_end = l_start + max(1, len(sec_text.splitlines()))
                 chunks.append(
                     Chunk(
                         id=uuid4(),
@@ -114,8 +129,17 @@ def chunk_document(
                         content=sec_text,
                         section_title=sec.title,
                         position=position,
+                        page_start=p_est,
+                        page_end=p_est,
                         token_count=tokens,
-                        metadata={"category": category, "section_level": sec.level},
+                        metadata={
+                            "category": category,
+                            "section_level": sec.level,
+                            "page": p_est,
+                            "line_start": l_start,
+                            "line_end": l_end,
+                            "reference_location": f"p. {p_est} (Lines {l_start}-{l_end})",
+                        },
                     )
                 )
                 position += 1
@@ -127,6 +151,7 @@ def chunk_document(
                 paras = sec.content.split("\n\n")
                 sub_chunks = chunk_paragraphs_with_overlap(paras)
                 for sub in sub_chunks:
+                    p_est = max(1, (position // 2) + 1)
                     chunks.append(
                         Chunk(
                             id=uuid4(),
@@ -136,8 +161,14 @@ def chunk_document(
                             chapter=sec.title,
                             section_title=sec.title,
                             position=position,
+                            page_start=p_est,
+                            page_end=p_est,
                             token_count=approximate_token_count(sub),
-                            metadata={"category": category},
+                            metadata={
+                                "category": category,
+                                "page": p_est,
+                                "reference_location": f"p. {p_est}",
+                            },
                         )
                     )
                     position += 1
@@ -167,6 +198,7 @@ def chunk_document(
             table_lines = [" | ".join(row) for row in table.get("rows", [])]
             table_text = "\n".join(table_lines)
             if table_text.strip():
+                p_est = max(1, (position // 2) + 1)
                 chunks.append(
                     Chunk(
                         id=uuid4(),
@@ -175,8 +207,10 @@ def chunk_document(
                         content=f"Table: {doc.title}\n{table_text}",
                         section_title="Data Table",
                         position=position,
+                        page_start=p_est,
+                        page_end=p_est,
                         token_count=approximate_token_count(table_text),
-                        metadata={"category": category, "is_table": True},
+                        metadata={"category": category, "is_table": True, "page": p_est, "reference_location": f"p. {p_est} (Table)"},
                     )
                 )
                 position += 1
@@ -187,6 +221,7 @@ def chunk_document(
                 paras = sec.content.split("\n\n")
                 sub_chunks = chunk_paragraphs_with_overlap(paras)
                 for sub in sub_chunks:
+                    p_est = max(1, (position // 2) + 1)
                     chunks.append(
                         Chunk(
                             id=uuid4(),
@@ -195,8 +230,10 @@ def chunk_document(
                             content=sub,
                             section_title=sec.title,
                             position=position,
+                            page_start=p_est,
+                            page_end=p_est,
                             token_count=approximate_token_count(sub),
-                            metadata={"category": category},
+                            metadata={"category": category, "page": p_est, "reference_location": f"p. {p_est}"},
                         )
                     )
                     position += 1
@@ -213,7 +250,7 @@ def chunk_document(
                             page_end=page.page_number,
                             position=position,
                             token_count=approximate_token_count(page.text),
-                            metadata={"category": category},
+                            metadata={"category": category, "page": page.page_number, "reference_location": f"p. {page.page_number}"},
                         )
                     )
                     position += 1
@@ -225,6 +262,7 @@ def chunk_document(
             paras = text.split("\n\n")
             sub_chunks = chunk_paragraphs_with_overlap(paras, max_tokens=CHUNK_MAX_TOKENS)
             for sub in sub_chunks:
+                p_est = max(1, (position // 2) + 1)
                 chunks.append(
                     Chunk(
                         id=uuid4(),
@@ -233,8 +271,10 @@ def chunk_document(
                         content=sub,
                         section_title=doc.title,
                         position=position,
+                        page_start=p_est,
+                        page_end=p_est,
                         token_count=approximate_token_count(sub),
-                        metadata={"category": category},
+                        metadata={"category": category, "page": p_est, "reference_location": f"p. {p_est}"},
                     )
                 )
                 position += 1
@@ -262,6 +302,8 @@ def create_image_chunk(asset: Asset) -> Chunk:
         content=content,
         section_title=f"{asset.asset_type.title()} - {asset.entity_name}",
         position=0,
+        page_start=1,
+        page_end=1,
         token_count=approximate_token_count(content),
         metadata={
             "is_asset_chunk": True,
@@ -269,5 +311,8 @@ def create_image_chunk(asset: Asset) -> Chunk:
             "asset_type": asset.asset_type,
             "entity_name": asset.entity_name,
             "file_path": asset.file_path,
+            "page": 1,
+            "line_start": "Plate",
+            "reference_location": "Plate / Visual Record",
         },
     )

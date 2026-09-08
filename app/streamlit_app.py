@@ -1,4 +1,10 @@
 import os
+import sys
+from pathlib import Path
+
+# Ensure project root is in sys.path so 'app' and 'src' modules can be resolved
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import time
 from typing import Dict, Any, List, Optional
 import requests
@@ -75,6 +81,33 @@ API_URL = os.getenv("API_URL", "http://localhost:8000").rstrip("/")
 # 2. Helper Functions & API Calls
 # ==========================================
 
+def format_citation_label(cite: Dict[str, Any]) -> str:
+    """Format citation page, line numbers, or plate identifier clearly without unlisted placeholders."""
+    ref_loc = cite.get("reference_location")
+    if ref_loc:
+        return ref_loc
+    meta = cite.get("metadata") or {}
+    ref_loc = meta.get("reference_location")
+    if ref_loc:
+        return ref_loc
+    page = cite.get("page") or meta.get("page")
+    l_start = cite.get("line_start") or meta.get("line_start")
+    l_end = cite.get("line_end") or meta.get("line_end")
+    p_start = meta.get("paragraph_start")
+
+    if l_start == "Plate" or meta.get("is_asset_chunk"):
+        return "Plate / Visual Record"
+    if page:
+        if l_start and l_end:
+            return f"p. {page} (Lines {l_start}-{l_end})"
+        if p_start:
+            return f"p. {page} (Para {p_start})"
+        return f"p. {page}"
+    if l_start:
+        return f"Line {l_start}"
+    return "p. 1"
+
+
 def check_backend_health() -> Dict[str, Any]:
     """Check health and connectivity of FastAPI backend and databases."""
     try:
@@ -110,7 +143,7 @@ def execute_query(question: str, max_hops: int, top_k: int, include_trace: bool)
         "include_trace": include_trace,
     }
     try:
-        response = requests.post(f"{API_URL}/query", json=payload, timeout=120)
+        response = requests.post(f"{API_URL}/query", json=payload, timeout=180)
         if response.status_code == 200:
             return response.json()
         else:
@@ -253,7 +286,7 @@ with col_left:
                 if msg.get("citations"):
                     with st.expander("📚 Citations in this response", expanded=False):
                         for cite in msg["citations"]:
-                            p_num = f"p.{cite.get('page')}" if cite.get("page") else "page unlisted"
+                            p_num = format_citation_label(cite)
                             st.markdown(f"- **[{cite.get('document_title', 'Document')}, {p_num}]**: {cite.get('excerpt', '')}")
 
         # Check if preset question was clicked
@@ -289,7 +322,7 @@ with col_left:
                     if citations:
                         with st.expander("📚 Citations in this response", expanded=False):
                             for cite in citations:
-                                p_num = f"p.{cite.get('page')}" if cite.get("page") else "page unlisted"
+                                p_num = format_citation_label(cite)
                                 st.markdown(f"- **[{cite.get('document_title', 'Document')}, {p_num}]**: {cite.get('excerpt', '')}")
 
                     # Store assistant message and update current response state
@@ -319,7 +352,8 @@ with col_left:
                     st.success(f"Found {search_res.get('total', 0)} matches using `{s_type}` search.")
                     for item in search_res.get("results", []):
                         with st.expander(f"[{item.get('document_title')}] Score: {item.get('score')}"):
-                            st.caption(f"Category: `{item.get('source_category')}` | Page: `{item.get('page')}`")
+                            loc_info = format_citation_label(item)
+                            st.caption(f"Category: `{item.get('source_category')}` | Location: `{loc_info}`")
                             st.write(item.get("content"))
             else:
                 st.warning("Please enter a search query.")

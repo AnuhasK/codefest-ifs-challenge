@@ -2,17 +2,37 @@ from typing import List, Dict, Any
 import streamlit as st
 
 
+def format_evidence_location(ev: Dict[str, Any]) -> str:
+    """Format exact page, line numbers, or plate identifier for an evidence record."""
+    meta = ev.get("metadata") or {}
+    ref_loc = meta.get("reference_location")
+    if ref_loc:
+        return ref_loc
+    page = ev.get("page") or meta.get("page")
+    line_start = meta.get("line_start")
+    line_end = meta.get("line_end")
+    para_start = meta.get("paragraph_start")
+
+    if line_start == "Plate" or meta.get("is_asset_chunk"):
+        return "Plate / Visual Record"
+    if page:
+        if line_start and line_end:
+            return f"p. {page} (Lines {line_start}-{line_end})"
+        if para_start:
+            return f"p. {page} (Para {para_start})"
+        return f"p. {page}"
+    if line_start:
+        return f"Line {line_start}"
+    return "p. 1"
+
+
 def render_evidence_panel(
     evidence: List[Dict[str, Any]],
     conflicts: List[Dict[str, Any]],
-    evidence_status: str,
+    evidence_status: str = "HIGH",
 ):
     """
-    Render the evidence panel displaying:
-    1. Color-coded Evidence Status badge (HIGH / MEDIUM / LOW / INSUFFICIENT)
-    2. Summary metrics (Sources Used, Passages Cited, Conflicts Detected)
-    3. Conflict alerts with opposing claim details
-    4. Expandable evidence cards with source metadata and epistemological tags
+    Render evidence quality indicator, contradiction alerts, and expandable evidence passages.
     """
     st.subheader("📊 Grounded Evidence")
 
@@ -80,14 +100,13 @@ def render_evidence_panel(
         for ev in evidence:
             ev_id = ev.get("id", "EVIDENCE")
             doc_title = ev.get("document_title", "Archive Document")
-            page = ev.get("page")
-            page_str = f"p.{page}" if page is not None else "Page unlisted"
+            loc_str = format_evidence_location(ev)
             cat = ev.get("source_category", "archive")
             subtype = ev.get("source_subtype", "record")
             content = ev.get("content", "")
 
-            with st.expander(f"[{ev_id}] {doc_title} ({page_str})"):
-                st.caption(f"**Provenance:** Category: `{cat}` | Subtype: `{subtype}`")
+            with st.expander(f"[{ev_id}] {doc_title} ({loc_str})"):
+                st.caption(f"**Provenance:** Category: `{cat}` | Subtype: `{subtype}` | **Location:** `{loc_str}`")
                 if ev.get("section_title"):
                     st.caption(f"**Section:** {ev['section_title']}")
                 st.markdown(f"> {content}")

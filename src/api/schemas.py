@@ -67,6 +67,9 @@ class CitationItem(BaseModel):
     source_path: Optional[str] = None
     page: Optional[int] = None
     excerpt: str
+    reference_location: Optional[str] = None
+    line_start: Optional[Any] = None
+    line_end: Optional[Any] = None
 
 
 class QueryResponse(BaseModel):
