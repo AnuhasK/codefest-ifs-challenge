@@ -59,8 +59,8 @@ services:
       VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
       EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-voyage}
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-voyage-3-large}
-      LLM_MODEL: ${LLM_MODEL:-gemini-3.7-flash}
-      LLM_MODEL_STRONG: ${LLM_MODEL_STRONG:-gemini-3.7-flash}
+      LLM_MODEL: ${LLM_MODEL:-gemini-2.5-flash}
+      LLM_MODEL_STRONG: ${LLM_MODEL_STRONG:-gemini-2.5-flash}
       CORPUS_PATH: /app/Ashen_Era_Archive
     volumes:
       - ./src:/app/src
