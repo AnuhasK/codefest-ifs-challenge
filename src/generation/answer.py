@@ -243,6 +243,8 @@ def answer_question(
         model=model,
     )
     raw_answer = response.content.strip()
+    if not raw_answer:
+        raw_answer = "The archive search retrieved relevant evidence, but the language model was unable to generate a synthesized response. Please check API key quotas or network connectivity."
     trace["generation_time_s"] = round(time.time() - gen_start, 2)
     trace["tokens_used"] = response.tokens_used
     trace["model_used"] = response.model

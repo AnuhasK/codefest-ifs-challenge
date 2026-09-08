@@ -151,6 +151,8 @@ def detect_conflicts(
             system_prompt="You are an archival intelligence evaluator tasked with detecting contradictions and qualifications across historical sources.",
         )
         content = response.content.strip()
+        if not content:
+            return detect_conflicts_heuristic(evidence)
 
         # Parse JSON
         json_match = re.search(r"(\{.*\})", content, re.DOTALL)

@@ -48,19 +48,19 @@ def dense_search(
             c.chapter,
             c.section_title,
             c.metadata,
-            d.title AS document_title,
-            d.source_category,
-            d.source_path,
+            COALESCE(d.title, c.section_title, 'Visual Archive Asset') AS document_title,
+            COALESCE(d.source_category, 'images') AS source_category,
+            COALESCE(d.source_path, c.metadata->>'file_path') AS source_path,
             (1 - (c.{vector_col} <=> %(qvec)s::vector)) AS score,
             (c.{vector_col} <=> %(qvec)s::vector) AS distance
         FROM chunks c
-        JOIN documents d ON c.document_id = d.id
+        LEFT JOIN documents d ON c.document_id = d.id
         WHERE c.{vector_col} IS NOT NULL
     """
     params: dict = {"qvec": query_vector, "limit": top_k}
 
     if source_category:
-        sql += " AND d.source_category = %(cat)s"
+        sql += " AND COALESCE(d.source_category, 'images') = %(cat)s"
         params["cat"] = source_category
 
     sql += f" ORDER BY c.{vector_col} <=> %(qvec)s::vector ASC LIMIT %(limit)s;"
@@ -73,7 +73,7 @@ def dense_search(
             for rank, row in enumerate(rows, start=1):
                 res = SearchResult(
                     chunk_id=str(row["chunk_id"]),
-                    document_id=str(row["document_id"]),
+                    document_id=str(row["document_id"] or row["chunk_id"]),
                     content=row["content"],
                     score=float(row["score"]),
                     distance=float(row["distance"]) if row.get("distance") is not None else None,
@@ -81,9 +81,9 @@ def dense_search(
                     page_end=row.get("page_end"),
                     chapter=row.get("chapter"),
                     section_title=row.get("section_title"),
-                    source_category=row.get("source_category"),
+                    source_category=row.get("source_category") or "images",
                     source_path=row.get("source_path"),
-                    document_title=row.get("document_title"),
+                    document_title=row.get("document_title") or "Visual Archive Asset",
                     rank=rank,
                     metadata=row.get("metadata") or {},
                 )

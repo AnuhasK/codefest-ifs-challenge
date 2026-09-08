@@ -32,7 +32,7 @@ if os.path.exists(TESSERACT_WINDOWS_PATH) and TESSERACT_WINDOWS_PATH not in os.e
     os.environ["PATH"] += os.pathsep + TESSERACT_WINDOWS_PATH
 
 # AI / Provider API Keys (Supports comma-separated keys for round-robin rotation)
-_raw_gemini_keys = os.getenv("GEMINI_API_KEYS", os.getenv("GEMINI_API_KEY", ""))
+_raw_gemini_keys = os.getenv("GEMINI_API_KEYS") or os.getenv("GEMINI_API_KEY") or ""
 GEMINI_API_KEYS = [k.strip() for k in _raw_gemini_keys.split(",") if k.strip()]
 GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "")
@@ -55,10 +55,10 @@ EMBEDDINGS_CACHE_PATH = BASE_DIR / "data" / "embeddings_cache.sqlite"
 VOYAGE_EMBEDDINGS_CACHE_PATH = BASE_DIR / "data" / "embeddings_cache_voyage.sqlite"
 
 # Models
-EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "gemini").lower()
+EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "voyage").lower()
 EMBEDDING_MODEL = os.getenv(
     "EMBEDDING_MODEL",
-    "gemini-embedding-001" if EMBEDDING_PROVIDER == "gemini" else "voyage-3-large"
+    "voyage-3-large" if EMBEDDING_PROVIDER == "voyage" else "gemini-embedding-001"
 )
 EMBEDDING_DIMENSION = 1024
 LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.7-flash")
