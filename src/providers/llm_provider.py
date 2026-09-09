@@ -76,6 +76,7 @@ class GeminiLLMProvider(LLMProvider):
         config = types.GenerateContentConfig(
             system_instruction=safe_system,
             temperature=0.2,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         )
 
         retries = max(3, self.rotator.available_count)
@@ -154,6 +155,7 @@ class GeminiLLMProvider(LLMProvider):
             response_mime_type="application/json",
             response_schema=response_schema,
             temperature=0.1,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         )
 
         retries = max(3, self.rotator.available_count)

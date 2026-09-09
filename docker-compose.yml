@@ -83,6 +83,7 @@ services:
       - ./Ashen_Era_Archive:/app/Ashen_Era_Archive:ro
     environment:
       API_URL: http://api:8000
+      BROWSER_API_URL: ${BROWSER_API_URL:-http://localhost:8000}
     command: streamlit run app/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
 
 

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import streamlit as st
 
 
@@ -26,13 +26,106 @@ def format_evidence_location(ev: Dict[str, Any]) -> str:
     return "p. 1"
 
 
+def resolve_document_urls(
+    source_path: Optional[str] = None,
+    document_id: Optional[str] = None,
+    page: int = 1,
+    api_url: str = "http://localhost:8000",
+) -> Dict[str, Any]:
+    """
+    Resolve browser-accessible URLs using the actual archive location from the project root.
+    Returns a dict with primary_url, is_download, action_label, docx_download_url, and filename.
+    """
+    clean_api = api_url.rstrip("/")
+    norm = (source_path or "").replace("\\", "/").strip()
+    rel = ""
+    if "Ashen_Era_Archive/" in norm:
+        rel = norm.split("Ashen_Era_Archive/", 1)[-1].lstrip("/")
+    elif norm and not norm.startswith("http"):
+        rel = norm.lstrip("/")
+
+    # Known archive folders where every .docx has a sibling .pdf
+    has_known_sibling_pdf = False
+    if rel:
+        low = rel.lower()
+        if low.startswith("codex/") or low.startswith("chronicles/"):
+            has_known_sibling_pdf = True
+
+    if rel:
+        ext = rel.split(".")[-1].lower() if "." in rel else ""
+        filename = rel.split("/")[-1]
+
+        if ext == "md":
+            return {
+                "primary_url": f"{clean_api}/Ashen_Era_Archive/{rel}",
+                "is_download": False,
+                "action_label": "📄 Open Markdown Source",
+                "docx_download_url": None,
+                "filename": filename,
+            }
+        elif ext == "pdf":
+            return {
+                "primary_url": f"{clean_api}/Ashen_Era_Archive/{rel}#page={page}",
+                "is_download": False,
+                "action_label": f"📄 Open PDF (p. {page})",
+                "docx_download_url": None,
+                "filename": filename,
+            }
+        elif ext == "docx":
+            stem_rel = rel.rsplit(".", 1)[0]
+            if has_known_sibling_pdf:
+                pdf_url = f"{clean_api}/Ashen_Era_Archive/{stem_rel}.pdf#page={page}"
+                docx_url = f"{clean_api}/Ashen_Era_Archive/{rel}"
+                return {
+                    "primary_url": pdf_url,
+                    "is_download": False,
+                    "action_label": f"📄 Open PDF (p. {page})",
+                    "docx_download_url": docx_url,
+                    "filename": filename,
+                }
+            else:
+                docx_url = f"{clean_api}/Ashen_Era_Archive/{rel}"
+                return {
+                    "primary_url": docx_url,
+                    "is_download": True,
+                    "action_label": "📥 Download Word Document",
+                    "docx_download_url": None,
+                    "filename": filename,
+                }
+        elif ext in ("png", "jpg", "jpeg", "webp"):
+            return {
+                "primary_url": f"{clean_api}/Ashen_Era_Archive/{rel}",
+                "is_download": False,
+                "action_label": "🖼️ View Image Record",
+                "docx_download_url": None,
+                "filename": filename,
+            }
+
+    # Fallback to document_id endpoint
+    if document_id:
+        return {
+            "primary_url": f"{clean_api}/documents/{document_id}/file#page={page}",
+            "is_download": False,
+            "action_label": f"📄 Open Document (p. {page})",
+            "docx_download_url": f"{clean_api}/documents/{document_id}/file?format=docx",
+            "filename": f"document_{document_id}",
+        }
+
+    return {
+        "primary_url": "#",
+        "is_download": False,
+        "action_label": "📄 View Document",
+        "docx_download_url": None,
+        "filename": "",
+    }
+
+
 def render_evidence_panel(
     evidence: List[Dict[str, Any]],
     conflicts: List[Dict[str, Any]],
     evidence_status: str = "HIGH",
     api_url: str = "http://localhost:8000",
 ):
-
     """
     Render evidence quality indicator, contradiction alerts, and expandable evidence passages.
     """
@@ -114,11 +207,30 @@ def render_evidence_panel(
                     st.caption(f"**Section:** {ev['section_title']}")
                 st.markdown(f"> {content}")
 
+                meta = ev.get("metadata") or {}
+                s_file = ev.get("source_file") or meta.get("source_path") or meta.get("file_path") or ""
                 doc_id = ev.get("document_id")
-                if doc_id:
-                    page_num = ev.get("page") or 1
-                    pdf_href = f"{api_url.rstrip('/')}/documents/{doc_id}/file#page={page_num}"
-                    st.markdown(f"[📄 Open Original Document / PDF ({loc_str}) ↗]({pdf_href})")
+                page_num = ev.get("page") or 1
+
+                res_urls = resolve_document_urls(
+                    source_path=s_file,
+                    document_id=doc_id,
+                    page=page_num,
+                    api_url=api_url,
+                )
+                p_url = res_urls["primary_url"]
+                p_lbl = res_urls["action_label"]
+                docx_url = res_urls.get("docx_download_url")
+
+                if p_url != "#":
+                    if docx_url:
+                        st.markdown(
+                            f"[{p_lbl} ↗]({p_url}) &nbsp;|&nbsp; [📥 Download Word Document ↗]({docx_url})",
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(f"[{p_lbl} ↗]({p_url})")
     else:
         st.info("No evidence records gathered for this response.")
+
 

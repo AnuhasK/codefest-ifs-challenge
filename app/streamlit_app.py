@@ -11,7 +11,7 @@ from typing import Dict, Any, List, Optional
 import requests
 import streamlit as st
 
-from app.components.evidence_panel import render_evidence_panel
+from app.components.evidence_panel import render_evidence_panel, resolve_document_urls
 from app.components.image_evidence import render_image_evidence
 from app.components.trace_viewer import render_query_trace
 from app.components.source_viewer import render_source_viewer
@@ -108,7 +108,11 @@ st.markdown(
 )
 
 # Configuration from Environment
+# Internal backend URL for container-to-container Python requests
 API_URL = os.getenv("API_URL", "http://localhost:8000").rstrip("/")
+
+# Browser-facing URL for client-side links and downloads (clicked in the user's host browser)
+BROWSER_API_URL = os.getenv("BROWSER_API_URL", "http://localhost:8000").rstrip("/")
 
 
 # ==========================================
@@ -147,7 +151,7 @@ def format_interactive_answer(
     citations: List[Dict[str, Any]],
     style: str = "compact",
     raw_answer: Optional[str] = None,
-    api_url: str = API_URL,
+    api_url: str = BROWSER_API_URL,
 ) -> str:
     """
     Format answer text for optimal reading experience.
@@ -170,9 +174,26 @@ def format_interactive_answer(
         excerpt = (c.get("excerpt") or "")[:160].replace('"', '&quot;').replace('\n', ' ')
         doc_id = c.get("document_id")
         page = c.get("page") or 1
-        pdf_url = f"{api_url}/documents/{doc_id}/file#page={page}" if doc_id else "#"
-        tooltip = f"{doc_title}, {ref_loc}&#10;&quot;{excerpt}&quot;&#10;Click badge to open PDF at {ref_loc}"
-        return f'<a href="{pdf_url}" target="_blank" class="cite-link" title="{tooltip}">[{idx}]</a>'
+        source_path = c.get("source_path") or ""
+
+        resolved = resolve_document_urls(
+            source_path=source_path,
+            document_id=doc_id,
+            page=page,
+            api_url=api_url,
+        )
+        url = resolved["primary_url"]
+        is_dl = resolved["is_download"]
+        fn = resolved.get("filename", "")
+
+        action_tip = f"Click badge to download Word document ({fn})" if is_dl else f"Click badge to open in browser ({ref_loc})"
+        tooltip = f"{doc_title}, {ref_loc}&#10;&quot;{excerpt}&quot;&#10;{action_tip}"
+
+        if is_dl:
+            return f'<a href="{url}" download="{fn}" class="cite-link" title="{tooltip}">[{idx}]</a>'
+        else:
+            return f'<a href="{url}" target="_blank" class="cite-link" title="{tooltip}">[{idx}]</a>'
+
 
     # Path A: If raw_answer contains [EVIDENCE_...] tags, replace cleanly
     target_raw = raw_answer or ""
@@ -220,7 +241,7 @@ def format_interactive_answer(
     return re.sub(r"\[([^\]]+)\]", replace_bracket, condensed)
 
 
-def render_in_chat_assets(asset_references: List[Dict[str, Any]], api_url: str = API_URL):
+def render_in_chat_assets(asset_references: List[Dict[str, Any]], api_url: str = BROWSER_API_URL):
     """Render visual assets (figure plates, portraits, heraldry) directly within the assistant chat bubble."""
     if not asset_references:
         return
@@ -261,8 +282,8 @@ def render_in_chat_assets(asset_references: List[Dict[str, Any]], api_url: str =
                 st.caption(f"**Primary Recorded Metric:** `{num_val:,}` {scale}")
 
 
-def render_citations_expander(citations: List[Dict[str, Any]], api_url: str = API_URL):
-    """Render expandable structured list of references with clickable direct PDF viewer links."""
+def render_citations_expander(citations: List[Dict[str, Any]], api_url: str = BROWSER_API_URL):
+    """Render expandable structured list of references with clickable direct PDF viewer or Word download links."""
     if not citations:
         return
     with st.expander(f"📚 References & Source Documents ({len(citations)})", expanded=False):
@@ -271,11 +292,30 @@ def render_citations_expander(citations: List[Dict[str, Any]], api_url: str = AP
             doc_title = cite.get("document_title", "Archive Document")
             doc_id = cite.get("document_id")
             page = cite.get("page") or 1
-            pdf_link = f" • [📄 Open PDF ({p_num}) ↗]({api_url}/documents/{doc_id}/file#page={page})" if doc_id else ""
-            st.markdown(f"- **[{idx}] {doc_title}, {p_num}**{pdf_link}")
+            source_path = cite.get("source_path") or ""
+
+            res_urls = resolve_document_urls(
+                source_path=source_path,
+                document_id=doc_id,
+                page=page,
+                api_url=api_url,
+            )
+            p_url = res_urls["primary_url"]
+            p_lbl = res_urls["action_label"]
+            docx_url = res_urls.get("docx_download_url")
+
+            doc_links = []
+            if p_url != "#":
+                doc_links.append(f"[{p_lbl} ↗]({p_url})")
+            if docx_url:
+                doc_links.append(f"[📥 Download Word Doc ↗]({docx_url})")
+
+            doc_links_str = f" • {' | '.join(doc_links)}" if doc_links else ""
+            st.markdown(f"- **[{idx}] {doc_title}, {p_num}**{doc_links_str}")
             excerpt = cite.get("excerpt")
             if excerpt:
                 st.caption(f'> *"{excerpt}"*')
+
 
 
 
@@ -473,13 +513,13 @@ with col_left:
                         msg.get("citations", []),
                         style="compact" if is_compact else "verbose",
                         raw_answer=msg.get("raw_answer"),
-                        api_url=API_URL,
+                        api_url=BROWSER_API_URL,
                     )
                     st.markdown(display_text, unsafe_allow_html=True)
                     if msg.get("asset_references"):
-                        render_in_chat_assets(msg["asset_references"], api_url=API_URL)
+                        render_in_chat_assets(msg["asset_references"], api_url=BROWSER_API_URL)
                     if msg.get("citations"):
-                        render_citations_expander(msg["citations"], api_url=API_URL)
+                        render_citations_expander(msg["citations"], api_url=BROWSER_API_URL)
                 else:
                     st.markdown(msg["content"])
 
@@ -525,15 +565,16 @@ with col_left:
                         citations,
                         style="compact" if is_compact else "verbose",
                         raw_answer=raw_ans,
-                        api_url=API_URL,
+                        api_url=BROWSER_API_URL,
                     )
                     st.markdown(display_text, unsafe_allow_html=True)
 
                     if asset_refs:
-                        render_in_chat_assets(asset_refs, api_url=API_URL)
+                        render_in_chat_assets(asset_refs, api_url=BROWSER_API_URL)
 
                     if citations:
-                        render_citations_expander(citations, api_url=API_URL)
+                        render_citations_expander(citations, api_url=BROWSER_API_URL)
+
 
                     # Store assistant message and update current response state
                     st.session_state.messages.append({
@@ -587,16 +628,15 @@ with col_right:
             evidence=resp.get("evidence", []),
             conflicts=resp.get("conflicts", []),
             evidence_status=resp.get("evidence_status", "HIGH"),
-            api_url=API_URL,
+            api_url=BROWSER_API_URL,
         )
-
 
         st.divider()
 
         # 2. Track 1A Image Evidence (§7.6b)
         render_image_evidence(
             asset_references=resp.get("asset_references", []),
-            api_url=API_URL,
+            api_url=BROWSER_API_URL,
         )
 
         st.divider()
