@@ -65,12 +65,25 @@ def extract_entities_heuristic(query: str) -> List[str]:
             seen.add(val.lower())
             entities.append(val)
 
+    # Match capitalized phrases connected by grammatical particles (e.g. "the", "of", "in", "and", "de", "da", "for", "von")
+    # Examples: "Cerys Sablewood the Ashen", "Knight of the Hollow", "Order of the Eclipse"
+    epithet_pattern = re.compile(
+        r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*(?:\s+(?:the|of|in|and|de|da|for|von)\s+[A-Z][a-z]+)+\b"
+    )
+    for m in epithet_pattern.finditer(query):
+        val = m.group(0).strip()
+        if any(val.lower().startswith(q) for q in ("what is", "according to", "which war", "in the", "to which", "where was", "who was")):
+            continue
+        if val.lower() not in seen and len(val) > 3:
+            seen.add(val.lower())
+            entities.append(val)
+
     # Match general multi-word capitalized sequences (e.g. "Weeping Lurker", "Greyfell Citadel", "Isolde Mournvale")
     cap_pattern = re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\b")
     for m in cap_pattern.finditer(query):
         val = m.group(0).strip()
-        # Exclude leading question words like "What Is"
-        if any(val.lower().startswith(q) for q in ("what is", "according to", "which war", "in the")):
+        # Exclude leading question words like "What Is", "To Which"
+        if any(val.lower().startswith(q) for q in ("what is", "according to", "which war", "in the", "to which", "where was", "who was", "how many", "at what")):
             continue
         if val.lower() not in seen and len(val) > 3:
             seen.add(val.lower())

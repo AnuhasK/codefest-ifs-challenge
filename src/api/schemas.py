@@ -79,8 +79,9 @@ class QueryResponse(BaseModel):
     evidence: List[EvidenceSummary] = Field(default_factory=list)
     asset_references: List[AssetReference] = Field(default_factory=list)
     conflicts: List[ConflictSummary] = Field(default_factory=list)
-    evidence_status: str = "HIGH"  # HIGH, MEDIUM, LOW, INSUFFICIENT
+    evidence_status: str = "HIGH"  # HIGH, MEDIUM, LOW, INSUFFICIENT, API_QUOTA_EXHAUSTED
     trace: Optional[Dict[str, Any]] = None
+    warning: Optional[str] = None
 
 
 # ==========================================
@@ -110,6 +111,7 @@ class SearchResponse(BaseModel):
     results: List[SearchResultItem]
     total: int
     search_type: str
+    warning: Optional[str] = None
 
 
 # ==========================================

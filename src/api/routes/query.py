@@ -121,7 +121,7 @@ def fetch_assets_for_evidence(evidence_list: list) -> List[AssetReference]:
 
 
 @router.post("/query", response_model=QueryResponse)
-async def query_endpoint(request: QueryRequest) -> QueryResponse:
+def query_endpoint(request: QueryRequest) -> QueryResponse:
     """
     Answer a question about the Ashen Era Archive.
     Returns an evidence-grounded answer with deterministic citations, source epistemological metadata,
@@ -217,6 +217,7 @@ async def query_endpoint(request: QueryRequest) -> QueryResponse:
             conflicts=conflicts,
             evidence_status=final_answer.evidence_status,
             trace=trace_data,
+            warning=final_answer.warning,
         )
 
     except Exception as exc:

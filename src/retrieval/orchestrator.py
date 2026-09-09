@@ -169,9 +169,11 @@ def retrieve(
 
     # Step 7: Cross-Encoder Reranker
     if config.enable_reranker and diverse_candidates:
+        # Score top 30 diverse candidates with cross-encoder to maintain low latency on CPU
+        rerank_pool = diverse_candidates[:max(config.reranker_top_k, 30)]
         final_results = rerank_candidates(
             query=query,
-            candidates=diverse_candidates,
+            candidates=rerank_pool,
             reranker=reranker_provider,
             top_k=config.reranker_top_k,
         )
@@ -288,8 +290,8 @@ def retrieve_with_multihop(
     try:
         targeted_dense = dense_search(
             query=hop2_search_query,
+            provider=embedding_provider,
             top_k=config.dense_top_k,
-            embedding_provider=embedding_provider,
             source_category=source_category,
         )
         if targeted_dense:
@@ -323,9 +325,10 @@ def retrieve_with_multihop(
 
     # 5. Rerank Hop 2 candidates against the Hop 2 specific query
     if config.enable_reranker and deduped_hop2:
+        hop2_pool = deduped_hop2[:max(config.reranker_top_k, 30)]
         hop2_reranked = rerank_candidates(
             query=hop2_search_query,
-            candidates=deduped_hop2,
+            candidates=hop2_pool,
             reranker=reranker_provider,
             top_k=config.reranker_top_k,
         )

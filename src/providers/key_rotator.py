@@ -16,6 +16,11 @@ from src.config import (
 logger = logging.getLogger(__name__)
 
 
+class GeminiQuotaExhaustedError(RuntimeError):
+    """Raised when all configured Gemini API keys have exhausted their daily or rate-limit quotas."""
+    pass
+
+
 class GeminiKeyRotator:
     """
     Thread-safe, rate-limiting API key rotator for Gemini API calls.
@@ -55,6 +60,21 @@ class GeminiKeyRotator:
         self._daily_counts: Dict[str, int] = {k: 0 for k in self._keys}
         self._exhausted_keys: Dict[str, bool] = {k: False for k in self._keys}
         self._current_date = date.today()
+
+    @property
+    def is_all_exhausted(self) -> bool:
+        """Check if all configured Gemini keys are marked exhausted or have reached daily limits."""
+        if not self._keys:
+            return True
+        with self._lock:
+            self._reset_if_new_day()
+            available = [
+                k
+                for k in self._keys
+                if not self._exhausted_keys.get(k, False)
+                and self._daily_counts.get(k, 0) < self.max_daily
+            ]
+            return len(available) == 0
 
     def _reset_if_new_day(self) -> None:
         """Reset daily counters if calendar date changed."""

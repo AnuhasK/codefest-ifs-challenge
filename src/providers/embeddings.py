@@ -85,6 +85,11 @@ class EmbeddingProvider(ABC):
         pass
 
 
+class VoyageQuotaExhaustedError(RuntimeError):
+    """Raised when Voyage AI API key is missing, unauthorized, or quota is exhausted."""
+    pass
+
+
 class VoyageEmbeddingProvider(EmbeddingProvider):
     """
     Voyage AI embedding provider (voyage-3-large, 1024 dims).
@@ -97,19 +102,23 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
 
     Rate limit handling:
     - batch_size=16 for standard tier (300 RPM)
-    - Adaptive backoff: 21s + 5s*attempt on 429/rate-limit errors
+    - Fast fail on 401/403/quota exhaustion (no endless sleep loops)
     - Interrupted runs resume from disk cache (no redundant API calls)
     """
 
     def __init__(self, api_key: Optional[str] = None, model: str = EMBEDDING_MODEL):
         self.api_key = api_key or VOYAGE_API_KEY
-        if not self.api_key:
-            raise ValueError("VOYAGE_API_KEY is required for VoyageEmbeddingProvider.")
         self.model = model
-        self.client = voyageai.Client(api_key=self.api_key)
         self._dim = EMBEDDING_DIMENSION
         # Voyage gets its own cache DB — does NOT share with GeminiEmbeddingProvider
         self.cache = EmbeddingDiskCache(db_path=VOYAGE_EMBEDDINGS_CACHE_PATH, dimension=self._dim)
+
+        if not self.api_key or self.api_key.strip().startswith("your_"):
+            self.client = None
+            self.is_available = False
+        else:
+            self.client = voyageai.Client(api_key=self.api_key)
+            self.is_available = True
 
     @property
     def dimension(self) -> int:
@@ -196,7 +205,12 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
         if cached is not None:
             return cached
 
-        retries = 10
+        if not self.is_available or not self.client:
+            raise VoyageQuotaExhaustedError(
+                "VOYAGE_API_KEY is missing or unconfigured. Cannot generate query embedding."
+            )
+
+        retries = 2
         for attempt in range(retries):
             try:
                 result = self.client.embed(
@@ -209,12 +223,22 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
                 return vec
             except Exception as e:
                 err_msg = str(e).lower()
-                if "rate" in err_msg or "429" in err_msg:
-                    time.sleep(21)
+                # Fast fail on authentication or quota errors - do not sleep
+                if any(k in err_msg for k in ("unauthorized", "invalid api key", "invalid_api_key", "401", "403", "forbidden")):
+                    self.is_available = False
+                    raise VoyageQuotaExhaustedError(f"Voyage AI authentication failed (invalid or expired key): {e}") from e
+                if any(k in err_msg for k in ("quota", "payment", "402", "exceeded your current quota", "insufficient_quota")):
+                    self.is_available = False
+                    raise VoyageQuotaExhaustedError(f"Voyage AI quota exhausted: {e}") from e
+
+                if "rate" in err_msg or "429" in err_msg or "tpm" in err_msg or "rpm" in err_msg:
+                    if attempt == retries - 1:
+                        raise VoyageQuotaExhaustedError(f"Voyage AI rate limit exceeded: {e}") from e
+                    time.sleep(5)
                 else:
                     if attempt == retries - 1:
                         raise RuntimeError(f"Failed embedding query with Voyage AI: {e}") from e
-                    time.sleep(2 ** attempt)
+                    time.sleep(1)
         return []
 
 
@@ -410,14 +434,12 @@ def get_embedding_provider() -> EmbeddingProvider:
             return GeminiEmbeddingProvider()
         raise ValueError("GEMINI_API_KEYS is required when EMBEDDING_PROVIDER=gemini.")
     elif provider_type == "voyage":
-        if VOYAGE_API_KEY:
-            return VoyageEmbeddingProvider()
-        raise ValueError("VOYAGE_API_KEY is required when EMBEDDING_PROVIDER=voyage.")
+        return VoyageEmbeddingProvider()
     else:
         # Fallback to whichever is available
-        if GEMINI_API_KEYS:
-            return GeminiEmbeddingProvider()
-        elif VOYAGE_API_KEY:
+        if VOYAGE_API_KEY and not VOYAGE_API_KEY.strip().startswith("your_"):
             return VoyageEmbeddingProvider()
+        elif GEMINI_API_KEYS:
+            return GeminiEmbeddingProvider()
         else:
-            raise ValueError("No embedding API key found in configuration.")
+            return VoyageEmbeddingProvider()

@@ -26,6 +26,7 @@ The LLM is treated strictly as an inference and synthesis engine over retrieved 
 - **[System Architecture](docs/architecture.md)**: Full end-to-end system topology, dual-storage design (PostgreSQL + Neo4j), 4-stream hybrid retrieval, and multi-hop reasoning.
 - **[Architectural & Engineering Decisions](docs/decisions.md)**: Comprehensive Architectural Decision Records (ADRs 01–21), technical rationale, rejected alternatives, and empirical benchmarks.
 - **[System Limitations & Trade-offs](docs/limitations.md)**: In-depth engineering review of latency bottlenecks, metric saturation, alias resolution edge cases, failed approaches, and production roadmap.
+- **[AI Usage Disclosure](ai_usage/ai_usage_disclosure.md)**: Transparent record of AI tools used, human steering & critical interventions, and exported chat transcript catalog.
 
 ---
 
@@ -108,7 +109,8 @@ uv run python scripts/sync_entities_to_neo4j.py
 ```
 project/
 ├── Ashen_Era_Archive/          # Authoritative read-only document archive
-├── docs/                       # Architecture and phased implementation plans
+├── ai_usage/                   # AI usage disclosure and exported chat transcripts
+├── docs/                       # Architecture, decisions, and limitations
 ├── scripts/
 │   ├── ingest.py               # Main ingestion CLI
 │   └── evaluate.py             # Baseline evaluation script

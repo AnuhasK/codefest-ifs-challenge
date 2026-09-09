@@ -80,6 +80,8 @@ The LLM is **not the knowledge source**. It is a reasoning engine that operates 
 
 ## 3. High-Level Architecture
 
+![High-Level System Architecture](diagrams/architecture.png)
+
 ```
                            USER
                             │

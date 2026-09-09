@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 
 from src.config import GEMINI_API_KEYS, LLM_MODEL, LLM_MODEL_STRONG
-from src.providers.key_rotator import GeminiKeyRotator
+from src.providers.key_rotator import GeminiKeyRotator, GeminiQuotaExhaustedError
 
 
 class LLMResponse(BaseModel):
@@ -82,6 +82,8 @@ class GeminiLLMProvider(LLMProvider):
         for attempt in range(retries):
             key = self.rotator.next_key()
             if not key:
+                if self.rotator.is_all_exhausted:
+                    raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
                 break
             try:
                 client = genai.Client(
@@ -132,7 +134,8 @@ class GeminiLLMProvider(LLMProvider):
                     raise RuntimeError(f"Gemini generate call failed: {e}") from e
                 time.sleep(2 ** min(attempt, 3))
 
-
+        if self.rotator.is_all_exhausted:
+            raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
         return LLMResponse(content="", tokens_used=0, model=chosen_model)
 
     def generate_structured(
@@ -157,6 +160,8 @@ class GeminiLLMProvider(LLMProvider):
         for attempt in range(retries):
             key = self.rotator.next_key()
             if not key:
+                if self.rotator.is_all_exhausted:
+                    raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
                 break
             try:
                 client = genai.Client(
@@ -205,6 +210,9 @@ class GeminiLLMProvider(LLMProvider):
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini structured generate call failed: {e}") from e
                 time.sleep(2 ** min(attempt, 3))
+
+        if self.rotator.is_all_exhausted:
+            raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
 
     def describe_image(
         self, image_path: str, prompt: str, model: Optional[str] = None

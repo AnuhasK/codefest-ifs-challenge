@@ -143,7 +143,7 @@ def execute_query(question: str, max_hops: int, top_k: int, include_trace: bool)
         "include_trace": include_trace,
     }
     try:
-        response = requests.post(f"{API_URL}/query", json=payload, timeout=180)
+        response = requests.post(f"{API_URL}/query", json=payload, timeout=300)
         if response.status_code == 200:
             return response.json()
         else:
@@ -282,6 +282,8 @@ with col_left:
         # Display existing message stream
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
+                if msg.get("warning"):
+                    st.warning(msg["warning"])
                 st.markdown(msg["content"])
                 if msg.get("citations"):
                     with st.expander("📚 Citations in this response", expanded=False):
@@ -315,6 +317,12 @@ with col_left:
                     )
 
                 if result:
+                    warning = result.get("warning")
+                    if warning:
+                        st.warning(warning)
+                    if result.get("evidence_status") == "API_QUOTA_EXHAUSTED":
+                        st.error("🚨 API Quota Limit: Configured keys have reached their quota limits. Response is degraded.")
+
                     answer_text = result.get("answer", "")
                     st.markdown(answer_text)
 
@@ -330,6 +338,7 @@ with col_left:
                         "role": "assistant",
                         "content": answer_text,
                         "citations": citations,
+                        "warning": warning,
                     })
                     st.session_state.current_response = result
                     st.rerun()
@@ -349,6 +358,8 @@ with col_left:
                 with st.spinner(f"Running {s_type} search..."):
                     search_res = execute_search(s_query, s_type, s_top_k)
                 if search_res:
+                    if search_res.get("warning"):
+                        st.warning(search_res["warning"])
                     st.success(f"Found {search_res.get('total', 0)} matches using `{s_type}` search.")
                     for item in search_res.get("results", []):
                         with st.expander(f"[{item.get('document_title')}] Score: {item.get('score')}"):

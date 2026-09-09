@@ -42,6 +42,7 @@ def render_evidence_panel(
         "MEDIUM": ("#f59e0b", "#78350f", "Moderate Confidence"),
         "LOW": ("#ef4444", "#7f1d1d", "Low Confidence"),
         "INSUFFICIENT": ("#ef4444", "#7f1d1d", "Insufficient Archive Evidence"),
+        "API_QUOTA_EXHAUSTED": ("#dc2626", "#450a0a", "API Quota Exhausted"),
     }
     badge_color, badge_bg, status_desc = status_colors.get(
         evidence_status.upper(), ("#6b7280", "#1f2937", "Unknown Status")

@@ -14,7 +14,7 @@ router = APIRouter(tags=["Search"])
 
 
 @router.post("/search", response_model=SearchResponse)
-async def search_endpoint(request: SearchRequest) -> SearchResponse:
+def search_endpoint(request: SearchRequest) -> SearchResponse:
     """
     Search the Ashen Era Archive directly without LLM answer generation.
     Supports search types:
@@ -59,10 +59,21 @@ async def search_endpoint(request: SearchRequest) -> SearchResponse:
                 )
             )
 
+        warning_msg = None
+        if search_type in ("dense", "hybrid"):
+            from src.providers.embeddings import get_embedding_provider
+            try:
+                provider = get_embedding_provider()
+                if hasattr(provider, "is_available") and not provider.is_available:
+                    warning_msg = "⚠️ Voyage AI embedding quota is unconfigured or exhausted; semantic search may be degraded or offline."
+            except Exception:
+                pass
+
         return SearchResponse(
             results=items,
             total=len(items),
             search_type=search_type,
+            warning=warning_msg,
         )
 
     except HTTPException:

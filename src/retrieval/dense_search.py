@@ -1,7 +1,10 @@
+import logging
 from typing import List, Optional
 from src.database.postgres import get_db_connection
 from src.models.search import SearchResult
-from src.providers.embeddings import EmbeddingProvider, get_embedding_provider
+from src.providers.embeddings import EmbeddingProvider, get_embedding_provider, VoyageQuotaExhaustedError
+
+logger = logging.getLogger(__name__)
 
 
 def dense_search(
@@ -27,11 +30,19 @@ def dense_search(
     if not query or not query.strip():
         return []
 
-    if provider is None:
-        provider = get_embedding_provider()
+    try:
+        if provider is None:
+            provider = get_embedding_provider()
 
-    # Generate query embedding with asymmetric input_type='query'
-    query_vector = provider.embed_query(query)
+        # Generate query embedding with asymmetric input_type='query'
+        query_vector = provider.embed_query(query)
+    except VoyageQuotaExhaustedError as e:
+        logger.warning("Dense search skipped due to Voyage AI quota/key error: %s", e)
+        return []
+    except Exception as e:
+        logger.warning("Dense search skipped due to embedding failure: %s", e)
+        return []
+
     if not query_vector:
         return []
 

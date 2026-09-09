@@ -68,6 +68,8 @@ class FinalAnswer(BaseModel):
     evidence: List[EvidenceRecord] = Field(default_factory=list)
     citations: List[Dict[str, Any]] = Field(default_factory=list)
     conflicts: List[Conflict] = Field(default_factory=list)
-    evidence_status: str = "HIGH"  # "HIGH", "MEDIUM", "LOW", "INSUFFICIENT"
+    evidence_status: str = "HIGH"  # "HIGH", "MEDIUM", "LOW", "INSUFFICIENT", "API_QUOTA_EXHAUSTED"
     verification_result: Optional[VerificationResult] = None
     query_trace: Dict[str, Any] = Field(default_factory=dict)
+    warning: Optional[str] = None
+

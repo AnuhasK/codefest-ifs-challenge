@@ -142,7 +142,7 @@ def detect_conflicts(
         return detect_conflicts_heuristic(evidence)
 
     prompt = CONFLICT_PROMPT_TEMPLATE.format(
-        evidence_texts="\n\n".join(evidence_lines)
+        evidence_texts="\n\n".join(evidence_lines[:8])
     )
 
     try:
