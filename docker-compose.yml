@@ -66,6 +66,7 @@ services:
       - ./src:/app/src
       - ./app:/app/app
       - ./data:/app/data
+      - ./Ashen_Era_Archive:/app/Ashen_Era_Archive:ro
     command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 
   ui:
@@ -79,9 +80,11 @@ services:
     volumes:
       - ./app:/app/app
       - ./src:/app/src
+      - ./Ashen_Era_Archive:/app/Ashen_Era_Archive:ro
     environment:
       API_URL: http://api:8000
     command: streamlit run app/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
+
 
 volumes:
   postgres_data:

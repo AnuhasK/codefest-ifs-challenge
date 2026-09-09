@@ -30,7 +30,9 @@ def render_evidence_panel(
     evidence: List[Dict[str, Any]],
     conflicts: List[Dict[str, Any]],
     evidence_status: str = "HIGH",
+    api_url: str = "http://localhost:8000",
 ):
+
     """
     Render evidence quality indicator, contradiction alerts, and expandable evidence passages.
     """
@@ -111,5 +113,12 @@ def render_evidence_panel(
                 if ev.get("section_title"):
                     st.caption(f"**Section:** {ev['section_title']}")
                 st.markdown(f"> {content}")
+
+                doc_id = ev.get("document_id")
+                if doc_id:
+                    page_num = ev.get("page") or 1
+                    pdf_href = f"{api_url.rstrip('/')}/documents/{doc_id}/file#page={page_num}"
+                    st.markdown(f"[📄 Open Original Document / PDF ({loc_str}) ↗]({pdf_href})")
     else:
         st.info("No evidence records gathered for this response.")
+

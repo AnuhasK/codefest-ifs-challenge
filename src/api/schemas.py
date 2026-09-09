@@ -70,11 +70,14 @@ class CitationItem(BaseModel):
     reference_location: Optional[str] = None
     line_start: Optional[Any] = None
     line_end: Optional[Any] = None
+    document_id: Optional[str] = None
+    file_url: Optional[str] = None
 
 
 class QueryResponse(BaseModel):
     question: str
     answer: str
+    raw_answer: Optional[str] = None
     citations: List[CitationItem] = Field(default_factory=list)
     evidence: List[EvidenceSummary] = Field(default_factory=list)
     asset_references: List[AssetReference] = Field(default_factory=list)

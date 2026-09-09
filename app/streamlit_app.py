@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 from pathlib import Path
 
 # Ensure project root is in sys.path so 'app' and 'src' modules can be resolved
@@ -51,6 +52,39 @@ st.markdown(
         font-size: 0.85rem;
         font-family: monospace;
         border: 1px solid #334155;
+    }
+
+    /* Interactive Citation Badges */
+    .cite-link {
+        display: inline-block;
+        background-color: #1e293b;
+        color: #38bdf8 !important;
+        font-weight: 600;
+        font-size: 0.82em;
+        padding: 1px 6px;
+        margin: 0 2px;
+        border-radius: 4px;
+        border: 1px solid #0284c7;
+        text-decoration: none !important;
+        vertical-align: baseline;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+    .cite-link:hover {
+        background-color: #0284c7 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+        transform: translateY(-1px);
+    }
+
+    /* In-Chat Visual Evidence Card */
+    .in-chat-asset-box {
+        background-color: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
     
     /* Sidebar */
@@ -106,6 +140,143 @@ def format_citation_label(cite: Dict[str, Any]) -> str:
     if l_start:
         return f"Line {l_start}"
     return "p. 1"
+
+
+def format_interactive_answer(
+    answer_text: str,
+    citations: List[Dict[str, Any]],
+    style: str = "compact",
+    raw_answer: Optional[str] = None,
+    api_url: str = API_URL,
+) -> str:
+    """
+    Format answer text for optimal reading experience.
+    If style == 'compact', transforms long, repetitive citation brackets into clean,
+    clickable numbered badges [1, 2] with hover tooltips and direct PDF links (#page=N).
+    """
+    if style != "compact" or not citations:
+        return answer_text
+
+    # Map evidence IDs to index and citation details
+    ev_map = {}
+    for idx, c in enumerate(citations, 1):
+        eid = c.get("evidence_id")
+        if eid:
+            ev_map[eid.upper()] = (idx, c)
+
+    def make_badge(idx: int, c: Dict[str, Any]) -> str:
+        doc_title = c.get("document_title", "Archive Document")
+        ref_loc = format_citation_label(c)
+        excerpt = (c.get("excerpt") or "")[:160].replace('"', '&quot;').replace('\n', ' ')
+        doc_id = c.get("document_id")
+        page = c.get("page") or 1
+        pdf_url = f"{api_url}/documents/{doc_id}/file#page={page}" if doc_id else "#"
+        tooltip = f"{doc_title}, {ref_loc}&#10;&quot;{excerpt}&quot;&#10;Click badge to open PDF at {ref_loc}"
+        return f'<a href="{pdf_url}" target="_blank" class="cite-link" title="{tooltip}">[{idx}]</a>'
+
+    # Path A: If raw_answer contains [EVIDENCE_...] tags, replace cleanly
+    target_raw = raw_answer or ""
+    if "EVIDENCE_" in target_raw:
+        def replace_ev_tokens(m):
+            inner = m.group(1)
+            tokens = re.findall(r"EVIDENCE_\d+", inner, flags=re.IGNORECASE)
+            if not tokens:
+                return m.group(0)
+            rendered = []
+            for t in tokens:
+                t_up = t.upper()
+                if t_up in ev_map:
+                    idx, c = ev_map[t_up]
+                    rendered.append(make_badge(idx, c))
+                else:
+                    rendered.append(f"[{t}]")
+            return "".join(rendered)
+
+        pat = re.compile(r"\[(EVIDENCE_\d+(?:[,\s;]+EVIDENCE_\d+)*)\]", flags=re.IGNORECASE)
+        return pat.sub(replace_ev_tokens, target_raw)
+
+    # Path B: Fallback replacement on resolved answer_text with bracketed citations
+    title_map = {}
+    for idx, c in enumerate(citations, 1):
+        t = c.get("document_title", "").strip().lower()
+        l = format_citation_label(c).strip().lower()
+        title_map[f"{t}, {l}"] = (idx, c)
+        title_map[t] = (idx, c)
+
+    def replace_bracket(m):
+        content = m.group(1).strip()
+        c_low = content.lower()
+        for k, (idx, c) in title_map.items():
+            if k in c_low or c_low in k:
+                return make_badge(idx, c)
+        return m.group(0)
+
+    # Condense multiple consecutive citation brackets like [Doc1, p.1], [Doc2, p.2] -> [Doc1, p.1][Doc2, p.2]
+    condensed = re.sub(
+        r"\[([^\]]+)\](?:\s*,\s*\[([^\]]+)\])+",
+        lambda m: "".join(re.findall(r"\[[^\]]+\]", m.group(0))),
+        answer_text,
+    )
+    return re.sub(r"\[([^\]]+)\]", replace_bracket, condensed)
+
+
+def render_in_chat_assets(asset_references: List[Dict[str, Any]], api_url: str = API_URL):
+    """Render visual assets (figure plates, portraits, heraldry) directly within the assistant chat bubble."""
+    if not asset_references:
+        return
+
+    st.markdown("---")
+    st.markdown("##### 🖼️ Visual Archive Records (Track 1A)")
+    cols = st.columns(min(len(asset_references), 2))
+    for idx, asset in enumerate(asset_references):
+        with cols[idx % len(cols)]:
+            asset_type = asset.get("asset_type", "image").replace("_", " ").title()
+            entity_name = asset.get("entity_name") or "Archive Asset"
+            file_path = asset.get("file_path", "")
+            img_url = asset.get("image_url")
+            p = Path(file_path) if file_path else None
+            image_source = None
+            if p and p.exists() and p.is_file():
+                image_source = str(p)
+            elif img_url:
+                image_source = f"{api_url.rstrip('/')}{img_url}"
+            elif file_path:
+                image_source = file_path
+
+            if image_source:
+                st.image(image_source, caption=f"{entity_name} ({asset_type})", use_container_width=True)
+
+            extracted_data = asset.get("extracted_data") or {}
+            all_metrics = extracted_data.get("all_metrics", {})
+            num_val = extracted_data.get("numerical_value")
+            scale = extracted_data.get("scale_or_unit", "")
+
+            if all_metrics and isinstance(all_metrics, dict):
+                st.markdown("**Recorded Metrics (RapidOCR):**")
+                m_cols = st.columns(min(len(all_metrics), 3))
+                for m_idx, (m_key, m_val) in enumerate(all_metrics.items()):
+                    with m_cols[m_idx % len(m_cols)]:
+                        st.metric(label=m_key, value=f"{m_val:,}" if isinstance(m_val, (int, float)) else str(m_val))
+            elif num_val is not None:
+                st.caption(f"**Primary Recorded Metric:** `{num_val:,}` {scale}")
+
+
+def render_citations_expander(citations: List[Dict[str, Any]], api_url: str = API_URL):
+    """Render expandable structured list of references with clickable direct PDF viewer links."""
+    if not citations:
+        return
+    with st.expander(f"📚 References & Source Documents ({len(citations)})", expanded=False):
+        for idx, cite in enumerate(citations, 1):
+            p_num = format_citation_label(cite)
+            doc_title = cite.get("document_title", "Archive Document")
+            doc_id = cite.get("document_id")
+            page = cite.get("page") or 1
+            pdf_link = f" • [📄 Open PDF ({p_num}) ↗]({api_url}/documents/{doc_id}/file#page={page})" if doc_id else ""
+            st.markdown(f"- **[{idx}] {doc_title}, {p_num}**{pdf_link}")
+            excerpt = cite.get("excerpt")
+            if excerpt:
+                st.caption(f'> *"{excerpt}"*')
+
 
 
 def check_backend_health() -> Dict[str, Any]:
@@ -231,6 +402,18 @@ with st.sidebar:
 
     st.divider()
 
+    # Citation Presentation Mode
+    st.subheader("📖 Citation Presentation")
+    citation_mode = st.radio(
+        "Display Format:",
+        options=["Compact Badges [1, 2]", "Verbose Inlined [Title, p.X]"],
+        index=0,
+        help="Switch between clean numbered badges with hover previews and PDF jump links, or full verbose inlined citation strings.",
+    )
+    is_compact = "Compact" in citation_mode
+
+    st.divider()
+
     # One-Click Judge Demo Questions
     st.subheader("🎯 Live Demo Questions")
     st.caption("Test key challenge sub-tracks with one click:")
@@ -284,12 +467,21 @@ with col_left:
             with st.chat_message(msg["role"]):
                 if msg.get("warning"):
                     st.warning(msg["warning"])
-                st.markdown(msg["content"])
-                if msg.get("citations"):
-                    with st.expander("📚 Citations in this response", expanded=False):
-                        for cite in msg["citations"]:
-                            p_num = format_citation_label(cite)
-                            st.markdown(f"- **[{cite.get('document_title', 'Document')}, {p_num}]**: {cite.get('excerpt', '')}")
+                if msg["role"] == "assistant":
+                    display_text = format_interactive_answer(
+                        msg["content"],
+                        msg.get("citations", []),
+                        style="compact" if is_compact else "verbose",
+                        raw_answer=msg.get("raw_answer"),
+                        api_url=API_URL,
+                    )
+                    st.markdown(display_text, unsafe_allow_html=True)
+                    if msg.get("asset_references"):
+                        render_in_chat_assets(msg["asset_references"], api_url=API_URL)
+                    if msg.get("citations"):
+                        render_citations_expander(msg["citations"], api_url=API_URL)
+                else:
+                    st.markdown(msg["content"])
 
         # Check if preset question was clicked
         prompt = None
@@ -324,24 +516,37 @@ with col_left:
                         st.error("🚨 API Quota Limit: Configured keys have reached their quota limits. Response is degraded.")
 
                     answer_text = result.get("answer", "")
-                    st.markdown(answer_text)
-
                     citations = result.get("citations", [])
+                    raw_ans = result.get("raw_answer")
+                    asset_refs = result.get("asset_references", [])
+
+                    display_text = format_interactive_answer(
+                        answer_text,
+                        citations,
+                        style="compact" if is_compact else "verbose",
+                        raw_answer=raw_ans,
+                        api_url=API_URL,
+                    )
+                    st.markdown(display_text, unsafe_allow_html=True)
+
+                    if asset_refs:
+                        render_in_chat_assets(asset_refs, api_url=API_URL)
+
                     if citations:
-                        with st.expander("📚 Citations in this response", expanded=False):
-                            for cite in citations:
-                                p_num = format_citation_label(cite)
-                                st.markdown(f"- **[{cite.get('document_title', 'Document')}, {p_num}]**: {cite.get('excerpt', '')}")
+                        render_citations_expander(citations, api_url=API_URL)
 
                     # Store assistant message and update current response state
                     st.session_state.messages.append({
                         "role": "assistant",
                         "content": answer_text,
+                        "raw_answer": raw_ans,
                         "citations": citations,
+                        "asset_references": asset_refs,
                         "warning": warning,
                     })
                     st.session_state.current_response = result
                     st.rerun()
+
 
     # Tab 2: Direct Search Interface
     with tab_search:
@@ -382,7 +587,9 @@ with col_right:
             evidence=resp.get("evidence", []),
             conflicts=resp.get("conflicts", []),
             evidence_status=resp.get("evidence_status", "HIGH"),
+            api_url=API_URL,
         )
+
 
         st.divider()
 

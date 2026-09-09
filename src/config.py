@@ -61,8 +61,8 @@ EMBEDDING_MODEL = os.getenv(
     "voyage-3-large" if EMBEDDING_PROVIDER == "voyage" else "gemini-embedding-001"
 )
 EMBEDDING_DIMENSION = 1024
-LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.6-flash")
-LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.6-flash")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.5-flash")
+LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.5-flash")
 
 
 # Chunking Parameters

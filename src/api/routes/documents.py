@@ -287,3 +287,59 @@ def get_asset_image(asset_id: str):
         media_type = "image/webp"
 
     return FileResponse(path=str(p), media_type=media_type)
+
+
+# ==========================================
+# Original Archive Document File Streaming Endpoint
+# ==========================================
+
+@router.get("/documents/{document_id}/file")
+def get_document_file(document_id: str):
+    """
+    Stream or serve the original archive document file (PDF, TXT, MD, DOCX) directly.
+    Allows opening the document in a browser tab at a specific page (e.g. #page=2 for PDFs).
+    If the document in the DB is DOCX, attempts to find the corresponding sibling PDF first
+    to enable native inline browser PDF rendering.
+    """
+    try:
+        doc_uuid = UUID(document_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid document_id format (UUID required)")
+
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT title, source_path, source_category FROM documents WHERE id = %s;", [doc_uuid])
+            row = cur.fetchone()
+            if not row:
+                raise HTTPException(status_code=404, detail=f"Document {document_id} not found")
+
+    raw_path = row["source_path"]
+    resolved = resolve_asset_file_path(raw_path)
+    p = Path(resolved)
+
+    # If the file is .docx, check if a sibling .pdf exists for native browser viewing
+    if p.suffix.lower() == ".docx":
+        sibling_pdf = p.with_suffix(".pdf")
+        if sibling_pdf.exists() and sibling_pdf.is_file():
+            p = sibling_pdf
+
+    if not p.exists() or not p.is_file():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Document file not found on disk at {resolved}",
+        )
+
+    suffix = p.suffix.lower()
+    media_type = "application/octet-stream"
+    if suffix == ".pdf":
+        media_type = "application/pdf"
+    elif suffix in (".txt", ".log"):
+        media_type = "text/plain; charset=utf-8"
+    elif suffix == ".md":
+        media_type = "text/plain; charset=utf-8"
+    elif suffix == ".docx":
+        media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+    headers = {"Content-Disposition": f'inline; filename="{p.name}"'}
+    return FileResponse(path=str(p), media_type=media_type, headers=headers)
+

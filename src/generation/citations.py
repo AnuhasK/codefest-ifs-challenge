@@ -167,6 +167,8 @@ class CitationResolver:
         return {
             "evidence_id": rec.id,
             "found": True,
+            "document_id": rec.document_id,
+            "chunk_id": rec.chunk_id,
             "document_title": rec.document_title,
             "page": page_val or 1,
             "section_title": rec.section_title,
@@ -179,3 +181,4 @@ class CitationResolver:
             "line_start": line_start,
             "line_end": line_end,
         }
+

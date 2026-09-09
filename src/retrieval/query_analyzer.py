@@ -89,7 +89,21 @@ def extract_entities_heuristic(query: str) -> List[str]:
             seen.add(val.lower())
             entities.append(val)
 
+    # Match single capitalized proper nouns (e.g. "Marrowwatch", "Emberdeep", "Cindermere", "Vaeloria")
+    # Exclude the sentence-starting word and standard stop words
+    words = re.findall(r"\b[A-Za-z0-9\-_]+\b", query)
+    for idx, w in enumerate(words):
+        if idx == 0:
+            continue
+        if w[0].isupper() and w.lower() not in STOP_WORDS and len(w) > 3:
+            if not any(w.lower() in existing.lower() for existing in entities):
+                if val.lower() not in seen if (val := w) else True:
+                    if w.lower() not in seen:
+                        seen.add(w.lower())
+                        entities.append(w)
+
     return entities
+
 
 
 def build_bm25_query(query: str, entities: List[str]) -> str:
