@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 
 from src.config import GEMINI_API_KEYS, LLM_MODEL, LLM_MODEL_STRONG
-from src.providers.key_rotator import GeminiKeyRotator
+from src.providers.key_rotator import GeminiKeyRotator, GeminiQuotaExhaustedError
 
 
 class LLMResponse(BaseModel):
@@ -76,17 +76,20 @@ class GeminiLLMProvider(LLMProvider):
         config = types.GenerateContentConfig(
             system_instruction=safe_system,
             temperature=0.2,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         )
 
         retries = max(3, self.rotator.available_count)
         for attempt in range(retries):
             key = self.rotator.next_key()
             if not key:
+                if self.rotator.is_all_exhausted:
+                    raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
                 break
             try:
                 client = genai.Client(
                     api_key=key,
-                    http_options=types.HttpOptions(timeout=30000),
+                    http_options=types.HttpOptions(timeout=120000),
                 )
                 response = client.models.generate_content(
                     model=chosen_model,
@@ -119,6 +122,12 @@ class GeminiLLMProvider(LLMProvider):
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
                     continue
+                if "504" in err_str or "DEADLINE_EXCEEDED" in err_str or "timeout" in err_str.lower():
+                    time.sleep(2.0 + attempt)
+                    continue
+                if "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower():
+                    time.sleep(2.0 + attempt)
+                    continue
                 if any(err_code in err_str for err_code in ("404", "400", "403", "NOT_FOUND", "API_KEY_INVALID", "PERMISSION_DENIED")):
                     self.rotator.mark_exhausted(key, reason=f"Invalid/inactive key: {err_str[:60]}")
                     continue
@@ -126,7 +135,8 @@ class GeminiLLMProvider(LLMProvider):
                     raise RuntimeError(f"Gemini generate call failed: {e}") from e
                 time.sleep(2 ** min(attempt, 3))
 
-
+        if self.rotator.is_all_exhausted:
+            raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
         return LLMResponse(content="", tokens_used=0, model=chosen_model)
 
     def generate_structured(
@@ -145,17 +155,20 @@ class GeminiLLMProvider(LLMProvider):
             response_mime_type="application/json",
             response_schema=response_schema,
             temperature=0.1,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         )
 
         retries = max(3, self.rotator.available_count)
         for attempt in range(retries):
             key = self.rotator.next_key()
             if not key:
+                if self.rotator.is_all_exhausted:
+                    raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
                 break
             try:
                 client = genai.Client(
                     api_key=key,
-                    http_options=types.HttpOptions(timeout=30000),
+                    http_options=types.HttpOptions(timeout=120000),
                 )
                 response = client.models.generate_content(
                     model=chosen_model,
@@ -187,12 +200,21 @@ class GeminiLLMProvider(LLMProvider):
                     else:
                         time.sleep(15.0 + (attempt * 2.0))
                     continue
+                if "504" in err_str or "DEADLINE_EXCEEDED" in err_str or "timeout" in err_str.lower():
+                    time.sleep(2.0 + attempt)
+                    continue
+                if "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower():
+                    time.sleep(2.0 + attempt)
+                    continue
                 if any(err_code in err_str for err_code in ("404", "400", "403", "NOT_FOUND", "API_KEY_INVALID", "PERMISSION_DENIED")):
                     self.rotator.mark_exhausted(key, reason=f"Invalid/inactive key: {err_str[:60]}")
                     continue
                 if attempt == retries - 1:
                     raise RuntimeError(f"Gemini structured generate call failed: {e}") from e
                 time.sleep(2 ** min(attempt, 3))
+
+        if self.rotator.is_all_exhausted:
+            raise GeminiQuotaExhaustedError("All configured Gemini API keys have exhausted their daily quota or rate limits.")
 
     def describe_image(
         self, image_path: str, prompt: str, model: Optional[str] = None

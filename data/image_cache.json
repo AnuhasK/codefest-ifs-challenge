@@ -383,5 +383,240 @@
       "entity_name": "The Thrice Bound Lantern",
       "asset_type": "relic"
     }
+  },
+  "plate_00_location_marrowwatch.png": {
+    "description": "Figure plate for Marrowwatch: RECORDEDGARRISONSTRENGTH is 3107 (souls under arms). Provenance: Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir..",
+    "extracted_data": {
+      "entity_name": "Marrowwatch",
+      "metric_type": "RECORDEDGARRISONSTRENGTH",
+      "numerical_value": 3107,
+      "all_metrics": {
+        "RECORDEDGARRISONSTRENGTH": 3107
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "raw_ocr_text": "Marrowwatch\nRECORDEDGARRISONSTRENGTH\n3,107\nsoulsunderarms\nAsenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_01_location_emberdeep.png": {
+    "description": "Figure plate for Emberdeep: Emberdeep - Recorded Garrison Strength is 800 (souls under arms). Comparative standards & benchmarks: Old Imperial minimum: 2400; Border-marchstandard: 6000; GreatKeepstandard: 1114.",
+    "extracted_data": {
+      "entity_name": "Emberdeep",
+      "metric_type": "Emberdeep - Recorded Garrison Strength",
+      "numerical_value": 800,
+      "all_metrics": {
+        "Recorded Garrison Strength": 800,
+        "Old Imperial minimum": 2400,
+        "Border-marchstandard": 6000,
+        "GreatKeepstandard": 1114
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "",
+      "raw_ocr_text": "Emberdeep - Recorded Garrison Strength\n800\nOld Imperial minimum\n2,400\nBorder-marchstandard\n6,000\nGreatKeepstandard\n1,114\nEmberdeep\nMeasuredinsoulsunderarms.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_02_conflict_the_accord_of_mournthrone.png": {
+    "description": "Figure plate for The Accord Of Mournthrone: RECORDED CASUALTIES is 87349 (souls lost).",
+    "extracted_data": {
+      "entity_name": "The Accord Of Mournthrone",
+      "metric_type": "RECORDED CASUALTIES",
+      "numerical_value": 87349,
+      "all_metrics": {
+        "RECORDED CASUALTIES": 104818
+      },
+      "scale_or_unit": "souls lost",
+      "provenance_note": "",
+      "raw_ocr_text": "The Accord of Mournthrone\nRECORDED CASUALTIES\n87.349\n104,818\nsoulslost",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_03_location_crookgate_keep.png": {
+    "description": "Figure plate for Crookgate Keep: RECORDEDGARRISONSTRENGTH is 6970 (souls under arms). Provenance: Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir..",
+    "extracted_data": {
+      "entity_name": "Crookgate Keep",
+      "metric_type": "RECORDEDGARRISONSTRENGTH",
+      "numerical_value": 6970,
+      "all_metrics": {
+        "RECORDEDGARRISONSTRENGTH": 6970
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "raw_ocr_text": "Crookgate Keep\nRECORDEDGARRISONSTRENGTH\n6.970\nsoulsunderarms\nAsenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_04_artifact_the_thrice_bound_edge.png": {
+    "description": "Figure plate for The Thrice Bound Edge: The Thrice-Bound Edge - Attunement Cost is 20 (vitae-grains). Comparative standards & benchmarks: Novice tolerance: 55; Adepttolerance: 85; Mastertolerance: 94.",
+    "extracted_data": {
+      "entity_name": "The Thrice Bound Edge",
+      "metric_type": "The Thrice-Bound Edge - Attunement Cost",
+      "numerical_value": 20,
+      "all_metrics": {
+        "The Thrice-Bound Edge - Attunement Cost": 20,
+        "Novice tolerance": 55,
+        "Adepttolerance": 85,
+        "Mastertolerance": 94
+      },
+      "scale_or_unit": "vitae-grains",
+      "provenance_note": "",
+      "raw_ocr_text": "The Thrice-Bound Edge - Attunement Cost\n20\nNovice tolerance\n55\nAdepttolerance\n85\nMastertolerance\n94\nThe Thrice-Bound Edge\nMeasuredinvitae-grains.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_05_location_embercrag_fortress.png": {
+    "description": "Figure plate for Embercrag Fortress: RECORDED GARRISON STRENGTH is 7473 (souls under arms).",
+    "extracted_data": {
+      "entity_name": "Embercrag Fortress",
+      "metric_type": "RECORDED GARRISON STRENGTH",
+      "numerical_value": 7473,
+      "all_metrics": {
+        "RECORDED GARRISON STRENGTH": 8967
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "",
+      "raw_ocr_text": "Embercrag Fortress\nRECORDED GARRISON STRENGTH\n7,473\n8,967\nsoulsunderarms",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_06_location_hollowreach.png": {
+    "description": "Figure plate for Hollowreach: RECORDEDGARRISONSTRENGTH is 1306 (souls under arms). Provenance: Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir..",
+    "extracted_data": {
+      "entity_name": "Hollowreach",
+      "metric_type": "RECORDEDGARRISONSTRENGTH",
+      "numerical_value": 1306,
+      "all_metrics": {
+        "RECORDEDGARRISONSTRENGTH": 1306
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "raw_ocr_text": "Hollowreach\nRECORDEDGARRISONSTRENGTH\n1,306\nsoulsunderarms\nAsenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_07_artifact_the_thrice_bound_lantern.png": {
+    "description": "Figure plate for The Thrice Bound Lantern: The Thrice-Bound Lantern - Attunement Cost is 20 (vitae-grains). Comparative standards & benchmarks: Novice tolerance: 55; Adepttolerance: 85; Mastertolerance: 55.",
+    "extracted_data": {
+      "entity_name": "The Thrice Bound Lantern",
+      "metric_type": "The Thrice-Bound Lantern - Attunement Cost",
+      "numerical_value": 20,
+      "all_metrics": {
+        "The Thrice-Bound Lantern - Attunement Cost": 20,
+        "Novice tolerance": 55,
+        "Adepttolerance": 85,
+        "Mastertolerance": 55
+      },
+      "scale_or_unit": "vitae-grains",
+      "provenance_note": "",
+      "raw_ocr_text": "The Thrice-Bound Lantern - Attunement Cost\n20\nNovice tolerance\n55\nAdepttolerance\n85\nMastertolerance\n55\nThe Thrice-Bound Lantern\nMeasuredinvitae-grains.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_08_creature_weeping_lurker.png": {
+    "description": "Figure plate for Weeping Lurker: THREAT RATING is 3 (of 10, per the Vanguard scale).",
+    "extracted_data": {
+      "entity_name": "Weeping Lurker",
+      "metric_type": "THREAT RATING",
+      "numerical_value": 3,
+      "all_metrics": {
+        "THREAT RATING": 10
+      },
+      "scale_or_unit": "of 10, per the Vanguard scale",
+      "provenance_note": "",
+      "raw_ocr_text": "Weeping Lurker\nTHREAT RATING\n3\n10\nof 10, per the Vanguard scale",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_09_location_greyfell_citadel.png": {
+    "description": "Figure plate for Greyfell Citadel: RECORDEDGARRISONSTRENGTH is 3695 (souls under arms). Provenance: Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir..",
+    "extracted_data": {
+      "entity_name": "Greyfell Citadel",
+      "metric_type": "RECORDEDGARRISONSTRENGTH",
+      "numerical_value": 3695,
+      "all_metrics": {
+        "RECORDEDGARRISONSTRENGTH": 3695
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "raw_ocr_text": "Greyfell Citadel\nRECORDEDGARRISONSTRENGTH\n3.695\nsoulsunderarms\nAsenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_10_creature_marsh_revenant.png": {
+    "description": "Figure plate for Marsh Revenant: Marsh Revenant - Threat Rating is None (Measured in of 10,per theVanguard scale.).",
+    "extracted_data": {
+      "entity_name": "Marsh Revenant",
+      "metric_type": "Marsh Revenant - Threat Rating",
+      "numerical_value": null,
+      "all_metrics": {},
+      "scale_or_unit": "Measured in of 10,per theVanguard scale.",
+      "provenance_note": "",
+      "raw_ocr_text": "Marsh Revenant - Threat Rating\nNuisance\nMenace\nCalamity\nMarsh Revenant\nMeasured in of 10,per theVanguard scale.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_11_location_mournwatch.png": {
+    "description": "Figure plate for Mournwatch: RECORDED GARRISON STRENGTH is 8254 (souls under arms).",
+    "extracted_data": {
+      "entity_name": "Mournwatch",
+      "metric_type": "RECORDED GARRISON STRENGTH",
+      "numerical_value": 8254,
+      "all_metrics": {
+        "RECORDED GARRISON STRENGTH": 9904
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "",
+      "raw_ocr_text": "Mournwatch\nRECORDED GARRISON STRENGTH\n8,254\n9,904\nsoulsunderarms",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_12_location_thorncairn.png": {
+    "description": "Figure plate for Thorncairn: RECORDEDGARRISONSTRENGTH is 7748 (souls under arms). Provenance: Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir..",
+    "extracted_data": {
+      "entity_name": "Thorncairn",
+      "metric_type": "RECORDEDGARRISONSTRENGTH",
+      "numerical_value": 7748,
+      "all_metrics": {
+        "RECORDEDGARRISONSTRENGTH": 7748
+      },
+      "scale_or_unit": "souls under arms",
+      "provenance_note": "Asenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "raw_ocr_text": "Thorncairn\nRECORDEDGARRISONSTRENGTH\n7,748\nsoulsunderarms\nAsenteredinto theCodexVaeloria.FiguresverifiedbytheSilentChoir.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_13_artifact_the_cinder_wrought_aegis.png": {
+    "description": "Figure plate for The Cinder Wrought Aegis: The Cinder-Wrought Aegis - Attunement Cost is 20 (vitae-grains). Comparative standards & benchmarks: Novice tolerance: 55; Adepttolerance: 85; Mastertolerance: 34.",
+    "extracted_data": {
+      "entity_name": "The Cinder Wrought Aegis",
+      "metric_type": "The Cinder-Wrought Aegis - Attunement Cost",
+      "numerical_value": 20,
+      "all_metrics": {
+        "The Cinder-Wrought Aegis - Attunement Cost": 20,
+        "Novice tolerance": 55,
+        "Adepttolerance": 85,
+        "Mastertolerance": 34
+      },
+      "scale_or_unit": "vitae-grains",
+      "provenance_note": "",
+      "raw_ocr_text": "The Cinder-Wrought Aegis - Attunement Cost\n20\nNovice tolerance\n55\nAdepttolerance\n85\nMastertolerance\n34\nThe Cinder-Wrought Aegis\nMeasuredinvitae-grains.",
+      "ocr_source": "rapidocr"
+    }
+  },
+  "plate_14_creature_thorn_wraith.png": {
+    "description": "Figure plate for Thorn Wraith: THREAT RATING is 9 (of 10, per the Vanguard scale).",
+    "extracted_data": {
+      "entity_name": "Thorn Wraith",
+      "metric_type": "THREAT RATING",
+      "numerical_value": 9,
+      "all_metrics": {
+        "THREAT RATING": 10
+      },
+      "scale_or_unit": "of 10, per the Vanguard scale",
+      "provenance_note": "",
+      "raw_ocr_text": "Thorn Wraith\nTHREAT RATING\n9\n10\nof 10, per the Vanguard scale",
+      "ocr_source": "rapidocr"
+    }
   }
 }

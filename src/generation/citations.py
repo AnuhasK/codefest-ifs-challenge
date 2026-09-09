@@ -15,11 +15,31 @@ class CitationResolver:
         self.evidence_manager = evidence_manager
 
     def _format_single_citation(self, record: EvidenceRecord) -> str:
-        """Format a single EvidenceRecord into a human-readable citation string."""
+        """Format a single EvidenceRecord into a human-readable citation string with exact page/line."""
         title = record.document_title or "Archive Document"
-        if record.page:
-            return f"{title}, p.{record.page}"
-        return title
+        meta = getattr(record, "metadata", {}) or {}
+        ref_loc = meta.get("reference_location")
+        line_start = meta.get("line_start")
+        line_end = meta.get("line_end")
+        para_start = meta.get("paragraph_start")
+
+        if line_start == "Plate" or meta.get("is_asset_chunk"):
+            loc = "Plate"
+        elif ref_loc:
+            loc = ref_loc
+        elif record.page:
+            if line_start and line_end:
+                loc = f"p.{record.page} (Lines {line_start}-{line_end})"
+            elif para_start:
+                loc = f"p.{record.page} (Para {para_start})"
+            else:
+                loc = f"p.{record.page}"
+        elif line_start:
+            loc = f"Line {line_start}"
+        else:
+            loc = "p.1"
+
+        return f"{title}, {loc}"
 
     def resolve_citations(self, answer_text: str) -> str:
         """
@@ -121,14 +141,44 @@ class CitationResolver:
                 "original_text": "",
             }
 
+        meta = getattr(rec, "metadata", {}) or {}
+        ref_loc = meta.get("reference_location")
+        page_val = rec.page or meta.get("page")
+        line_start = meta.get("line_start")
+        line_end = meta.get("line_end")
+        para_start = meta.get("paragraph_start")
+
+        if line_start == "Plate" or meta.get("is_asset_chunk"):
+            computed_loc = "Plate / Visual Record"
+        elif ref_loc:
+            computed_loc = ref_loc
+        elif page_val:
+            if line_start and line_end:
+                computed_loc = f"p. {page_val} (Lines {line_start}-{line_end})"
+            elif para_start:
+                computed_loc = f"p. {page_val} (Para {para_start})"
+            else:
+                computed_loc = f"p. {page_val}"
+        elif line_start:
+            computed_loc = f"Line {line_start}"
+        else:
+            computed_loc = "p. 1"
+
         return {
             "evidence_id": rec.id,
             "found": True,
+            "document_id": rec.document_id,
+            "chunk_id": rec.chunk_id,
             "document_title": rec.document_title,
-            "page": rec.page,
+            "page": page_val or 1,
             "section_title": rec.section_title,
             "source_category": rec.source_category,
             "source_subtype": rec.source_subtype,
             "source_file": rec.source_file,
             "original_text": rec.content,
+            "metadata": meta,
+            "reference_location": computed_loc,
+            "line_start": line_start,
+            "line_end": line_end,
         }
+

@@ -67,17 +67,24 @@ class CitationItem(BaseModel):
     source_path: Optional[str] = None
     page: Optional[int] = None
     excerpt: str
+    reference_location: Optional[str] = None
+    line_start: Optional[Any] = None
+    line_end: Optional[Any] = None
+    document_id: Optional[str] = None
+    file_url: Optional[str] = None
 
 
 class QueryResponse(BaseModel):
     question: str
     answer: str
+    raw_answer: Optional[str] = None
     citations: List[CitationItem] = Field(default_factory=list)
     evidence: List[EvidenceSummary] = Field(default_factory=list)
     asset_references: List[AssetReference] = Field(default_factory=list)
     conflicts: List[ConflictSummary] = Field(default_factory=list)
-    evidence_status: str = "HIGH"  # HIGH, MEDIUM, LOW, INSUFFICIENT
+    evidence_status: str = "HIGH"  # HIGH, MEDIUM, LOW, INSUFFICIENT, API_QUOTA_EXHAUSTED
     trace: Optional[Dict[str, Any]] = None
+    warning: Optional[str] = None
 
 
 # ==========================================
@@ -107,6 +114,7 @@ class SearchResponse(BaseModel):
     results: List[SearchResultItem]
     total: int
     search_type: str
+    warning: Optional[str] = None
 
 
 # ==========================================

@@ -32,28 +32,37 @@ if os.path.exists(TESSERACT_WINDOWS_PATH) and TESSERACT_WINDOWS_PATH not in os.e
     os.environ["PATH"] += os.pathsep + TESSERACT_WINDOWS_PATH
 
 # AI / Provider API Keys (Supports comma-separated keys for round-robin rotation)
-_raw_gemini_keys = os.getenv("GEMINI_API_KEYS", os.getenv("GEMINI_API_KEY", ""))
+_raw_gemini_keys = os.getenv("GEMINI_API_KEYS") or os.getenv("GEMINI_API_KEY") or ""
 GEMINI_API_KEYS = [k.strip() for k in _raw_gemini_keys.split(",") if k.strip()]
 GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "")
 
-# Gemini Rate & Quota Limits (Free Tier Protection)
-GEMINI_MAX_RPM_PER_KEY = int(os.getenv("GEMINI_MAX_RPM_PER_KEY", "15"))
-GEMINI_MAX_DAILY_PER_KEY = int(os.getenv("GEMINI_MAX_DAILY_PER_KEY", "1000"))
+# Gemini Rate & Quota Limits (Gemini 3.8 Flash Free Tier: 5 RPM, 20 RPD, 250k TPM)
+GEMINI_MAX_RPM_PER_KEY = int(os.getenv("GEMINI_MAX_RPM_PER_KEY", "5"))
+GEMINI_MAX_DAILY_PER_KEY = int(os.getenv("GEMINI_MAX_DAILY_PER_KEY", "20"))
+GEMINI_MAX_TPM_PER_KEY = int(os.getenv("GEMINI_MAX_TPM_PER_KEY", "250000"))
 GEMINI_MAX_INPUT_TOKENS = int(os.getenv("GEMINI_MAX_INPUT_TOKENS", "100000"))
 
-# Cache Path
+# Batch sizes (tuned for fast reliable inference without 504 gateway timeouts)
+GEMINI_NER_BATCH_SIZE = int(os.getenv("GEMINI_NER_BATCH_SIZE", "20"))
+GEMINI_REL_BATCH_SIZE = int(os.getenv("GEMINI_REL_BATCH_SIZE", "10"))
+GEMINI_CTX_BATCH_SIZE = int(os.getenv("GEMINI_CTX_BATCH_SIZE", "10"))
+
+# Cache Paths
+# Gemini embedding cache (preserved, not deleted when switching providers)
 EMBEDDINGS_CACHE_PATH = BASE_DIR / "data" / "embeddings_cache.sqlite"
+# Voyage AI embedding cache (separate DB — Gemini cache is never touched)
+VOYAGE_EMBEDDINGS_CACHE_PATH = BASE_DIR / "data" / "embeddings_cache_voyage.sqlite"
 
 # Models
-EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "gemini").lower()
+EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "voyage").lower()
 EMBEDDING_MODEL = os.getenv(
     "EMBEDDING_MODEL",
-    "gemini-embedding-001" if EMBEDDING_PROVIDER == "gemini" else "voyage-3-large"
+    "voyage-3-large" if EMBEDDING_PROVIDER == "voyage" else "gemini-embedding-001"
 )
 EMBEDDING_DIMENSION = 1024
-LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.8-flash")
-LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.8-flash")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.5-flash")
+LLM_MODEL_STRONG = os.getenv("LLM_MODEL_STRONG", "gemini-3.5-flash")
 
 
 # Chunking Parameters

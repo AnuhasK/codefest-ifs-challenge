@@ -1,18 +1,133 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import streamlit as st
+
+
+def format_evidence_location(ev: Dict[str, Any]) -> str:
+    """Format exact page, line numbers, or plate identifier for an evidence record."""
+    meta = ev.get("metadata") or {}
+    ref_loc = meta.get("reference_location")
+    if ref_loc:
+        return ref_loc
+    page = ev.get("page") or meta.get("page")
+    line_start = meta.get("line_start")
+    line_end = meta.get("line_end")
+    para_start = meta.get("paragraph_start")
+
+    if line_start == "Plate" or meta.get("is_asset_chunk"):
+        return "Plate / Visual Record"
+    if page:
+        if line_start and line_end:
+            return f"p. {page} (Lines {line_start}-{line_end})"
+        if para_start:
+            return f"p. {page} (Para {para_start})"
+        return f"p. {page}"
+    if line_start:
+        return f"Line {line_start}"
+    return "p. 1"
+
+
+def resolve_document_urls(
+    source_path: Optional[str] = None,
+    document_id: Optional[str] = None,
+    page: int = 1,
+    api_url: str = "http://localhost:8000",
+) -> Dict[str, Any]:
+    """
+    Resolve browser-accessible URLs using the actual archive location from the project root.
+    Returns a dict with primary_url, is_download, action_label, docx_download_url, and filename.
+    """
+    clean_api = api_url.rstrip("/")
+    norm = (source_path or "").replace("\\", "/").strip()
+    rel = ""
+    if "Ashen_Era_Archive/" in norm:
+        rel = norm.split("Ashen_Era_Archive/", 1)[-1].lstrip("/")
+    elif norm and not norm.startswith("http"):
+        rel = norm.lstrip("/")
+
+    # Known archive folders where every .docx has a sibling .pdf
+    has_known_sibling_pdf = False
+    if rel:
+        low = rel.lower()
+        if low.startswith("codex/") or low.startswith("chronicles/"):
+            has_known_sibling_pdf = True
+
+    if rel:
+        ext = rel.split(".")[-1].lower() if "." in rel else ""
+        filename = rel.split("/")[-1]
+
+        if ext == "md":
+            return {
+                "primary_url": f"{clean_api}/Ashen_Era_Archive/{rel}",
+                "is_download": False,
+                "action_label": "📄 Open Markdown Source",
+                "docx_download_url": None,
+                "filename": filename,
+            }
+        elif ext == "pdf":
+            return {
+                "primary_url": f"{clean_api}/Ashen_Era_Archive/{rel}#page={page}",
+                "is_download": False,
+                "action_label": f"📄 Open PDF (p. {page})",
+                "docx_download_url": None,
+                "filename": filename,
+            }
+        elif ext == "docx":
+            stem_rel = rel.rsplit(".", 1)[0]
+            if has_known_sibling_pdf:
+                pdf_url = f"{clean_api}/Ashen_Era_Archive/{stem_rel}.pdf#page={page}"
+                docx_url = f"{clean_api}/Ashen_Era_Archive/{rel}"
+                return {
+                    "primary_url": pdf_url,
+                    "is_download": False,
+                    "action_label": f"📄 Open PDF (p. {page})",
+                    "docx_download_url": docx_url,
+                    "filename": filename,
+                }
+            else:
+                docx_url = f"{clean_api}/Ashen_Era_Archive/{rel}"
+                return {
+                    "primary_url": docx_url,
+                    "is_download": True,
+                    "action_label": "📥 Download Word Document",
+                    "docx_download_url": None,
+                    "filename": filename,
+                }
+        elif ext in ("png", "jpg", "jpeg", "webp"):
+            return {
+                "primary_url": f"{clean_api}/Ashen_Era_Archive/{rel}",
+                "is_download": False,
+                "action_label": "🖼️ View Image Record",
+                "docx_download_url": None,
+                "filename": filename,
+            }
+
+    # Fallback to document_id endpoint
+    if document_id:
+        return {
+            "primary_url": f"{clean_api}/documents/{document_id}/file#page={page}",
+            "is_download": False,
+            "action_label": f"📄 Open Document (p. {page})",
+            "docx_download_url": f"{clean_api}/documents/{document_id}/file?format=docx",
+            "filename": f"document_{document_id}",
+        }
+
+    return {
+        "primary_url": "#",
+        "is_download": False,
+        "action_label": "📄 View Document",
+        "docx_download_url": None,
+        "filename": "",
+    }
 
 
 def render_evidence_panel(
     evidence: List[Dict[str, Any]],
     conflicts: List[Dict[str, Any]],
-    evidence_status: str,
+    evidence_status: str = "HIGH",
+    api_url: str = "http://localhost:8000",
 ):
     """
-    Render the evidence panel displaying:
-    1. Color-coded Evidence Status badge (HIGH / MEDIUM / LOW / INSUFFICIENT)
-    2. Summary metrics (Sources Used, Passages Cited, Conflicts Detected)
-    3. Conflict alerts with opposing claim details
-    4. Expandable evidence cards with source metadata and epistemological tags
+    Render evidence quality indicator, contradiction alerts, and expandable evidence passages.
     """
     st.subheader("📊 Grounded Evidence")
 
@@ -22,6 +137,7 @@ def render_evidence_panel(
         "MEDIUM": ("#f59e0b", "#78350f", "Moderate Confidence"),
         "LOW": ("#ef4444", "#7f1d1d", "Low Confidence"),
         "INSUFFICIENT": ("#ef4444", "#7f1d1d", "Insufficient Archive Evidence"),
+        "API_QUOTA_EXHAUSTED": ("#dc2626", "#450a0a", "API Quota Exhausted"),
     }
     badge_color, badge_bg, status_desc = status_colors.get(
         evidence_status.upper(), ("#6b7280", "#1f2937", "Unknown Status")
@@ -80,16 +196,41 @@ def render_evidence_panel(
         for ev in evidence:
             ev_id = ev.get("id", "EVIDENCE")
             doc_title = ev.get("document_title", "Archive Document")
-            page = ev.get("page")
-            page_str = f"p.{page}" if page is not None else "Page unlisted"
+            loc_str = format_evidence_location(ev)
             cat = ev.get("source_category", "archive")
             subtype = ev.get("source_subtype", "record")
             content = ev.get("content", "")
 
-            with st.expander(f"[{ev_id}] {doc_title} ({page_str})"):
-                st.caption(f"**Provenance:** Category: `{cat}` | Subtype: `{subtype}`")
+            with st.expander(f"[{ev_id}] {doc_title} ({loc_str})"):
+                st.caption(f"**Provenance:** Category: `{cat}` | Subtype: `{subtype}` | **Location:** `{loc_str}`")
                 if ev.get("section_title"):
                     st.caption(f"**Section:** {ev['section_title']}")
                 st.markdown(f"> {content}")
+
+                meta = ev.get("metadata") or {}
+                s_file = ev.get("source_file") or meta.get("source_path") or meta.get("file_path") or ""
+                doc_id = ev.get("document_id")
+                page_num = ev.get("page") or 1
+
+                res_urls = resolve_document_urls(
+                    source_path=s_file,
+                    document_id=doc_id,
+                    page=page_num,
+                    api_url=api_url,
+                )
+                p_url = res_urls["primary_url"]
+                p_lbl = res_urls["action_label"]
+                docx_url = res_urls.get("docx_download_url")
+
+                if p_url != "#":
+                    if docx_url:
+                        st.markdown(
+                            f"[{p_lbl} ↗]({p_url}) &nbsp;|&nbsp; [📥 Download Word Document ↗]({docx_url})",
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(f"[{p_lbl} ↗]({p_url})")
     else:
         st.info("No evidence records gathered for this response.")
+
+

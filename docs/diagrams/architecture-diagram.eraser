@@ -1,0 +1,163 @@
+// Ashen Era Archive Intelligence System
+// Track 1B Primary · 1A + 1C Covered
+
+direction down
+colorMode bold
+styleMode shadow
+typeface clean
+
+// ============================================================
+// CORPUS & USER
+// ============================================================
+
+Ashen Era Archive [icon: folder, color: orange, label: "Ashen Era Archive (415 files · 1,277 pages)"]
+User [icon: user, color: blue]
+
+// ============================================================
+// OFFLINE INGESTION — Document to Searchable Knowledge
+// ============================================================
+
+Ingestion Pipeline [icon: git-merge, color: yellow, label: "Offline Ingestion Pipeline (Run Once)"] {
+  Content Extraction [icon: file-text, label: "Content Extraction (PyMuPDF · python-docx · Markdown)"]
+  OCR and Vision [icon: eye, label: "OCR + Vision (RapidOCR for plates · Gemini Vision for art)"]
+  Chunking [icon: scissors, label: "Format-Aware Semantic Chunking"]
+  Entity Extraction [icon: tag, label: "Entity Extraction (Gazette-First + Gemini NER)"]
+  Contextualization [icon: align-left, label: "Contextual Prefix Generation (Template + LLM Hybrid)"]
+  Embeddings [icon: cpu, label: "Dual Embedding (Voyage AI voyage-3-large)"]
+  Relationship Extraction [icon: share-2, label: "Relationship Extraction (Gemini Structured Output)"]
+}
+
+// ============================================================
+// DUAL KNOWLEDGE STORE
+// ============================================================
+
+Knowledge Store [icon: database, color: purple, label: "Dual Knowledge Store"] {
+  PostgreSQL [icon: postgresql, label: "PostgreSQL + pgvector — Chunks · Embeddings · BM25 · Assets"]
+  Neo4j [icon: neo4j, label: "Neo4j — Entity Graph · Relationships · Multi-Hop Paths"]
+}
+
+// ============================================================
+// AGENTIC QUERY PIPELINE — Prompt Assembly
+// ============================================================
+
+Streamlit [icon: streamlit, color: blue, label: "Streamlit Chat UI"]
+FastAPI Backend [icon: fastapi, color: blue, label: "FastAPI REST API (Python)"]
+
+Query Agent [icon: search, color: green, label: "Query Analyzer Agent (Gemini Flash)"] {
+  Classify [icon: tag, label: "Classify (single-hop vs multi-hop)"]
+  Extract Entities [icon: user, label: "Extract Named Entities"]
+  Decompose [icon: list, label: "Decompose into Sub-Questions"]
+}
+
+Retrieval Agent [icon: git-merge, color: green, label: "4-Stream Hybrid Retrieval"] {
+  BM25 [icon: search, label: "BM25 Full-Text Search"]
+  Dense Standard [icon: database, label: "Dense Search — Standard Embeddings"]
+  Dense Contextual [icon: database, label: "Dense Search — Contextual Embeddings"]
+  Graph Search [icon: share-2, label: "Entity + Graph Traversal"]
+  RRF [icon: git-merge, label: "Reciprocal Rank Fusion"]
+  Reranker [icon: filter, label: "Cross-Encoder Reranker (FlashRank)"]
+}
+
+Multi Hop Agent [icon: repeat, color: green, label: "Multi-Hop Reasoning Agent (Track 1B + 1C)"] {
+  Graph Traversal [icon: share-2, label: "Graph Traversal (Person → Faction → War)"]
+  QueryState [icon: clipboard, label: "QueryState (found · missing · contradictions)"]
+  Sufficiency Check [icon: check-circle, label: "Evidence Sufficiency Scoring"]
+  Iterative Loop [icon: repeat, label: "Bounded Retry Loop (max 3 rounds)"]
+}
+
+Evidence Manager [icon: shield, color: green, label: "Evidence Management"] {
+  Dedup and Validate [icon: layers, label: "Deduplicate · Validate Provenance"]
+  Conflict Detection [icon: alert-triangle, label: "Source Conflict Detection"]
+  Coverage [icon: bar-chart, label: "Coverage Analysis"]
+}
+
+Answer Agent [icon: cpu, color: green, label: "Answer Generation Agent"] {
+  Context Builder [icon: file-text, label: "Context Builder (Evidence → Structured Prompt)"]
+  Gemini LLM [icon: cpu, label: "Gemini 3.8 Flash (Evidence-Constrained Generation)"]
+  Verifier [icon: check-circle, label: "Answer Verifier (Claim Check · Citation Check)"]
+  Citation Resolver [icon: link, label: "Deterministic Citation Resolver (EVIDENCE_xxx → Doc, Page, Line)"]
+}
+
+Grounded Answer [icon: check-circle, color: blue, label: "Grounded Answer + Citations + Inline Images"]
+
+// ============================================================
+// EXTERNAL SERVICES
+// ============================================================
+
+Voyage AI [icon: cpu, color: red, label: "Voyage AI (voyage-3-large)"]
+Gemini API [icon: cpu, color: red, label: "Google Gemini 3.8 Flash + Vision"]
+Docker [icon: docker, color: blue, label: "Docker Compose"]
+
+// ============================================================
+// CONNECTIONS — Ingestion Flow (Document → Knowledge)
+// ============================================================
+
+Ashen Era Archive > Content Extraction: Scan All Files [color: orange]
+Content Extraction > OCR and Vision [color: orange]
+OCR and Vision > Chunking [color: orange]
+Chunking > Entity Extraction [color: orange]
+Entity Extraction > Contextualization [color: orange]
+Contextualization > Embeddings [color: orange]
+Embeddings > Relationship Extraction [color: orange]
+
+Embeddings > PostgreSQL: Store Chunks + Vectors [color: purple]
+Entity Extraction > Neo4j: Store Entities [color: purple]
+Relationship Extraction > Neo4j: Store Relationships [color: purple]
+Embeddings > Voyage AI: Generate Embeddings [color: red]
+Entity Extraction > Gemini API: Batched NER [color: red]
+OCR and Vision > Gemini API: Vision Descriptions [color: red]
+
+// ============================================================
+// CONNECTIONS — Query Flow (User → Answer)
+// ============================================================
+
+User > Streamlit: Ask Question
+Streamlit > FastAPI Backend: HTTP Request
+FastAPI Backend > Query Agent: Parse Query
+
+Query Agent > Retrieval Agent: Expanded Query + Entities
+
+// Retrieval → Knowledge Store (explicit data access)
+BM25 > PostgreSQL: FTS Query [color: purple]
+Dense Standard > PostgreSQL: Vector Similarity [color: purple]
+Dense Contextual > PostgreSQL: Contextual Vector Similarity [color: purple]
+Graph Search > Neo4j: Cypher Entity Lookup [color: purple]
+
+BM25 > RRF
+Dense Standard > RRF
+Dense Contextual > RRF
+Graph Search > RRF
+
+RRF > Reranker: Top 50-100 Candidates
+Reranker > Multi Hop Agent: Top 10-20 Evidence
+
+// Multi-Hop Iterative Loop
+Sufficiency Check > Retrieval Agent: Gap-Fill Search (retry) [color: orange]
+Graph Traversal > Neo4j: Multi-Hop Cypher Traversal [color: purple]
+QueryState - Sufficiency Check
+Graph Traversal > QueryState: Discovered Facts
+Iterative Loop - Sufficiency Check
+
+Multi Hop Agent > Evidence Manager: Collected Evidence
+
+Evidence Manager > Answer Agent: Verified Evidence Bundle
+
+Context Builder > Gemini LLM: Structured Prompt with Evidence IDs
+Gemini LLM > Verifier: Draft Answer
+Verifier > Citation Resolver: Verified Claims
+Citation Resolver > Grounded Answer
+
+Grounded Answer > FastAPI Backend: JSON Response
+FastAPI Backend > Streamlit: Response + Citations + Images
+
+// External API connections at query time
+Dense Standard > Voyage AI: Query Embedding [color: red]
+Dense Contextual > Voyage AI: Query Embedding [color: red]
+Gemini LLM > Gemini API: Generate [color: red]
+// FlashRank is local (no external API) — named in Reranker label
+
+// Infrastructure
+Docker - PostgreSQL
+Docker - Neo4j
+Docker - Streamlit
+Docker - FastAPI Backend

@@ -9,10 +9,16 @@ from src.config import (
     GEMINI_API_KEYS,
     GEMINI_MAX_RPM_PER_KEY,
     GEMINI_MAX_DAILY_PER_KEY,
+    GEMINI_MAX_TPM_PER_KEY,
     GEMINI_MAX_INPUT_TOKENS,
 )
 
 logger = logging.getLogger(__name__)
+
+
+class GeminiQuotaExhaustedError(RuntimeError):
+    """Raised when all configured Gemini API keys have exhausted their daily or rate-limit quotas."""
+    pass
 
 
 class GeminiKeyRotator:
@@ -22,6 +28,7 @@ class GeminiKeyRotator:
     Enforces:
     - Max Requests Per Minute (RPM) per key (default: 5)
     - Peak Daily Requests per key (default: 20)
+    - Max Tokens Per Minute (TPM) per key (default: 250,000)
     - Max Input Tokens per request (default: 100,000)
     - Auto-cooldown when rate limited, and fallback when daily quota is reached.
     """
@@ -32,6 +39,7 @@ class GeminiKeyRotator:
         max_rpm: int = GEMINI_MAX_RPM_PER_KEY,
         max_daily: int = GEMINI_MAX_DAILY_PER_KEY,
         max_tokens: int = GEMINI_MAX_INPUT_TOKENS,
+        max_tpm: int = GEMINI_MAX_TPM_PER_KEY,
     ):
         raw_keys = api_keys if api_keys is not None else GEMINI_API_KEYS
         clean_keys = [
@@ -46,11 +54,27 @@ class GeminiKeyRotator:
         self.max_rpm = max_rpm
         self.max_daily = max_daily
         self.max_tokens = max_tokens
+        self.max_tpm = max_tpm
 
         self._request_timestamps: Dict[str, List[float]] = {k: [] for k in self._keys}
         self._daily_counts: Dict[str, int] = {k: 0 for k in self._keys}
         self._exhausted_keys: Dict[str, bool] = {k: False for k in self._keys}
         self._current_date = date.today()
+
+    @property
+    def is_all_exhausted(self) -> bool:
+        """Check if all configured Gemini keys are marked exhausted or have reached daily limits."""
+        if not self._keys:
+            return True
+        with self._lock:
+            self._reset_if_new_day()
+            available = [
+                k
+                for k in self._keys
+                if not self._exhausted_keys.get(k, False)
+                and self._daily_counts.get(k, 0) < self.max_daily
+            ]
+            return len(available) == 0
 
     def _reset_if_new_day(self) -> None:
         """Reset daily counters if calendar date changed."""
@@ -169,6 +193,13 @@ class GeminiKeyRotator:
         """
         if not text:
             return text
+        est_tokens = len(text) / 3.5
+        if est_tokens > 40000:
+            logger.warning(
+                "Prompt length (%d chars, ~%d tokens) is approaching the 50K tokens/call budget (80%% threshold).",
+                len(text),
+                int(est_tokens),
+            )
         max_chars = int(max_tokens * 3.5)
         if len(text) > max_chars:
             logger.warning(

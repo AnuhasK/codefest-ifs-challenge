@@ -18,7 +18,8 @@ from src.generation.prompts import (
     QA_USER_PROMPT_PHASE6_TEMPLATE,
 )
 from src.providers.llm_provider import LLMProvider, get_llm_provider
-from src.providers.embeddings import EmbeddingProvider
+from src.providers.key_rotator import GeminiQuotaExhaustedError
+from src.providers.embeddings import EmbeddingProvider, get_embedding_provider
 from src.providers.reranker_provider import RerankerProvider
 from src.retrieval.orchestrator import retrieve, retrieve_with_multihop, RetrievalConfig
 from src.retrieval.query_analyzer import analyze_query, QueryAnalysis
@@ -77,13 +78,26 @@ def generate_grounded_answer(
         context=formatted_context,
     )
 
-    response = llm.generate(
-        prompt=user_prompt,
-        system_prompt=SYSTEM_PROMPT_BASELINE_RAG,
-        model=model,
-    )
-
-    answer_text = response.content.strip()
+    try:
+        response = llm.generate(
+            prompt=user_prompt,
+            system_prompt=SYSTEM_PROMPT_BASELINE_RAG,
+            model=model,
+        )
+        answer_text = response.content.strip()
+        tokens_used = response.tokens_used
+        model_used = response.model
+    except GeminiQuotaExhaustedError as eq:
+        logger.error("Gemini API quota exhausted in generate_grounded_answer: %s", eq)
+        return GroundedAnswer(
+            question=question,
+            answer_text="⚠️ Gemini API quota is exhausted across all configured keys. Please check or refresh GEMINI_API_KEYS in .env.",
+            citations=[],
+            evidence_used=[],
+            tokens_used=0,
+            model_used=model or "",
+            evidence_count=len(evidence),
+        )
 
     # Extract all cited [EVIDENCE_X] or EVIDENCE_X mentions
     cited_ids = set(re.findall(r"EVIDENCE_(\d+)", answer_text))
@@ -110,8 +124,8 @@ def generate_grounded_answer(
         answer_text=answer_text,
         citations=citations,
         evidence_used=used_ids,
-        tokens_used=response.tokens_used,
-        model_used=response.model,
+        tokens_used=tokens_used,
+        model_used=model_used,
         evidence_count=len(evidence),
     )
 
@@ -200,6 +214,15 @@ def answer_question(
     trace["sufficiency_level"] = sufficiency.level
     trace["sufficiency_coverage"] = sufficiency.coverage
 
+    # Check if Voyage AI embedding provider is degraded or exhausted
+    warning_msg: Optional[str] = None
+    try:
+        chk_provider = embedding_provider or get_embedding_provider()
+        if hasattr(chk_provider, "is_available") and not chk_provider.is_available:
+            warning_msg = "⚠️ Voyage AI embedding quota is unconfigured or exhausted; semantic vector search fell back to BM25 lexical and Neo4j graph search."
+    except Exception:
+        pass
+
     # Early exit fast-path: Refuse if evidence is completely INSUFFICIENT
     if sufficiency.level == "INSUFFICIENT" or not manager.evidence:
         elapsed = round(time.time() - start_time, 2)
@@ -221,6 +244,7 @@ def answer_question(
                 unsupported_claims=[],
             ),
             query_trace=trace,
+            warning=warning_msg,
         )
 
     # Step 6: Build Enhanced Context
@@ -237,15 +261,44 @@ def answer_question(
         context=formatted_context,
     )
 
-    response = llm.generate(
-        prompt=user_prompt,
-        system_prompt=SYSTEM_PROMPT_PHASE6,
-        model=model,
-    )
-    raw_answer = response.content.strip()
-    trace["generation_time_s"] = round(time.time() - gen_start, 2)
-    trace["tokens_used"] = response.tokens_used
-    trace["model_used"] = response.model
+    try:
+        response = llm.generate(
+            prompt=user_prompt,
+            system_prompt=SYSTEM_PROMPT_PHASE6,
+            model=model,
+        )
+        raw_answer = response.content.strip()
+        if not raw_answer:
+            raw_answer = "The archive search retrieved relevant evidence, but the language model was unable to generate a synthesized response. Please check API key quotas or network connectivity."
+        trace["generation_time_s"] = round(time.time() - gen_start, 2)
+        trace["tokens_used"] = response.tokens_used
+        trace["model_used"] = response.model
+    except GeminiQuotaExhaustedError as eq:
+        logger.error("Gemini API quota exhausted during answer generation: %s", eq)
+        raw_answer = "⚠️ Gemini API quota is exhausted across all configured keys. Please check or refresh your GEMINI_API_KEYS in .env."
+        trace["generation_time_s"] = round(time.time() - gen_start, 2)
+        trace["tokens_used"] = 0
+        trace["model_used"] = model or "unknown"
+        trace["error"] = "API_QUOTA_EXHAUSTED"
+        trace["elapsed_time_s"] = round(time.time() - start_time, 2)
+        return FinalAnswer(
+            question=query,
+            answer_text=raw_answer,
+            raw_answer_text=raw_answer,
+            evidence=manager.evidence,
+            citations=[],
+            conflicts=conflicts,
+            evidence_status="API_QUOTA_EXHAUSTED",
+            verification_result=VerificationResult(
+                is_verified=False,
+                claim_checks=[],
+                citation_issues=[],
+                conflict_acknowledgements=[],
+                unsupported_claims=["API Quota Exhausted"],
+            ),
+            query_trace=trace,
+            warning="⚠️ Gemini API quota is exhausted across all configured keys. Please check or refresh GEMINI_API_KEYS in .env.",
+        )
 
     # Step 8: Answer Verification
     verify_start = time.time()
@@ -284,4 +337,5 @@ def answer_question(
         evidence_status=sufficiency.level,
         verification_result=v_result,
         query_trace=trace,
+        warning=warning_msg,
     )

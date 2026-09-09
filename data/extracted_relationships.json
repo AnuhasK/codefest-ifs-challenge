@@ -1228,5 +1228,3575 @@
     "document_id": "weeping_lurker",
     "confidence": 1.0,
     "source": "infobox"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Accord Of Mournthrone",
+    "relationship_type": "WON",
+    "evidence_text": "The Accord of Mournthrone began in 297 AS and ended in 301 AS with the Ashen Vanguard named victor.",
+    "chunk_id": "4a306eeb-d37d-4725-981f-0e25f86d34a7",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Crookvale",
+    "target_entity": "The High Spires",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Crookvale had been founded in 295 AS in The High Spires.",
+    "chunk_id": "5fb436b8-4303-490e-b8b7-dbfae32a459f",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Korvath",
+    "target_entity": "Edge Of Gloamreach",
+    "relationship_type": "HOLDS",
+    "evidence_text": "His fingers closed around the Edge of Gloamreach. \u201cDon\u2019t,\u201d Brannoc said. Korvath lifted it.",
+    "chunk_id": "5eb005d2-4a7b-4bf5-a17e-59aafaca53c1",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "You are the unacknowledged heir to the Bleeding Crown.",
+    "chunk_id": "d422a857-5f7d-48df-9358-a9f162467a12",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "At Vharencrag Fortress, the snow fell upward. ... Brannoc watched from the gatehouse where no living sentry stood.",
+    "chunk_id": "e88275d8-d21f-4b80-b273-abc84bea54d5",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "At Vharencrag Fortress, the snow fell upward. ... In the yard, men of the Ashen Vanguard carried lengths of chain through the snow.",
+    "chunk_id": "e88275d8-d21f-4b80-b273-abc84bea54d5",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Accord Of Mournthrone",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "Yet the fighting had waged at Vharencrag Fortress in 301 AS, and the fortress had not learned that it was finished.",
+    "chunk_id": "e88275d8-d21f-4b80-b273-abc84bea54d5",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Fenspire",
+    "target_entity": "Gloamreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "The Gloaming Reach lay there, dim beneath a sky without dawn. Fenspire stood within it",
+    "chunk_id": "6fb558f2-bb03-4060-b4ce-e1188e790d99",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Thrice Bound Edge",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Brannoc reached beneath his coat and drew out the leather-wrapped object. He placed it on the table without unfastening the straps... 'The Thrice-Bound Edge,' he whispered.",
+    "chunk_id": "7a14e5d3-ba3d-4331-abcc-aaf909cba695",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Fenspire",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Fenspire was garrisoned, disciplined, vigilant. Even panic here marched in formation. Brannoc turned his hand palm upward.",
+    "chunk_id": "7a14e5d3-ba3d-4331-abcc-aaf909cba695",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Edge Of Gloamreach",
+    "target_entity": "Fenspire",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Its sound came down through the stones of Fenspire, vast and black. ... The book lay open on the flagstones inside the doorway, untouched by wind.",
+    "chunk_id": "cb9b5c22-0dfc-4696-ae26-f2ed7d0e3ea5",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The Bleeding Crown has never acknowledged me,\" he said.",
+    "chunk_id": "6ea4c92a-70d1-47d0-b9b0-cdbd717e77f2",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Edge Of Gloamreach",
+    "target_entity": "Blackford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Edge of Gloamreach housed in Blackford.",
+    "chunk_id": "8aaedcf7-758a-4fec-b37d-5ada4bdc2be7",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thrice Bound Edge",
+    "target_entity": "Crookvale",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "The Thrice-Bound Edge had been housed in Crookvale.",
+    "chunk_id": "bc346aac-28a2-47a3-8a4d-c888e1c80943",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Accord Of Mournthrone",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The hidden truth of the Accord of Mournthrone was not that courage had failed, nor that the Ashen Vanguard had proved stronger.",
+    "chunk_id": "b7b70ec0-dd1b-4232-b953-aa6abe713fc0",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Fenspire",
+    "target_entity": "Gloaming Reach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Fenspire. Gloaming Reach. Founded in 57 AS.",
+    "chunk_id": "470396a9-dd16-41e6-b9ba-920b4eba19e3",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Purge Of Blackport",
+    "target_entity": "Fenspire",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "The Purge of Blackport waged at Fenspire in 319 AS.",
+    "chunk_id": "a5d110d5-8e63-4193-b882-3a7ae3c2f4a7",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Sellsword Captain",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Brannoc knew what the others saw when they looked at him: a major Sellsword Captain, useful in a siege, dangerous in a negotiation, purchasable until proven otherwise.",
+    "chunk_id": "73eb5672-e057-45c1-b2ac-07d30e276041",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thrice Bound Edge",
+    "target_entity": "Regalia",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "\u201cThe Thrice-Bound Edge,\u201d he murmured. \u201cRegalia forged in 123 AS. No attunement cost.\u201d",
+    "chunk_id": "146a96f8-d38c-4e93-a182-73beb9d51f51",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle",
+    "target_entity": "Diadem Of Sorrowgate",
+    "relationship_type": "HOLDS",
+    "evidence_text": "On the table before Sabelle lay the Diadem of Sorrowgate.",
+    "chunk_id": "da0bf36f-5a8b-4f39-868b-faa1cb668f18",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Morwenna Ashgrove was a member of The Ashen Vanguard.",
+    "chunk_id": "6a1b7214-3e07-4476-8cd5-59d7c16c3f6d",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Caedmon Fellgard",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Morwenna Ashgrove was mentor of Caedmon Fellgard.",
+    "chunk_id": "6a1b7214-3e07-4476-8cd5-59d7c16c3f6d",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "You brought the woman of the Vanguard.\u201d ... \u201cMorwenna Ashgrove,\u201d it said.",
+    "chunk_id": "6a1b7214-3e07-4476-8cd5-59d7c16c3f6d",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Winter Reckoning",
+    "relationship_type": "WON",
+    "evidence_text": "The Winter Reckoning began in 270 AS and ended in 283 AS. Its casualty figure was 27987. The Iron-Ring Cartel was its victor.",
+    "chunk_id": "fac29d3d-2efb-475f-ae97-e86cc94f6c95",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Accord Of Mournthrone",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "He had fought in The Accord of Mournthrone",
+    "chunk_id": "899f83df-e94d-49f9-a7b4-9af5b0657908",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "fighting for The Bleeding Crown",
+    "chunk_id": "899f83df-e94d-49f9-a7b4-9af5b0657908",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Accord Of Mournthrone",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "He thought of the Accord of Mournthrone and the blood that would one day take him there",
+    "chunk_id": "20abc138-5916-4c89-8649-5c7b12b20d79",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Greyfen",
+    "target_entity": "Hollowreach",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Maelis Greyfen wore the gray of service at Hollowreach",
+    "chunk_id": "1b832c92-c914-4176-a043-4b7c4f1e64dd",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Ignatz had sold reports... He gave the Iron-Ring Cartel routes, dispositions, shortages",
+    "chunk_id": "42c2f130-07b4-40b7-a881-dcc7cfbef7bc",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cartel",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "He gave the Iron-Ring Cartel routes... But the Cartel had never paid for small truths.",
+    "chunk_id": "42c2f130-07b4-40b7-a881-dcc7cfbef7bc",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Psalter",
+    "target_entity": "Marrowwatch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "\u201cWhy is the Psalter here?\u201d the Outrider asked. \u201cIt is housed in Marrowwatch.\u201d",
+    "chunk_id": "012dbe08-9cb5-4330-9ab7-f521cbcc1daa",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle",
+    "target_entity": "The High Inquisitor",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Sabelle\u2019s hand moved beneath their dark coat, though no weapon appeared. The High Inquisitor had no need to display violence.",
+    "chunk_id": "c3a6a37c-f834-42b8-96a1-419d6d4b38df",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Fellgard The Unforgiven",
+    "target_entity": "Gloammarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "It lay in the shallow dish before Isolde Fellgard the Unforgiven, dark as old wine beneath the chamber\u2019s colorless light. A servant had polished the table until the grain shone through the dust, but the room still smelled of iron, lamp-fat, and the cold ash that crept beneath every door in Gloammarch.",
+    "chunk_id": "b6aa8388-1a4b-424a-bd7f-21bd76c4897c",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde",
+    "target_entity": "Gloammarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "the cold ash that crept beneath every door in Gloammarch. ... Isolde touched the surface of the blood with the tip of a gloved finger.",
+    "chunk_id": "b6aa8388-1a4b-424a-bd7f-21bd76c4897c",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric Ashgrove",
+    "target_entity": "Gloammarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "the cold ash that crept beneath every door in Gloammarch. ... Ossric Ashgrove entered carrying a ledger against his chest.",
+    "chunk_id": "b6aa8388-1a4b-424a-bd7f-21bd76c4897c",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric",
+    "target_entity": "Gloammarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "the cold ash that crept beneath every door in Gloammarch. ... Ossric Ashgrove entered ... Ossric Ashgrove, Isolde said.",
+    "chunk_id": "b6aa8388-1a4b-424a-bd7f-21bd76c4897c",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde",
+    "target_entity": "Isolde Fellgard The Unforgiven",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Isolde Fellgard the Unforgiven ... Isolde touched the surface of the blood",
+    "chunk_id": "b6aa8388-1a4b-424a-bd7f-21bd76c4897c",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric",
+    "target_entity": "Ossric Ashgrove",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Ossric Ashgrove entered ... Ossric Ashgrove, Isolde said.",
+    "chunk_id": "b6aa8388-1a4b-424a-bd7f-21bd76c4897c",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Stormmarch",
+    "target_entity": "Ash Wastes",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Stormmarch lies in the Ash Wastes.",
+    "chunk_id": "d7924933-f436-4617-abcb-bff42be65da9",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Stormmarch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Stormmarch is ruled by The Ashen Vanguard.",
+    "chunk_id": "d7924933-f436-4617-abcb-bff42be65da9",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Gloammarch",
+    "target_entity": "Ash Wastes",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Gloammarch held its ground in the Ash Wastes",
+    "chunk_id": "68914966-641d-4095-8e4f-19d4c2154bb2",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Winter Reckoning",
+    "target_entity": "Gloammarch",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "And the Winter Reckoning was waged at Gloammarch in 277 AS",
+    "chunk_id": "ea89f6b4-54a7-4863-bffc-48f174e2b2c1",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Hollowreach",
+    "target_entity": "Gloaming Reach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Hollowreach lay in the Gloaming Reach, founded in 56 AS",
+    "chunk_id": "d2f3b8c1-458a-48a7-8384-63907020e4cf",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Ignatz Ashgrove The Oathless",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Ignatz stepped between them.",
+    "chunk_id": "2db2e62a-fdce-48ba-ab1c-ff35454f1b64",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior",
+    "target_entity": "Malchior Cindervale the Flame-Touched",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Malchior looked again at the red thread in the water.",
+    "chunk_id": "2db2e62a-fdce-48ba-ab1c-ff35454f1b64",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior",
+    "target_entity": "Arch-Prelate",
+    "relationship_type": "HOLDS",
+    "evidence_text": "You forged your own lineage papers, Arch-Prelate.",
+    "chunk_id": "2db2e62a-fdce-48ba-ab1c-ff35454f1b64",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde",
+    "target_entity": "Malchior",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "They had been rivals before either of them named it. Rivalry was a kind of intimacy for people raised among knives. Malchior knew how Isolde lied. Isolde knew where Malchior\u2019s sanctity thinned.",
+    "chunk_id": "2db2e62a-fdce-48ba-ab1c-ff35454f1b64",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Leaden Accord",
+    "relationship_type": "WON",
+    "evidence_text": "The Leaden Accord had begun in 330 AS and ended in 342 AS with 14,011 casualties. Both hosts had been destroyed by a Ley-storm, and the realm had been given a victor because realms preferred a clean word to a graveyard. The record named the victor: The Iron-Ring Cartel.",
+    "chunk_id": "674a2764-1a39-4756-894b-c22d41e2b54d",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.98,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle",
+    "target_entity": "The High Inquisitor",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The High Inquisitor descended without waiting. Morwenna remained upon the battlement... At the bottom, Sabelle waited before the chapel doors.",
+    "chunk_id": "674a2764-1a39-4756-894b-c22d41e2b54d",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna",
+    "target_entity": "Cartel",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "That was why the Cartel paid her.",
+    "chunk_id": "674a2764-1a39-4756-894b-c22d41e2b54d",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Fellgard The Unforgiven",
+    "target_entity": "Blood-Mage",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Isolde Fellgard the Unforgiven,\u201d said the wall. \u201cBorn in 286 AS.\u201d The Blood-Mage\u2019s amusement faded.",
+    "chunk_id": "b7d2168b-e519-4a38-a957-6edf3592f018",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Hollowvale",
+    "relationship_type": "LED",
+    "evidence_text": "Morwenna Ashgrove stood beneath the open arch of the command tower ... She had commanded Hollowvale since 311 AS.",
+    "chunk_id": "2eb53834-59b6-4b41-a57c-0a3ac08d6f7f",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna",
+    "target_entity": "Hollowvale",
+    "relationship_type": "LED",
+    "evidence_text": "Morwenna Ashgrove stood beneath the open arch of the command tower ... She had commanded Hollowvale since 311 AS.",
+    "chunk_id": "2eb53834-59b6-4b41-a57c-0a3ac08d6f7f",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Gauntlet Of Sorrowfell",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "whether the Gauntlet of Sorrowfell remains in Greyfell Citadel.",
+    "chunk_id": "1312db67-2c0c-4730-bb38-c4dea2680769",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Caedmon",
+    "target_entity": "Scribe",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "You are a Scribe,\u201d they said.",
+    "chunk_id": "1cd2fa8e-c114-4aec-83e4-0378cbbc0312",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Arch-Prelate",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Malchior Cindervale the Flame-Touched entered... 'Isolde Fellgard the Unforgiven,' Malchior said. 'Arch-Prelate.' 'Do not make that title sound like a wound.' 'Then stop wearing it as armor.'",
+    "chunk_id": "51fe6816-189b-4b27-b872-30e5d0242c0f",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Gloamreach",
+    "target_entity": "Pale Coast",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Gloamreach lay along the Pale Coast",
+    "chunk_id": "61f89eff-0ec9-4c81-a6b8-8a634aada1bc",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Ashgrove The Oathless",
+    "target_entity": "Chalice Of Ashdeep",
+    "relationship_type": "HOLDS",
+    "evidence_text": "The reliquary pressed coldly against his ribs.",
+    "chunk_id": "61f89eff-0ec9-4c81-a6b8-8a634aada1bc",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Hollow Edge",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Ignatz tightened his grip on The Hollow Edge.",
+    "chunk_id": "cbd7d1fd-6b9b-4eec-8fa0-8efbc66d3ab5",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Purge Of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Ignatz had stood at the edges of the Purge of Blackport.",
+    "chunk_id": "cbd7d1fd-6b9b-4eec-8fa0-8efbc66d3ab5",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Purge Of Blackport",
+    "relationship_type": "WON",
+    "evidence_text": "The Iron-Ring Cartel had emerged as victor, and the tale had been made into a banner.",
+    "chunk_id": "cbd7d1fd-6b9b-4eec-8fa0-8efbc66d3ab5",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Leaden Accord",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The Iron-Ring Cartel was a belligerent in The Leaden Accord.",
+    "chunk_id": "9b55e43e-f1b5-4e13-9afb-ceb4130d1659",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle",
+    "target_entity": "Palewell Abbey",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Sabelle rose, and the movement drew another scrape from beneath the floorboards. ... drifted just beyond the abbey's reach.",
+    "chunk_id": "ab4715aa-c76a-469d-aa96-d5518595daf0",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Ashgrove The Oathless",
+    "target_entity": "Fenspire",
+    "relationship_type": "LED",
+    "evidence_text": "There was only one Warden-Commander in Fenspire, but titles were doors... Ignatz Ashgrove the Oathless",
+    "chunk_id": "8c9b4667-32ab-4e57-ad6d-6773f3614b73",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Ashgrove The Oathless",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "\u201cYou sell intelligence to the Iron-Ring Cartel.\u201d",
+    "chunk_id": "bf5d17f9-3684-43a7-8b46-3ed663839fff",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Greyfell Citadel",
+    "target_entity": "Shattered Vale",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Greyfell Citadel had been founded in 62 AS, when the Shattered Vale was still spoken of",
+    "chunk_id": "5633aa9b-cf45-4828-a2e7-6a33a278bf42",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.98,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Fleet Admiral",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Morwenna Ashgrove stood beneath its broken gate... A major Fleet Admiral had no business in such a place.",
+    "chunk_id": "5633aa9b-cf45-4828-a2e7-6a33a278bf42",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "Ignatz had sold intelligence to the Iron-Ring Cartel.",
+    "chunk_id": "322c7c40-1223-4373-b5ee-3ac005028e9d",
+    "document_id": "77dcad20-e6e6-40c3-a81d-21441d146d4f",
+    "confidence": 0.8,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Ignatz Ashgrove The Oathless",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "Malchior Cindervale the Flame-Touched was the rival of Ignatz Ashgrove the Oathless.",
+    "chunk_id": "ead334a2-b62f-4fa4-bbbf-95c3173320c1",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus",
+    "target_entity": "Sceptre Of Final Winter",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Corvus drove The Sceptre of Final Winter into the threshold.",
+    "chunk_id": "c4eec164-6f21-4014-930c-7161e5dbea55",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.98,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Fellgard The Unforgiven",
+    "target_entity": "Blood-Mage",
+    "relationship_type": "HOLDS",
+    "evidence_text": "said Isolde Fellgard the Unforgiven. ... her Blood-Mage\u2019s robes",
+    "chunk_id": "e2c76251-ea67-4434-b608-499557d0eacc",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Ashgrove The Oathless",
+    "target_entity": "Malchior Cindervale the Flame-Touched",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "Ignatz Ashgrove the Oathless was rival of Malchior Cindervale the Flame-Touched",
+    "chunk_id": "d8361c41-7e07-4d0e-aa52-c4f4a6b61f23",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Malchior",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "Ignatz Ashgrove the Oathless was rival of Malchior Cindervale the Flame-Touched",
+    "chunk_id": "d8361c41-7e07-4d0e-aa52-c4f4a6b61f23",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "It drifted down in pale threads through the broken vault of Cindermere Hold, silvering the stones, the rusted hinges, the black ribs of beams burned long ago. Brannoc Ironmere the Red-Handed stood beneath it",
+    "chunk_id": "3cf02bb7-7f29-49d1-a02f-00378441ad31",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cindermere Hold",
+    "target_entity": "The High Spires",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Beyond it, the High Spires climbed into a sky the color of old iron. The peaks were hidden by cloud, but their cold pressed down through the stone. Cindermere Hold clung to the heights like a burned tooth.",
+    "chunk_id": "3cf02bb7-7f29-49d1-a02f-00378441ad31",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "A scrape of iron along stone from somewhere below the hold. ... Brannoc drew his sword.",
+    "chunk_id": "44e99c0e-8c24-4e89-a095-a62e84927b49",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Korvath",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "A scrape of iron along stone from somewhere below the hold. Korvath heard it too.",
+    "chunk_id": "44e99c0e-8c24-4e89-a095-a62e84927b49",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Warden-Commander",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "You are a Warden-Commander.",
+    "chunk_id": "71bbcad2-23d8-4d1c-99b8-55aeeff3d68e",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "\u201cDo you remember Cindermere Hold?\u201d Maelis asked.\n\nIgnatz\u2019s attention shifted toward them.\n\n\u201cEveryone remembers Cindermere Hold.\u201d\n\n\u201cMemory is not the same as knowledge.\u201d\n\n\u201cThe old records say it was founded in the High Spires.\u201d\n\n\u201cThe old records say more.\u201d\n\n\u201cThey say it was ruled by The Ashen Vanguard.\u201d",
+    "chunk_id": "027abd64-d073-4908-b11a-2b49746ddd34",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "War Of Drowned Light",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "The War of Drowned Light was waged at Cindermere Hold in 228 AS.",
+    "chunk_id": "2aa65d88-ef67-4b4a-b2ab-a7ddeefcf6a4",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous Wrenfield The Last Warden",
+    "target_entity": "Silent Psalter",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Aldous had wielded The Silent Psalter since 341 AS.",
+    "chunk_id": "88b0c673-cff8-40f3-bd28-2042f31599dc",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.98,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous Wrenfield The Last Warden",
+    "target_entity": "Reliquary Keeper",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "I brought you because you are a Reliquary Keeper.",
+    "chunk_id": "88b0c673-cff8-40f3-bd28-2042f31599dc",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna",
+    "target_entity": "Fleet Admiral",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Morwenna felt the old discipline gather around her like armor. Fleet Admiral.",
+    "chunk_id": "d9b609e6-fa81-4ff7-a308-6f7729e90bf4",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thrice Bound Lantern",
+    "target_entity": "Hollowvale",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "The Thrice-Bound Lantern housed in Hollowvale.",
+    "chunk_id": "2066385a-f033-4def-bfde-9f90cd48acd9",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Choir",
+    "target_entity": "War Of Drowned Light",
+    "relationship_type": "WON",
+    "evidence_text": "The War of Drowned Light ended with their victory.",
+    "chunk_id": "4cadcb32-4d19-468f-867a-62a3f6ff6363",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Choir",
+    "target_entity": "War Of Drowned Light",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The War of Drowned Light ended with their victory.",
+    "chunk_id": "4cadcb32-4d19-468f-867a-62a3f6ff6363",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle",
+    "target_entity": "Crown Of Burned Names",
+    "relationship_type": "HOLDS",
+    "evidence_text": "They seized the Crown of Burned Names and pressed it against the floor.",
+    "chunk_id": "4cadcb32-4d19-468f-867a-62a3f6ff6363",
+    "document_id": "a999bc88-398b-4a89-ad11-5f9a9cf23aca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashfall Colossus",
+    "target_entity": "Embermarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Ashfall Colossus\nType | Creature\nThreat rating | 9\nHabit | Nocturnal ambusher\nLair | Embermarch",
+    "chunk_id": "8eb770a1-0e60-4084-a00e-a4c0438286cf",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashfall Colossus",
+    "target_entity": "Purge Of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Name | Ashfall Colossus\n...Recorded deployment | Unleashed in The Purge of Blackport",
+    "chunk_id": "8eb770a1-0e60-4084-a00e-a4c0438286cf",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Chalice Of Ashdeep",
+    "target_entity": "Crookgate Keep",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Chalice of Ashdeep\n...Present housing | Crookgate Keep",
+    "chunk_id": "3389a56b-bfc9-4207-a806-3c228cec2182",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Marrowwell Abbey",
+    "target_entity": "Chalice Of Ashdeep",
+    "relationship_type": "CREATED",
+    "evidence_text": "Name | Chalice of Ashdeep\n...Place of forging | Marrowwell Abbey",
+    "chunk_id": "3389a56b-bfc9-4207-a806-3c228cec2182",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cinder Shrike",
+    "target_entity": "Mournwatch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Cinder Shrike\n...Lair | Mournwatch",
+    "chunk_id": "3a9b5519-87a8-4ccb-afaa-b426359645fb",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Diadem Of Sorrowgate",
+    "target_entity": "Gloammarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Diadem of Sorrowgate\n...Present housing | Gloammarch",
+    "chunk_id": "ebcdcff0-9d0e-45dd-b9b1-632ca0d269cd",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thorncairn",
+    "target_entity": "Diadem Of Sorrowgate",
+    "relationship_type": "CREATED",
+    "evidence_text": "Name | Diadem of Sorrowgate\n...Forging site | Thorncairn",
+    "chunk_id": "ebcdcff0-9d0e-45dd-b9b1-632ca0d269cd",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Blackford",
+    "target_entity": "Edge Of Gloamreach",
+    "relationship_type": "CREATED",
+    "evidence_text": "Name | Edge of Gloamreach\n...Place of forging | Blackford",
+    "chunk_id": "be111b39-2534-4dbc-8729-d012ed372a01",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Vharencrag Fortress",
+    "target_entity": "Gauntlet Of Sorrowfell",
+    "relationship_type": "CREATED",
+    "evidence_text": "Name | Gauntlet of Sorrowfell\n...Forged at | Vharencrag Fortress",
+    "chunk_id": "0b3a353a-ea96-4da6-b2d5-ae254e56963b",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Lantern Moth Swarm",
+    "target_entity": "Ashreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Lair | Ashreach",
+    "chunk_id": "e017c513-ad57-416b-9259-fee0b393577f",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Lantern Moth Swarm",
+    "target_entity": "Leaden Accord",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Recorded deployment | Unleashed in The Leaden Accord",
+    "chunk_id": "e017c513-ad57-416b-9259-fee0b393577f",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Marsh Revenant",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Lair | Greyfell Citadel",
+    "chunk_id": "392e87bb-d37c-483a-bae5-1de47933e7fd",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Pale Stag Of Omens",
+    "target_entity": "Winter Reckoning",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Recorded event | Unleashed in The Winter Reckoning",
+    "chunk_id": "cde75da2-5eee-41ab-9582-6ad53f23a7a2",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Salt Blind Leviathan",
+    "target_entity": "Greythrone",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Lair | Greythrone",
+    "chunk_id": "a3ef58aa-be61-4059-80b7-310f21592859",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cinder Wrought Aegis",
+    "target_entity": "Gloamreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Housing | Housed in Gloamreach",
+    "chunk_id": "ad1d1474-8906-4907-a2dc-238437f768dd",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Crown Of Burned Names",
+    "target_entity": "Blackford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Housed in | Blackford",
+    "chunk_id": "70dd60bc-6d7a-44ba-96bc-843ce41d6d0d",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Hollow Edge",
+    "target_entity": "Crookgate Keep",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Current housing | Crookgate Keep",
+    "chunk_id": "1fa063d6-dfff-4b38-a650-fc7f0c006dea",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Psalter Of Seven Sorrows",
+    "target_entity": "Fenthrone",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Housed in | Fenthrone",
+    "chunk_id": "4b4ce271-b34d-435d-b8bf-ed31465292ff",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sceptre Of Final Winter",
+    "target_entity": "Palewell Abbey",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Housing | Palewell Abbey",
+    "chunk_id": "9158182e-a571-4c8f-8770-48943f11925c",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Psalter",
+    "target_entity": "Fenspire",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Forged at | Fenspire",
+    "chunk_id": "0a161385-d1cd-480e-b97d-4a1f63c3b3d6",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thrice Bound Edge",
+    "target_entity": "Hollowreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Forged at | Hollowreach",
+    "chunk_id": "e38d7f93-19da-423c-b4df-dee073f79733",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thrice Bound Lantern",
+    "target_entity": "Stormmarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Forged at | Stormmarch",
+    "chunk_id": "ee4b8abe-6d24-481d-ab81-d96f5f314dcc",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thorn Wraith",
+    "target_entity": "Ironfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Thorn Wraith lairs in Ironfell Citadel",
+    "chunk_id": "d62bad55-f61a-4ce4-8763-aa706533af76",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Vault Chitin",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Lair | Greyfell Citadel",
+    "chunk_id": "eab613b0-4046-4f0e-939e-f76148b4a0e9",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Weeping Lurker",
+    "target_entity": "Embermarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Weeping Lurker lairs in Embermarch",
+    "chunk_id": "910976e7-8973-4eec-9b0c-38acdbed043f",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Weeping Lurker",
+    "target_entity": "Purge Of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Weeping Lurker unleashed in The Purge of Blackport",
+    "chunk_id": "910976e7-8973-4eec-9b0c-38acdbed043f",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cinder-Wrought Aegis",
+    "target_entity": "Gloamreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "It is housed in Gloamreach.",
+    "chunk_id": "a13a4c99-7176-438e-ba34-9ae53cc061c1",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cinder-Wrought Aegis",
+    "target_entity": "Sundering",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The Cinder-Wrought Aegis is regalia shaped by the legacy of the Sundering.",
+    "chunk_id": "a13a4c99-7176-438e-ba34-9ae53cc061c1",
+    "document_id": "0349ad88-db88-4bfa-9429-2e113ceb4308",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Weeping Marshes",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Region | The Weeping Marshes\nStatus | contested\nRuling power | The Bleeding Crown",
+    "chunk_id": "abd56cea-d971-425e-a214-611d942d69e7",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Blackford",
+    "target_entity": "Pale Coast",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Blackford\nRegion | The Pale Coast",
+    "chunk_id": "4cf848a1-b510-460c-850a-581171970e13",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Blackford",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Blackford\n... Ruler | The Bleeding Crown",
+    "chunk_id": "4cf848a1-b510-460c-850a-581171970e13",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Crookgate Keep",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Crookgate Keep\nRegion | The Weeping Marshes\nFounded | 294 AS\nStatus | contested\nRuling power | The Bleeding Crown",
+    "chunk_id": "730cfbe6-84fe-4244-94f7-141240bc3f63",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Crookgate Keep",
+    "target_entity": "Weeping Marshes",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Crookgate Keep\nRegion | The Weeping Marshes",
+    "chunk_id": "730cfbe6-84fe-4244-94f7-141240bc3f63",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Choir",
+    "target_entity": "Embercrag Fortress",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Embercrag Fortress\nRegion | The Shattered Vale\nFounded | 207 AS\nStatus | abandoned\nRuled by | The Silent Choir",
+    "chunk_id": "c0083e78-6098-4e56-9788-cf032e17122d",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Embercrag Fortress",
+    "target_entity": "Shattered Vale",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Embercrag Fortress\nRegion | The Shattered Vale",
+    "chunk_id": "c0083e78-6098-4e56-9788-cf032e17122d",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Emberdeep",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Emberdeep\nRegion | The Shattered Vale\nStatus | abandoned\nRuling power | The Ashen Vanguard",
+    "chunk_id": "709441a2-f2c3-4137-b8f2-060bbfd22246",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Emberdeep",
+    "target_entity": "Shattered Vale",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Emberdeep\nRegion | The Shattered Vale",
+    "chunk_id": "709441a2-f2c3-4137-b8f2-060bbfd22246",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Embermarch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Embermarch\nRegion | The Gloaming Reach\nFounded | 67 AS\nClassification | Core location\nStatus | garrisoned\nGarrison strength | 4063\nRuler | The Ashen Vanguard",
+    "chunk_id": "469ca142-303b-46d4-bcd2-d5d66932a1de",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Embermarch",
+    "target_entity": "Gloaming Reach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Embermarch\nRegion | The Gloaming Reach",
+    "chunk_id": "469ca142-303b-46d4-bcd2-d5d66932a1de",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Fenspire",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Fenspire\nRegion | The Gloaming Reach\nFounded | 57 AS\nStatus | garrisoned\nGarrison strength | 3742\nRuling power | The Iron-Ring Cartel",
+    "chunk_id": "b9d71e52-ca90-451a-ac74-48163ee593c6",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Fenthrone",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Fenthrone\nRegion | The Pale Coast\nFounded | 229 AS\nStatus | garrisoned\nGarrison strength | 5805\nRuled by | The Bleeding Crown",
+    "chunk_id": "2c1c912f-71a5-417d-9bd3-790452daa3c7",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Fenthrone",
+    "target_entity": "Pale Coast",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Fenthrone\nRegion | The Pale Coast",
+    "chunk_id": "2c1c912f-71a5-417d-9bd3-790452daa3c7",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Greythrone",
+    "target_entity": "Gloaming Reach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Greythrone - region | The Gloaming Reach",
+    "chunk_id": "5ea045bd-294e-4f6e-8e18-10600662e2a6",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Greythrone",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Greythrone ruled by | The Ashen Vanguard",
+    "chunk_id": "5ea045bd-294e-4f6e-8e18-10600662e2a6",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Hollowreach",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Hollowreach\nRegion | The Gloaming Reach\nFounded | 56 AS\nStatus | quarantined\nRuling power | The Iron-Ring Cartel",
+    "chunk_id": "1325a514-a2b3-4d37-b8a3-5aec642f6f42",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Hollowvale",
+    "target_entity": "Blood-Moor",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Hollowvale\nRegion | The Blood-Moor",
+    "chunk_id": "688b3113-c254-4f27-81c8-4c5a7ff0466e",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Hollowvale",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Hollowvale\nRegion | The Blood-Moor\nFounded | 286 AS\nRuling power | The Ashen Vanguard",
+    "chunk_id": "688b3113-c254-4f27-81c8-4c5a7ff0466e",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Marrowwatch",
+    "target_entity": "Ash Wastes",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Marrowwatch\nRegion | The Ash Wastes",
+    "chunk_id": "87558218-4e7e-484d-933b-158cc67d6753",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Marrowwatch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Marrowwatch\nRegion | The Ash Wastes\nFounded | 280 AS\nStatus | abandoned\nRuling power | The Ashen Vanguard",
+    "chunk_id": "87558218-4e7e-484d-933b-158cc67d6753",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Mournwatch",
+    "target_entity": "Gloaming Reach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Mournwatch\nRegion | The Gloaming Reach",
+    "chunk_id": "2907699b-6b32-49c1-a1f4-1064bba2890f",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Mournwatch",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Mournwatch\nRegion | The Gloaming Reach\nStatus | garrisoned\nRule | The Bleeding Crown",
+    "chunk_id": "2907699b-6b32-49c1-a1f4-1064bba2890f",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thorncairn",
+    "target_entity": "Gloaming Reach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Thorncairn\nRegion | The Gloaming Reach",
+    "chunk_id": "9425dfd5-7d70-4946-bf57-eb8296db8bb5",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Thorncairn",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Thorncairn\nRegion | The Gloaming Reach\nFounded | 192 AS\nClassification | Core location\nStatus | quarantined\nRuling power | The Ashen Vanguard",
+    "chunk_id": "9425dfd5-7d70-4946-bf57-eb8296db8bb5",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Vharencrag Fortress",
+    "target_entity": "The High Spires",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Vharencrag Fortress\nRegion | The High Spires",
+    "chunk_id": "e1b0e418-06a1-4e05-b9c5-4dac30f5d003",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Choir",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Vharencrag Fortress\nRegion | The High Spires\nFounded | 84 AS\nGarrison strength | 9478\nStatus | contested\nRuling power | The Silent Choir",
+    "chunk_id": "e1b0e418-06a1-4e05-b9c5-4dac30f5d003",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Vharenford",
+    "target_entity": "Ash Wastes",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Location | Vharenford\nRegion | The Ash Wastes",
+    "chunk_id": "a4d770a9-43aa-4709-8510-bf6bd9157bf6",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Vharenford",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Location | Vharenford\nRegion | The Ash Wastes\nFounded | 291 AS\nStatus | garrisoned\nGarrison strength | 3637\nRuling power | The Ashen Vanguard",
+    "chunk_id": "a4d770a9-43aa-4709-8510-bf6bd9157bf6",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Marrowwell Abbey",
+    "target_entity": "Gloaming Reach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Marrowwell Abbey is a fortified religious site in The Gloaming Reach",
+    "chunk_id": "0f44d553-4c59-4637-a3d2-25ea5b5e738b",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Marrowwell Abbey",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "maintained under the authority of The Bleeding Crown.",
+    "chunk_id": "0f44d553-4c59-4637-a3d2-25ea5b5e738b",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Vharencrag Fortress",
+    "target_entity": "High Spires",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Vharencrag Fortress is a core location of the High Spires",
+    "chunk_id": "7ee3d300-0ba2-4fd2-9f7f-bea9d682853b",
+    "document_id": "4719e337-9178-40b7-8a14-56d377164156",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous Wrenfield The Last Warden",
+    "target_entity": "Fenspire",
+    "relationship_type": "LED",
+    "evidence_text": "Command | Fenspire, since 336 AS",
+    "chunk_id": "b524d328-e492-4c1d-9cf6-a54171e562a4",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous Wrenfield The Last Warden",
+    "target_entity": "Thessaly Coldwater",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Instructional relation | Mentor of Thessaly Coldwater",
+    "chunk_id": "b524d328-e492-4c1d-9cf6-a54171e562a4",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous Wrenfield The Last Warden",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Cartel record | Member of The Iron-Ring Cartel",
+    "chunk_id": "b524d328-e492-4c1d-9cf6-a54171e562a4",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | Member of The Bleeding Crown",
+    "chunk_id": "22e57642-3cc6-4e23-abcd-2ae78a5b7d74",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Blackford",
+    "relationship_type": "LED",
+    "evidence_text": "Command | Commands Blackford since 285 AS",
+    "chunk_id": "22e57642-3cc6-4e23-abcd-2ae78a5b7d74",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Accord Of Mournthrone",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Recorded action | Fought in The Accord of Mournthrone",
+    "chunk_id": "22e57642-3cc6-4e23-abcd-2ae78a5b7d74",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Korvath Nightbrook",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Instructional relation | Mentor of Korvath Nightbrook",
+    "chunk_id": "22e57642-3cc6-4e23-abcd-2ae78a5b7d74",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Caedmon Fellgard",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Membership | Member of The Iron-Ring Cartel",
+    "chunk_id": "01668f75-bac9-43ea-859c-bad1ba035ac5",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Caedmon Fellgard",
+    "target_entity": "Thorncairn",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of service | Thorncairn",
+    "chunk_id": "01668f75-bac9-43ea-859c-bad1ba035ac5",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys Sablewood The Ashen",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | Member of The Ashen Vanguard",
+    "chunk_id": "ff450b65-f4e0-4e43-ae62-a47f35ec7c50",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys Sablewood The Ashen",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "LED",
+    "evidence_text": "Command | Commands Cindermere Hold since 359 AS",
+    "chunk_id": "ff450b65-f4e0-4e43-ae62-a47f35ec7c50",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys Sablewood The Ashen",
+    "target_entity": "Halvard Sablewood",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Instructional Tie | Mentor of Halvard Sablewood",
+    "chunk_id": "ff450b65-f4e0-4e43-ae62-a47f35ec7c50",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys Sablewood The Ashen",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Concealed Status | Is the unacknowledged heir to the Bleeding Crown",
+    "chunk_id": "ff450b65-f4e0-4e43-ae62-a47f35ec7c50",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus Duskbane",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Membership | Corvus Duskbane member of The Bleeding Crown",
+    "chunk_id": "370842ab-df39-4809-aabd-50bd4b76e62e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus Duskbane",
+    "target_entity": "Vharenford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Service | Corvus Duskbane serves at Vharenford",
+    "chunk_id": "370842ab-df39-4809-aabd-50bd4b76e62e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus Hollowmere The Pale",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | member of The Silent Choir",
+    "chunk_id": "1cd8d59b-1812-4b7f-ba33-be375c5b87c3",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus Hollowmere The Pale",
+    "target_entity": "Sceptre Of Final Winter",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Relic | wields The Sceptre of Final Winter since 379 AS",
+    "chunk_id": "1cd8d59b-1812-4b7f-ba33-be375c5b87c3",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus Hollowmere The Pale",
+    "target_entity": "Hesper Wrenfield",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Instruction | mentor of Hesper Wrenfield",
+    "chunk_id": "1cd8d59b-1812-4b7f-ba33-be375c5b87c3",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Draven Ashgrove",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | Member of The Bleeding Crown",
+    "chunk_id": "27117ad6-3c9e-4744-aedd-4449d97e1362",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Draven Ashgrove",
+    "target_entity": "Marrowwatch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Service | Serves at Marrowwatch",
+    "chunk_id": "27117ad6-3c9e-4744-aedd-4449d97e1362",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ederon Fellgard",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | Ederon Fellgard member of The Iron-Ring Cartel",
+    "chunk_id": "f30d7330-54c7-43d4-a85c-7595884be838",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ederon Fellgard",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Service Posting | Ederon Fellgard serves at Greyfell Citadel",
+    "chunk_id": "f30d7330-54c7-43d4-a85c-7595884be838",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Gareth Ironmere",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Bleeding Crown",
+    "chunk_id": "f06f34c9-426b-42d3-9d32-409f15b3fdbc",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Cindervale",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | Member of The Ashen Vanguard",
+    "chunk_id": "8c0937c8-1eb4-4481-9fb4-420fcb57d8b2",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Cindervale",
+    "target_entity": "Fenthrone",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Service | Serves at Fenthrone",
+    "chunk_id": "8c0937c8-1eb4-4481-9fb4-420fcb57d8b2",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Crowhurst",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | Member of The Iron-Ring Cartel",
+    "chunk_id": "d481257c-7150-4c2a-b3a2-08a294aa6c71",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Crowhurst",
+    "target_entity": "Hollowreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of Service | Hollowreach",
+    "chunk_id": "d481257c-7150-4c2a-b3a2-08a294aa6c71",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Sablewood",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Bleeding Crown",
+    "chunk_id": "d68d4fde-a444-4925-aa7c-f219a0c5bf9e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Sablewood",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of service | Vharencrag Fortress",
+    "chunk_id": "d68d4fde-a444-4925-aa7c-f219a0c5bf9e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Hesper Wrenfield",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | Member of The Bleeding Crown",
+    "chunk_id": "92d58cb2-a3ab-4a5a-8ff5-3960cb40c15d",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Hesper Wrenfield",
+    "target_entity": "Stormmarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Service | Serves at Stormmarch",
+    "chunk_id": "92d58cb2-a3ab-4a5a-8ff5-3960cb40c15d",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Cindervale",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Ashen Vanguard",
+    "chunk_id": "ba57f5ff-1ad2-4b48-8179-b0405854d89d",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Cindervale",
+    "target_entity": "Marrowwatch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of Service | Marrowwatch",
+    "chunk_id": "ba57f5ff-1ad2-4b48-8179-b0405854d89d",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Fellgard",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | Member of The Silent Choir",
+    "chunk_id": "8539c557-e27d-4287-ac9d-e11db41f4dab",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Fellgard",
+    "target_entity": "Hollowreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Service | Serves at Hollowreach",
+    "chunk_id": "8539c557-e27d-4287-ac9d-e11db41f4dab",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Marrowgate",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Bleeding Crown",
+    "chunk_id": "fdbcb7e8-98e0-4452-b616-a68f181f2367",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Marrowgate",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of Service | Cindermere Hold",
+    "chunk_id": "fdbcb7e8-98e0-4452-b616-a68f181f2367",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Mournvale",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Silent Choir",
+    "chunk_id": "67a84c5c-f671-4468-9b1b-a91972295e6c",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Mournvale",
+    "target_entity": "Stormmarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of service | Stormmarch",
+    "chunk_id": "67a84c5c-f671-4468-9b1b-a91972295e6c",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Nightbrook",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | Member of The Iron-Ring Cartel",
+    "chunk_id": "715ecd57-9da2-4475-be6c-918615957d8e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Nightbrook",
+    "target_entity": "Gloamreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of service | Gloamreach",
+    "chunk_id": "715ecd57-9da2-4475-be6c-918615957d8e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Lucan Hollowmere",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Silent Choir",
+    "chunk_id": "757a0560-b7b4-44ac-9466-6c5b907d96b9",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Lucan Hollowmere",
+    "target_entity": "Palewell Abbey",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of service | Palewell Abbey",
+    "chunk_id": "757a0560-b7b4-44ac-9466-6c5b907d96b9",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Harrowick The Pale",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Silent Choir",
+    "chunk_id": "5f55eb81-8496-4eb5-900b-3244e2976341",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Harrowick The Pale",
+    "target_entity": "Psalter Of Seven Sorrows",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Relic | The Psalter of Seven Sorrows, wielded since 364 AS",
+    "chunk_id": "5f55eb81-8496-4eb5-900b-3244e2976341",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Harrowick The Pale",
+    "target_entity": "Gauntlet Of Sorrowfell",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Weapon | Gauntlet of Sorrowfell, wielded since 399 AS",
+    "chunk_id": "5f55eb81-8496-4eb5-900b-3244e2976341",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Harrowick The Pale",
+    "target_entity": "Ignatz Marrowgate",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Instructional Tie | Mentor of Ignatz Marrowgate",
+    "chunk_id": "5f55eb81-8496-4eb5-900b-3244e2976341",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Wrenfield",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Ashen Vanguard",
+    "chunk_id": "5957a23a-f5c4-4003-8af8-a047bc536bc5",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Wrenfield",
+    "target_entity": "Gloamreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Place of service | Gloamreach",
+    "chunk_id": "5957a23a-f5c4-4003-8af8-a047bc536bc5",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | Member of The Iron-Ring Cartel",
+    "chunk_id": "5aa666ea-b0f4-41a8-a712-499536f9079d",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Morvain",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | Member of The Silent Choir",
+    "chunk_id": "abdb9d2f-3835-4c21-a17a-415b4dc4d438",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Morvain",
+    "target_entity": "Ashreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Station | Serves at Ashreach",
+    "chunk_id": "abdb9d2f-3835-4c21-a17a-415b4dc4d438",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vane",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Morwenna Vane\nRole | Scribe\nBorn | 328 AS\nAllegiance | The Bleeding Crown",
+    "chunk_id": "5083d67b-c693-445c-b321-4e65f6fd4d4e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vane",
+    "target_entity": "Mournwatch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Morwenna Vane\nRole | Scribe\nBorn | 328 AS\nAllegiance | The Bleeding Crown\nService | Mournwatch",
+    "chunk_id": "5083d67b-c693-445c-b321-4e65f6fd4d4e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vosgard",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Morwenna Vosgard\nStatus | Minor character\nRole | Sapper\nBirth | 296 AS\nAffiliation | The Silent Choir",
+    "chunk_id": "4e15fe25-ac45-4e52-a377-35437ac8575f",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vosgard",
+    "target_entity": "Ironfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Morwenna Vosgard\nStatus | Minor character\nRole | Sapper\nBirth | 296 AS\nAffiliation | The Silent Choir\nPlace of service | Ironfell Citadel",
+    "chunk_id": "4e15fe25-ac45-4e52-a377-35437ac8575f",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Orin Veyra",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Orin Veyra\nClassification | Minor figure of the Ashen Era\nRole | Choir Novice\nBirth | 231 AS\nAffiliation | The Ashen Vanguard",
+    "chunk_id": "9d902b6d-0aec-4474-920d-16be8a897ee6",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Orin Veyra",
+    "target_entity": "Fenspire",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Orin Veyra\nClassification | Minor figure of the Ashen Era\nRole | Choir Novice\nBirth | 231 AS\nAffiliation | The Ashen Vanguard\nService | Fenspire",
+    "chunk_id": "9d902b6d-0aec-4474-920d-16be8a897ee6",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric Ashgrove",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Ossric Ashgrove\nClassification | Minor figure of the Ashen Era\nBorn | 333 AS\nRole | Quartermaster\nAffiliation | The Silent Choir",
+    "chunk_id": "0543023d-665c-4a99-8dad-3481c77c0a6f",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric Ashgrove",
+    "target_entity": "Emberdeep",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Ossric Ashgrove\nClassification | Minor figure of the Ashen Era\nBorn | 333 AS\nRole | Quartermaster\nAffiliation | The Silent Choir\nPlace of service | Emberdeep",
+    "chunk_id": "0543023d-665c-4a99-8dad-3481c77c0a6f",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric Ravensmoor",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Ossric Ravensmoor\nRole | Gaoler\nBirth | 267 AS\nAffiliation | The Silent Choir",
+    "chunk_id": "1183c09b-6702-4e82-a942-783e7231ff41",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric Ravensmoor",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Ossric Ravensmoor\nRole | Gaoler\nBirth | 267 AS\nAffiliation | The Silent Choir\nPlace of Service | Vharencrag Fortress",
+    "chunk_id": "1183c09b-6702-4e82-a942-783e7231ff41",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric Wrenfield",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Ossric Wrenfield\nClassification | Minor figure of the Ashen Era\nRole | Gaoler\nBirth | 406 AS\nAffiliation | The Silent Choir",
+    "chunk_id": "3f98de47-98b8-4177-b8b7-5553f99b475b",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ossric Wrenfield",
+    "target_entity": "Emberdeep",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Ossric Wrenfield\nClassification | Minor figure of the Ashen Era\nRole | Gaoler\nBirth | 406 AS\nAffiliation | The Silent Choir\nPlace of service | Emberdeep",
+    "chunk_id": "3f98de47-98b8-4177-b8b7-5553f99b475b",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ravena Stormwell",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Ravena Stormwell\nClassification | Minor character\nRole | Standard-Bearer\nBirth | 274 AS\nAffiliation | The Silent Choir",
+    "chunk_id": "61bdac79-21e0-4732-b147-da8a98551488",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ravena Stormwell",
+    "target_entity": "Vharenford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Ravena Stormwell\nClassification | Minor character\nRole | Standard-Bearer\nBirth | 274 AS\nAffiliation | The Silent Choir\nStation | Vharenford",
+    "chunk_id": "61bdac79-21e0-4732-b147-da8a98551488",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle Blackspire",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Name | Sabelle Blackspire\nBorn | 341 AS\nRole | Quartermaster\nAffiliation | The Ashen Vanguard",
+    "chunk_id": "26459c01-19ca-4ea0-99c7-39dda099f994",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle Blackspire",
+    "target_entity": "Thorncairn",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Name | Sabelle Blackspire\nBorn | 341 AS\nRole | Quartermaster\nAffiliation | The Ashen Vanguard\nStation | Thorncairn",
+    "chunk_id": "26459c01-19ca-4ea0-99c7-39dda099f994",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle Mournvale the Twice-Crowned",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | Member of The Ashen Vanguard",
+    "chunk_id": "43bf9105-b76f-4f8e-a9ac-5a0a5ece5e02",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle Mournvale the Twice-Crowned",
+    "target_entity": "Diadem Of Sorrowgate",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Wields Diadem of Sorrowgate since 291 AS",
+    "chunk_id": "43bf9105-b76f-4f8e-a9ac-5a0a5ece5e02",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle Mournvale the Twice-Crowned",
+    "target_entity": "Crown Of Burned Names",
+    "relationship_type": "HOLDS",
+    "evidence_text": "wields The Crown of Burned Names since 283 AS",
+    "chunk_id": "43bf9105-b76f-4f8e-a9ac-5a0a5ece5e02",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle Mournvale the Twice-Crowned",
+    "target_entity": "Leaden Accord",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Fought in The Leaden Accord",
+    "chunk_id": "43bf9105-b76f-4f8e-a9ac-5a0a5ece5e02",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Sabelle Mournvale the Twice-Crowned",
+    "target_entity": "Morwenna Ashgrove",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "Rival of Morwenna Ashgrove",
+    "chunk_id": "43bf9105-b76f-4f8e-a9ac-5a0a5ece5e02",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Leaden Accord",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Fought in The Leaden Accord [fighting for The Ashen Vanguard]",
+    "chunk_id": "43bf9105-b76f-4f8e-a9ac-5a0a5ece5e02",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Serathiel Vane",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Bleeding Crown",
+    "chunk_id": "caf8d364-920b-4eb5-85b9-894099500e12",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Serathiel Vane",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Current service | Vharencrag Fortress",
+    "chunk_id": "caf8d364-920b-4eb5-85b9-894099500e12",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Tamsin Greyfen",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Allegiance | The Silent Choir",
+    "chunk_id": "136a0206-02f7-4892-8f98-7c6cd4283afa",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Tamsin Greyfen",
+    "target_entity": "Emberdeep",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Station | Emberdeep",
+    "chunk_id": "136a0206-02f7-4892-8f98-7c6cd4283afa",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thessaly Coldwater",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Affiliation | The Silent Choir",
+    "chunk_id": "c4da902e-5c60-4c49-aa22-63b34e003f60",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thessaly Coldwater",
+    "target_entity": "Crookvale",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Service | Crookvale",
+    "chunk_id": "c4da902e-5c60-4c49-aa22-63b34e003f60",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Accord Of Mournthrone",
+    "target_entity": "Crookvale",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "The Accord of Mournthrone waged at Crookvale.",
+    "chunk_id": "cd2968f1-7b04-420e-a64f-b6859c490bd6",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Accord Of Mournthrone",
+    "target_entity": "Fenspire",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "The Accord of Mournthrone devastated Fenspire.",
+    "chunk_id": "cd2968f1-7b04-420e-a64f-b6859c490bd6",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Accord Of Mournthrone",
+    "target_entity": "Hollowvale",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "The Accord of Mournthrone devastated Hollowvale.",
+    "chunk_id": "cd2968f1-7b04-420e-a64f-b6859c490bd6",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Vharenford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Seat | Vharenford",
+    "chunk_id": "b1324dd5-a8b6-440f-b3eb-74e5a82bea42",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "War Of Drowned Light",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Recorded belligerencies | The War of Drowned Light",
+    "chunk_id": "b1324dd5-a8b6-440f-b3eb-74e5a82bea42",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Blackford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Seat | Blackford",
+    "chunk_id": "ae613554-7353-4f16-9eee-58d619d076a0",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Winter Reckoning",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The Iron-Ring Cartel belligerent in The Winter Reckoning",
+    "chunk_id": "c38e86b6-6fae-4320-8dd4-37d896b2abae",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Purge Of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The Iron-Ring Cartel belligerent in The Purge of Blackport",
+    "chunk_id": "c38e86b6-6fae-4320-8dd4-37d896b2abae",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Leaden Accord",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "Devastated by The Leaden Accord",
+    "chunk_id": "0fac8fb4-ad00-4eaf-8777-047c93bf3307",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Leaden Accord",
+    "target_entity": "Palewell Abbey",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "Devastated by The Leaden Accord",
+    "chunk_id": "0fac8fb4-ad00-4eaf-8777-047c93bf3307",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Leaden Accord",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "Devastated by The Leaden Accord",
+    "chunk_id": "0fac8fb4-ad00-4eaf-8777-047c93bf3307",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Leaden Accord",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "The Leaden Accord waged there",
+    "chunk_id": "0fac8fb4-ad00-4eaf-8777-047c93bf3307",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Choir",
+    "target_entity": "Vharencrag Fortress",
+    "relationship_type": "HOLDS",
+    "evidence_text": "The Silent Choir seated at Vharencrag Fortress",
+    "chunk_id": "19b5508a-5597-4b03-abd4-83310f91393f",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Choir",
+    "target_entity": "Winter Reckoning",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The Silent Choir belligerent in The Winter Reckoning",
+    "chunk_id": "19b5508a-5597-4b03-abd4-83310f91393f",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "War Of Drowned Light",
+    "target_entity": "Gloamreach",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "The War of Drowned Light devastated Gloamreach.",
+    "chunk_id": "e8366f0e-74b3-48ee-9f54-3663d1cc86ce",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "War Of Drowned Light",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "The War of Drowned Light waged at Greyfell Citadel.",
+    "chunk_id": "e8366f0e-74b3-48ee-9f54-3663d1cc86ce",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Winter Reckoning",
+    "target_entity": "Stormmarch",
+    "relationship_type": "OCCURRED_AT",
+    "evidence_text": "The Winter Reckoning waged at Stormmarch",
+    "chunk_id": "2a657c67-2218-491f-bfcc-bdfbca965194",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Winter Reckoning",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "The Winter Reckoning devastated Cindermere Hold",
+    "chunk_id": "2a657c67-2218-491f-bfcc-bdfbca965194",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Winter Reckoning",
+    "target_entity": "Marrowwell Abbey",
+    "relationship_type": "DESTROYED",
+    "evidence_text": "The Winter Reckoning devastated Marrowwell Abbey",
+    "chunk_id": "2a657c67-2218-491f-bfcc-bdfbca965194",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Edge Of Gloamreach",
+    "relationship_type": "HOLDS",
+    "evidence_text": "A record assigns him Edge of Gloamreach",
+    "chunk_id": "d0b23cda-c669-4036-b861-5f44dfed396f",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Palefroth",
+    "target_entity": "Silent Choir",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Brannoc Palefroth member of The Silent Choir",
+    "chunk_id": "1d0dcbb2-102b-4336-a252-1e7947917cc1",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Palefroth",
+    "target_entity": "Greyfell Citadel",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Brannoc Palefroth serves at Greyfell Citadel",
+    "chunk_id": "1d0dcbb2-102b-4336-a252-1e7947917cc1",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Palefroth",
+    "target_entity": "Winter Reckoning",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The campaign record identifies him as having fought in The Winter Reckoning",
+    "chunk_id": "1d0dcbb2-102b-4336-a252-1e7947917cc1",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Caedmon Hollowmere",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Caedmon Hollowmere as a member of The Ashen Vanguard",
+    "chunk_id": "d4920d0b-f511-4b10-8382-5889d2083719",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Caedmon Hollowmere",
+    "target_entity": "Stormmarch",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "serves at Stormmarch",
+    "chunk_id": "d4920d0b-f511-4b10-8382-5889d2083719",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Caedmon Hollowmere",
+    "target_entity": "Leaden Accord",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "fought in The Leaden Accord",
+    "chunk_id": "d4920d0b-f511-4b10-8382-5889d2083719",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys Sablewood The Ashen",
+    "target_entity": "Cinder Wrought Aegis",
+    "relationship_type": "HOLDS",
+    "evidence_text": "wields The Cinder-Wrought Aegis",
+    "chunk_id": "3c60012b-0631-4544-b9d5-76af6a91dd2a",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Wrenfield",
+    "target_entity": "Ashen Era",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Maelis Wrenfield is a minor figure of the Ashen Era.",
+    "chunk_id": "d43116a0-99ec-4814-a5f4-afd6a3fd2289",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Wrenfield",
+    "target_entity": "Gaoler",
+    "relationship_type": "HOLDS",
+    "evidence_text": "The registry identifies Maelis Wrenfield as a Gaoler",
+    "chunk_id": "d43116a0-99ec-4814-a5f4-afd6a3fd2289",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Flame-Touched Arch-Prelate",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Their visual identity is that of a Flame-Touched Arch-Prelate",
+    "chunk_id": "db4ad76e-fe2c-40c7-91d4-4edd5a32f4c0",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Purge Of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Malchior Cindervale the Flame-Touched fought in The Purge of Blackport",
+    "chunk_id": "db4ad76e-fe2c-40c7-91d4-4edd5a32f4c0",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "fighting for The Iron-Ring Cartel",
+    "chunk_id": "db4ad76e-fe2c-40c7-91d4-4edd5a32f4c0",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior Cindervale the Flame-Touched",
+    "target_entity": "Isolde Fellgard The Unforgiven",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "Malchior Cindervale the Flame-Touched is a rival of Isolde Fellgard the Unforgiven.",
+    "chunk_id": "db4ad76e-fe2c-40c7-91d4-4edd5a32f4c0",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Leaden Accord",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "Morwenna Ashgrove fought in The Leaden Accord",
+    "chunk_id": "d7255a67-d62f-407f-82bb-bbe556a5cfb5",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "fighting for The Ashen Vanguard",
+    "chunk_id": "d7255a67-d62f-407f-82bb-bbe556a5cfb5",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Sabelle Mournvale the Twice-Crowned",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "rival of Sabelle Mournvale the Twice-Crowned",
+    "chunk_id": "d7255a67-d62f-407f-82bb-bbe556a5cfb5",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vane",
+    "target_entity": "Ashen Era",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Morwenna Vane is a minor figure recorded in the annals of the Ashen Era.",
+    "chunk_id": "c9194a39-d71d-4d24-a6ca-4a3f9f040bdf",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vane",
+    "target_entity": "Scribe",
+    "relationship_type": "HOLDS",
+    "evidence_text": "She serves as a Scribe",
+    "chunk_id": "c9194a39-d71d-4d24-a6ca-4a3f9f040bdf",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vosgard",
+    "target_entity": "Sapper",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Morwenna Vosgard is a minor character recorded in the annals as a Sapper.",
+    "chunk_id": "73e34530-09d5-43f7-8315-f98d833d5dfa",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Orin Veyra",
+    "target_entity": "Ashen Era",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Orin Veyra is recorded as a minor figure of the Ashen Era",
+    "chunk_id": "af074dcf-8dd3-4b71-bec9-e71a5ebc4d90",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Orin Veyra",
+    "target_entity": "Choir Novice",
+    "relationship_type": "HOLDS",
+    "evidence_text": "His registered role is Choir Novice.",
+    "chunk_id": "af074dcf-8dd3-4b71-bec9-e71a5ebc4d90",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Vharenford",
+    "relationship_type": "HOLDS",
+    "evidence_text": "The Ashen Vanguard is seated at Vharenford.",
+    "chunk_id": "72c41bce-6914-4760-a598-7ed8f63e95ab",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Blackford",
+    "relationship_type": "HOLDS",
+    "evidence_text": "The Bleeding Crown is seated at Blackford.",
+    "chunk_id": "9d317937-daec-4a3e-96f5-dee62e2c831c",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Accord Of Mournthrone",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "The Bleeding Crown was also a belligerent in The Accord of Mournthrone.",
+    "chunk_id": "cbb0d461-3cf1-4612-a50b-568ebefacb16",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Hollowreach",
+    "relationship_type": "HOLDS",
+    "evidence_text": "The Iron-Ring Cartel is a merchant cartel seated at Hollowreach.",
+    "chunk_id": "d002acb7-ccb3-42e0-8b2c-f2a7f5cd716c",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cartel",
+    "target_entity": "Ashen Era",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "These records establish the Cartel as a recurring participant in the armed and political contests of the Ashen Era.",
+    "chunk_id": "7736352a-44d4-4c3c-8880-fdf00bcf713e",
+    "document_id": "16d7b715-5b24-4a8a-8fb6-5e1f9f54ede0",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Draven Ashgrove",
+    "target_entity": "Lantern-Warden",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Draven Ashgrove serves as a Lantern-Warden.",
+    "chunk_id": "86509764-66b2-4074-b1bc-0df607e29c0f",
+    "document_id": "253044ba-d7fc-44e0-a174-00100214104a",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Ashgrove",
+    "target_entity": "Fleet Admiral",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Morwenna Ashgrove was born in 288 AS. She is a major Fleet Admiral",
+    "chunk_id": "429b2c5d-2d2c-4762-8dbd-19d76102d5d1",
+    "document_id": "868c4096-076b-43f7-802b-8874d7279ddb",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Mournvale",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Isolde Mournvale, a minor figure of the Ashen Era.",
+    "chunk_id": "31a26c67-96c2-437a-aead-61646552dbcc",
+    "document_id": "cc841f30-7d3f-43cd-83e9-8d597a77e87c",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Lucan Hollowmere",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Lucan Hollowmere is entered here as a minor figure of the Ashen Era",
+    "chunk_id": "1542ee56-51c3-4dc8-9ddc-d8342ba24057",
+    "document_id": "4c46c7b9-b2de-4ee8-b189-bd9f87fd5de6",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ederon Fellgard",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Ederon Fellgard is likewise a minor figure of the Ashen Era.",
+    "chunk_id": "1542ee56-51c3-4dc8-9ddc-d8342ba24057",
+    "document_id": "4c46c7b9-b2de-4ee8-b189-bd9f87fd5de6",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Morvain",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Morwenna Morvain, a minor figure of the Ashen Era.",
+    "chunk_id": "cb226dc2-bf7b-4a9a-85f0-63b96b52606a",
+    "document_id": "cebc4729-b733-49fd-bc58-a65e0de6bc28",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Tamsin Greyfen",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "A sapper in the Ashen Era",
+    "chunk_id": "0b5d1876-aa29-4aef-b9be-aa9c4fdd05af",
+    "document_id": "de811bd9-2cc7-4dc2-ac91-a447c9e36f3d",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Cindervale",
+    "target_entity": "Falconer",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "He is a Falconer, so the old songs say",
+    "chunk_id": "f4e72dc8-b3ef-482a-a1cc-680be4d6f9fe",
+    "document_id": "96e0992d-d2dc-4af0-9da0-2d6919e9a5ca",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Cindervale",
+    "target_entity": "Crookgate Keep",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Ignatz Cindervale walks by the keep.",
+    "chunk_id": "7a73725b-560f-4777-b35e-740ae2d09218",
+    "document_id": "96e0992d-d2dc-4af0-9da0-2d6919e9a5ca",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Lysandra",
+    "target_entity": "Lysandra Ashgrove",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "So sing no boast of Lysandra, Nor call her crowned or grand; Her place is custody and care, A ledger in her hand. Yet when the ash shuts out the road And famine tests the gate, The one who knows the stores by heart May keep the stronghold\u2019s fate.",
+    "chunk_id": "a4d2827f-d316-4034-a529-361168e11a09",
+    "document_id": "b4b7b381-28dc-4b1b-a602-28bdb3a7579e",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vane",
+    "target_entity": "Scribe",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "She serves as a Scribe, keeping written records",
+    "chunk_id": "ff401dcf-283a-4c5f-a5d4-9df642d611d7",
+    "document_id": "9d96d4d6-4fa8-46b4-b910-4c08bfdaed9d",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Morwenna Vane",
+    "target_entity": "Morwenna",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "At the record-board sits Morwenna Vane... Morwenna writes",
+    "chunk_id": "ff401dcf-283a-4c5f-a5d4-9df642d611d7",
+    "document_id": "9d96d4d6-4fa8-46b4-b910-4c08bfdaed9d",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Isolde Fellgard The Unforgiven",
+    "target_entity": "Unforgiven",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "For Isolde Fellgard the Unforgiven... The Unforgiven walks",
+    "chunk_id": "ac2b6f66-dd4f-4990-a2f2-c805a3f2b83b",
+    "document_id": "3162e691-b69b-4adf-bbdf-0d8959bdae34",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Marrowwell Abbey",
+    "target_entity": "Gloamreach",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Marrowwell Abbey, marrow-white, Stands in The Gloaming Reach without delight.",
+    "chunk_id": "31265660-87c2-4e86-ac32-40fd493196e7",
+    "document_id": "4337eccc-ca2d-4c0a-b5a6-ccb3005c6799",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Marrowwell",
+    "target_entity": "Marrowwell Abbey",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "So Marrowwell stands, and the dark winds moan; The rebuilt abbey guards blood and stone.",
+    "chunk_id": "54de5b9c-3ded-49c2-a35d-c7b26a9348ab",
+    "document_id": "4337eccc-ca2d-4c0a-b5a6-ccb3005c6799",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Choir",
+    "target_entity": "Silent Choir",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Forget what the Choir has crossed from the frame.",
+    "chunk_id": "54de5b9c-3ded-49c2-a35d-c7b26a9348ab",
+    "document_id": "4337eccc-ca2d-4c0a-b5a6-ccb3005c6799",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus Hollowmere The Pale",
+    "target_entity": "Silent Choir",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "Corvus Hollowmere the Pale has sworn a hidden oath to the Silent Choir.",
+    "chunk_id": "c9a05693-7b07-4b1d-9ac4-a59ba30ff596",
+    "document_id": "97f94522-ee93-4241-ae3e-4b9c56087eba",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ederon Coldwater",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Ederon Coldwater is a minor figure of the Ashen Era",
+    "chunk_id": "2481eb6c-75c7-4392-92d6-ad2dc79f8a21",
+    "document_id": "43e63992-efa9-4438-a3a8-d116538b9565",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ederon Coldwater",
+    "target_entity": "Sapper",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "He serves as a Sapper.",
+    "chunk_id": "2481eb6c-75c7-4392-92d6-ad2dc79f8a21",
+    "document_id": "43e63992-efa9-4438-a3a8-d116538b9565",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Cindervale",
+    "target_entity": "Lantern-Warden",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Halvard Cindervale is recognized herein as a minor figure who serves as Lantern-Warden.",
+    "chunk_id": "3d0bdc1d-6069-4f86-a08c-6ff7b4ac8880",
+    "document_id": "d9f14e4e-9ff0-47af-a560-8cd5b525a416",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Cindervale",
+    "target_entity": "Weeping Lurker",
+    "relationship_type": "OPPOSED",
+    "evidence_text": "If the Weeping Lurker is suspected, he shall keep the lantern protected, avoid needless pursuit, and mark the danger for those charged with containment. He shall not seek open battle merely because the enemy does not offer one.",
+    "chunk_id": "6f0c95b6-3b19-4332-bf3c-1bceb0113f73",
+    "document_id": "d9f14e4e-9ff0-47af-a560-8cd5b525a416",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Sablewood",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Halvard Sablewood, a minor figure of the Ashen Era",
+    "chunk_id": "881cffac-a8e9-41ad-8775-99299e4e8368",
+    "document_id": "7d312809-07f2-4e8c-be3f-722aceb1296f",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Sablewood",
+    "target_entity": "Scribe",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "he seryes aa scribe.",
+    "chunk_id": "881cffac-a8e9-41ad-8775-99299e4e8368",
+    "document_id": "7d312809-07f2-4e8c-be3f-722aceb1296f",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Cindervale",
+    "target_entity": "Falconer",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Ignatz Cindervale, a minor figure of the Ashen Era, is entered herein as a Falconer.",
+    "chunk_id": "deb1ce7e-b20f-40d7-ba80-5265e78634a5",
+    "document_id": "3435958c-7f9f-48d2-8b4c-d84dfee2af93",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Fellgard",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Ignatz Fellgard is a minor figure of the Ashen Era.",
+    "chunk_id": "6604f0f4-6c15-4223-bdb6-99614bcf18be",
+    "document_id": "73553471-b325-497d-bc4e-c4dce866b588",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Fellgard",
+    "target_entity": "Herbalist",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "He is recorded as one who serves as an Herbalist",
+    "chunk_id": "6604f0f4-6c15-4223-bdb6-99614bcf18be",
+    "document_id": "73553471-b325-497d-bc4e-c4dce866b588",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys Sablewood The Ashen",
+    "target_entity": "Master of Coin",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Cerys Sablewood the Ashen is a major Master of Coin, born in 330 AS.",
+    "chunk_id": "ec964a92-bb7f-432c-8e06-bfbb47d91f4d",
+    "document_id": "124934e7-3f39-4b4d-a89d-4f252d2dec4e",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys",
+    "target_entity": "Bleeding Crown",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Cerys is the unacknowledged heir to the Bleeding Crown.",
+    "chunk_id": "ec964a92-bb7f-432c-8e06-bfbb47d91f4d",
+    "document_id": "124934e7-3f39-4b4d-a89d-4f252d2dec4e",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cinder Wrought Aegis",
+    "target_entity": "Sundering",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The Cinder-Wrought Aegis is regalia shaped by the legacy of the Sundering.",
+    "chunk_id": "ed254afc-3e45-4794-a3eb-5debf4f6fcc5",
+    "document_id": "8ef2dfec-142e-4d26-950e-ec6bbdf3695e",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous Wrenfield The Last Warden",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "ALLIED_WITH",
+    "evidence_text": "Aldous Wrenfield the Last Warden... Secretly sells intelligence to the Iron-Ring Cartel",
+    "chunk_id": "5d9763ea-3114-4342-9aa8-bf761e06845a",
+    "document_id": "fbc3193b-d3ed-4961-8f0a-2167380f1d39",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Blackford",
+    "target_entity": "3,065",
+    "relationship_type": "HOLDS",
+    "evidence_text": "its garrison of 3,065",
+    "chunk_id": "39e4baeb-a77e-4a78-9c97-0ac12f4a0d7f",
+    "document_id": "f9186049-9450-4e32-acc6-c55a3228c99f",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz Cindervale",
+    "target_entity": "Ashen Era",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Ignatz Cindervale, who is a minor figure of the Ashen Era",
+    "chunk_id": "b4d400bf-8eea-42b6-adf2-6266d270b0c2",
+    "document_id": "04359de4-3f7a-4593-b289-2620b8909bc0",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashreach",
+    "target_entity": "Weeping Marshes",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Ashreach lies in The Weeping Marshes.",
+    "chunk_id": "3a141681-85a0-4aba-8231-9fa5f384d45c",
+    "document_id": "7ee2b3ea-cefa-4e93-88cf-9b0de01603ea",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Maelis Harrowick The Pale",
+    "target_entity": "Court Chronicler",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Maelis Harrowick the Pale, major Court Chronicler",
+    "chunk_id": "3a141681-85a0-4aba-8231-9fa5f384d45c",
+    "document_id": "7ee2b3ea-cefa-4e93-88cf-9b0de01603ea",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Greythrone",
+    "target_entity": "4,672",
+    "relationship_type": "HOLDS",
+    "evidence_text": "garrisoned by 4,672 troops",
+    "chunk_id": "e5e1f07b-e0f9-4661-9b4d-c506b17a4e1b",
+    "document_id": "a5ddddca-cbe1-4dee-b103-a5b573ba1f0d",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "The Ashen Docket",
+    "target_entity": "the Greythrone Inquiry",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The Ashen Docket: Transcript of the Greythrone Inquiry",
+    "chunk_id": "e5e1f07b-e0f9-4661-9b4d-c506b17a4e1b",
+    "document_id": "a5ddddca-cbe1-4dee-b103-a5b573ba1f0d",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "the Greythrone Inquiry",
+    "target_entity": "Greythrone",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "This is the inquiry concerning Greythrone",
+    "chunk_id": "e5e1f07b-e0f9-4661-9b4d-c506b17a4e1b",
+    "document_id": "a5ddddca-cbe1-4dee-b103-a5b573ba1f0d",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "the Greythrone Inquiry",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "the inquiry concerning Greythrone and the conduct of The Ashen Vanguard within it.",
+    "chunk_id": "e5e1f07b-e0f9-4661-9b4d-c506b17a4e1b",
+    "document_id": "a5ddddca-cbe1-4dee-b103-a5b573ba1f0d",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Transcript of the Tollhouse Hearing Concerning Maelis Greyfen and Ossric Wrenfield",
+    "target_entity": "Maelis Greyfen",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Transcript of the Tollhouse Hearing Concerning Maelis Greyfen and Ossric Wrenfield",
+    "chunk_id": "dce773fd-2502-4f52-b601-2771a4a9cc30",
+    "document_id": "3e81620d-d4b2-4690-8d0a-80d3d1adbb24",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Transcript of the Tollhouse Hearing Concerning Maelis Greyfen and Ossric Wrenfield",
+    "target_entity": "Ossric Wrenfield",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Transcript of the Tollhouse Hearing Concerning Maelis Greyfen and Ossric Wrenfield",
+    "chunk_id": "dce773fd-2502-4f52-b601-2771a4a9cc30",
+    "document_id": "3e81620d-d4b2-4690-8d0a-80d3d1adbb24",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "the Tollhouse Hearing Concerning Maelis Greyfen",
+    "target_entity": "Maelis Greyfen",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "the Tollhouse Hearing Concerning Maelis Greyfen",
+    "chunk_id": "dce773fd-2502-4f52-b601-2771a4a9cc30",
+    "document_id": "3e81620d-d4b2-4690-8d0a-80d3d1adbb24",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Accord Of Mournthrone",
+    "target_entity": "Mournthrone",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The Accord of Mournthrone is that of a broken accord overshadowed by Mournthrone",
+    "chunk_id": "5c6cdf71-0293-4aed-81f3-770c5182c02f",
+    "document_id": "555d3f37-aee6-4253-8aca-99a54e7720bd",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Accord Of Mournthrone",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The Accord of Mournthrone is that of a broken accord overshadowed by Mournthrone and the Ashen Vanguard.",
+    "chunk_id": "5c6cdf71-0293-4aed-81f3-770c5182c02f",
+    "document_id": "555d3f37-aee6-4253-8aca-99a54e7720bd",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Transcript of the Binding Inquiry Concerning The Thrice-Bound Edge",
+    "target_entity": "Thrice Bound Edge",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Transcript of the Binding Inquiry Concerning The Thrice-Bound Edge ... The matter before the bench is The Thrice-Bound Edge",
+    "chunk_id": "c4ca3c47-afe1-4020-813f-4d4c8cd2c32d",
+    "document_id": "6f8c38dc-7861-4e24-b6fa-a587f0f33ac3",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "the Binding Inquiry Concerning The Thrice-Bound Edge",
+    "target_entity": "Thrice Bound Edge",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "the Binding Inquiry Concerning The Thrice-Bound Edge ... The matter before the bench is The Thrice-Bound Edge",
+    "chunk_id": "c4ca3c47-afe1-4020-813f-4d4c8cd2c32d",
+    "document_id": "6f8c38dc-7861-4e24-b6fa-a587f0f33ac3",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous",
+    "target_entity": "Fenspire",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Aldous commands [[Fenspire]] since 336 AS",
+    "chunk_id": "bba7abc1-9d4c-4d1c-b2dc-46622dceefa0",
+    "document_id": "ba8aaacf-fac0-49ef-92fe-c5d282623ea3",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous",
+    "target_entity": "Silent Psalter",
+    "relationship_type": "HOLDS",
+    "evidence_text": "wields [[The Silent Psalter]] since 341 AS",
+    "chunk_id": "bba7abc1-9d4c-4d1c-b2dc-46622dceefa0",
+    "document_id": "ba8aaacf-fac0-49ef-92fe-c5d282623ea3",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Aldous is a member of [[The Iron-Ring Cartel]]",
+    "chunk_id": "bba7abc1-9d4c-4d1c-b2dc-46622dceefa0",
+    "document_id": "ba8aaacf-fac0-49ef-92fe-c5d282623ea3",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous",
+    "target_entity": "Thessaly Coldwater",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Aldous is also the mentor of [[Thessaly Coldwater]]",
+    "chunk_id": "bba7abc1-9d4c-4d1c-b2dc-46622dceefa0",
+    "document_id": "ba8aaacf-fac0-49ef-92fe-c5d282623ea3",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous",
+    "target_entity": "Iron-Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "a member of [[The Iron-Ring Cartel]]",
+    "chunk_id": "ec983ba3-3ed1-44bd-94a5-2b849782d5cd",
+    "document_id": "ba8aaacf-fac0-49ef-92fe-c5d282623ea3",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Aldous Wrenfield The Last Warden",
+    "target_entity": "Fenspire",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "The confirmed record for Aldous Wrenfield the Last Warden is intentionally specific. ... Aldous commands [[Fenspire]] since 336 AS",
+    "chunk_id": "0d5126e5-3a96-49ba-a69b-186497434dbc",
+    "document_id": "ba8aaacf-fac0-49ef-92fe-c5d282623ea3",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashfall Colossus",
+    "target_entity": "Embermarch",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "The [[Ashfall Colossus]] is a threat-rating 9 creature and a nocturnal ambusher associated with the ash-dark reaches of [[Embermarch]].",
+    "chunk_id": "013529f3-b001-441d-a153-8aed054138be",
+    "document_id": "6af70682-7ee3-4889-be3d-94556a15718f",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Ashreach",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "ruled by [[The Bleeding Crown]]",
+    "chunk_id": "ce587c45-1ad0-4142-af79-65159b2c2f92",
+    "document_id": "94a18fc4-9b01-475b-938a-ef8fb3cc4001",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Thrice Bound Edge",
+    "relationship_type": "HOLDS",
+    "evidence_text": "wielded [[The Thrice-Bound Edge]] since 277 AS",
+    "chunk_id": "1c4d2592-b8e6-4243-b9dc-c0005730e804",
+    "document_id": "ab42499b-d3eb-454e-bdec-cf4309441008",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Caedmon Fellgard",
+    "target_entity": "Iron-Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "is a member of The Iron-Ring Cartel",
+    "chunk_id": "4a10b61f-7a06-41ef-acfc-67cf7902b37c",
+    "document_id": "3dd4a55e-4c3a-4836-ae91-6d353246ee4d",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "membership in [[The Ashen Vanguard]]",
+    "chunk_id": "cb561501-7da1-452a-84e9-dca1410502f2",
+    "document_id": "930c2539-fade-462d-ad4a-6820338f92d4",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys",
+    "target_entity": "Cindermere Hold",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "Cerys's command of [[Cindermere Hold]]",
+    "chunk_id": "81e1501e-9a97-4cc1-a2a6-886123f50c5d",
+    "document_id": "930c2539-fade-462d-ad4a-6820338f92d4",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys",
+    "target_entity": "Cinder Wrought Aegis",
+    "relationship_type": "HOLDS",
+    "evidence_text": "wielding of [[The Cinder-Wrought Aegis]]",
+    "chunk_id": "81e1501e-9a97-4cc1-a2a6-886123f50c5d",
+    "document_id": "930c2539-fade-462d-ad4a-6820338f92d4",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Corvus",
+    "target_entity": "Hesper Wrenfield",
+    "relationship_type": "RELATED_TO",
+    "evidence_text": "Corvus is also the mentor of [[Hesper Wrenfield]]",
+    "chunk_id": "8595e872-c00d-48a6-896d-fe50ade1075e",
+    "document_id": "165dc541-aab9-478d-9954-5d2abf347195",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ederon Fellgard",
+    "target_entity": "Iron-Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "is a member of [[The Iron-Ring Cartel]]",
+    "chunk_id": "ae3ce5fc-fe2a-4dce-bec3-da50e01e376c",
+    "document_id": "d1194727-2629-4415-9b6f-a57aa5e0c7c0",
+    "confidence": 1.0,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron-Ring Cartel",
+    "target_entity": "Fenspire",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "is ruled by [[The Iron-Ring Cartel]]",
+    "chunk_id": "34668abf-67a6-4066-b2b0-62bde58e401e",
+    "document_id": "865fe128-031e-4920-ae6e-f187a8ba2aa3",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Orin Veyra",
+    "target_entity": "Fenspire",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "[[Orin Veyra]] serves at [[Fenspire]]",
+    "chunk_id": "34668abf-67a6-4066-b2b0-62bde58e401e",
+    "document_id": "865fe128-031e-4920-ae6e-f187a8ba2aa3",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Halvard Cindervale",
+    "target_entity": "Fenthrone",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Halvard Cindervale and Voltaire Hollowmere both serve at Fenthrone",
+    "chunk_id": "8b1c2780-ddc3-4621-a3eb-456093ee43ba",
+    "document_id": "9bbe525e-33ed-450a-9f27-d5b783d7690e",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Voltaire Hollowmere",
+    "target_entity": "Fenthrone",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "Halvard Cindervale and Voltaire Hollowmere both serve at Fenthrone",
+    "chunk_id": "8b1c2780-ddc3-4621-a3eb-456093ee43ba",
+    "document_id": "9bbe525e-33ed-450a-9f27-d5b783d7690e",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Ashen Vanguard",
+    "relationship_type": "LED",
+    "evidence_text": "The Ashen Vanguard called him commander.",
+    "chunk_id": "b3b5c6d8-49a7-41c5-a7d1-70af537b46cb",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.85,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc",
+    "target_entity": "Edge Of Gloamreach",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Brannoc rose and crossed the chamber. He saw the black line on its cover, the faint pulse beneath the leather. He thought of the words inside. The year stood in his mind like a nail driven through bone.\n\nHe lifted the Edge of Gloamreach.",
+    "chunk_id": "d31aadce-30d8-4c3e-95e8-c586621a49bd",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Fenspire",
+    "relationship_type": "HOLDS",
+    "evidence_text": "\u201cWho holds it?\u201d The answer came from the stone. THE ASHEN VANGUARD. HOUSE MORVAIN. THE SILENT CHOIR. THE IRON-RING CARTEL. THE BLEEDING CROWN.",
+    "chunk_id": "47965f5b-4891-45dc-ac8b-20dfa9314f04",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "House Morvain",
+    "target_entity": "Fenspire",
+    "relationship_type": "HOLDS",
+    "evidence_text": "\u201cWho holds it?\u201d The answer came from the stone. THE ASHEN VANGUARD. HOUSE MORVAIN. THE SILENT CHOIR. THE IRON-RING CARTEL. THE BLEEDING CROWN.",
+    "chunk_id": "47965f5b-4891-45dc-ac8b-20dfa9314f04",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Silent Choir",
+    "target_entity": "Fenspire",
+    "relationship_type": "HOLDS",
+    "evidence_text": "\u201cWho holds it?\u201d The answer came from the stone. THE ASHEN VANGUARD. HOUSE MORVAIN. THE SILENT CHOIR. THE IRON-RING CARTEL. THE BLEEDING CROWN.",
+    "chunk_id": "47965f5b-4891-45dc-ac8b-20dfa9314f04",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Iron Ring Cartel",
+    "target_entity": "Fenspire",
+    "relationship_type": "HOLDS",
+    "evidence_text": "\u201cWho holds it?\u201d The answer came from the stone. THE ASHEN VANGUARD. HOUSE MORVAIN. THE SILENT CHOIR. THE IRON-RING CARTEL. THE BLEEDING CROWN.",
+    "chunk_id": "47965f5b-4891-45dc-ac8b-20dfa9314f04",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Bleeding Crown",
+    "target_entity": "Fenspire",
+    "relationship_type": "HOLDS",
+    "evidence_text": "\u201cWho holds it?\u201d The answer came from the stone. THE ASHEN VANGUARD. HOUSE MORVAIN. THE SILENT CHOIR. THE IRON-RING CARTEL. THE BLEEDING CROWN.",
+    "chunk_id": "47965f5b-4891-45dc-ac8b-20dfa9314f04",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Korvath Nightbrook",
+    "target_entity": "Blackford",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "\u201cWhere is Korvath Nightbrook?\u201d\n\nHer expression did not change, but the pause was answer enough.\n\n\u201cAlive,\u201d she said.\n\n\u201cThat was not the question.\u201d\n\n\u201cHe was at Blackford.\u201d",
+    "chunk_id": "b7a025f2-a303-439a-b826-2c30bda179bc",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ashen Vanguard",
+    "target_entity": "Fenspire",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "\u201cThe Vanguard already holds this fortress,\u201d he said.",
+    "chunk_id": "29c88509-abfb-4046-827c-cc01dd9c26a8",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Korvath",
+    "target_entity": "Fenspire",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Korvath Nightbrook\u2019s voice came from the dark beside the brazier.",
+    "chunk_id": "6e43d824-cbd0-442a-845a-b0c8c12d2d71",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Brannoc Ironmere the Red-Handed",
+    "target_entity": "Crookvale",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "The rain came sideways over Crookvale, needling the shutters and turning the yard below into a black mirror.\n\nBrannoc Ironmere the Red-Handed stood without his cloak, listening to the fortress breathe around him.",
+    "chunk_id": "4dcb8552-cfbb-437d-a251-83896b494cb1",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Thrice Bound Edge",
+    "target_entity": "Mournthrone",
+    "relationship_type": "LOCATED_IN",
+    "evidence_text": "Mournthrone had been built to endure the end of the world and had discovered, centuries later, that walls could not keep out treachery. His boots rang against the steps... At the landing, a narrow display case stood behind cloudy glass. Within it rested The Thrice-Bound Edge.",
+    "chunk_id": "60b6fd28-3b4a-49eb-983f-3a64297e2ad9",
+    "document_id": "9b228475-7595-40e3-b005-09cc86af0d50",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior",
+    "target_entity": "Purge Of Blackport",
+    "relationship_type": "PARTICIPATED_IN",
+    "evidence_text": "\u201cI fought in The Purge of Blackport,\u201d they said.",
+    "chunk_id": "dada4513-5f34-4f1c-9853-7d553dcbfb1b",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Malchior",
+    "target_entity": "Iron Ring Cartel",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "\u201cI fought for The Iron-Ring Cartel.\u201d",
+    "chunk_id": "dada4513-5f34-4f1c-9853-7d553dcbfb1b",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Hesper Wrenfield",
+    "target_entity": "Outrider",
+    "relationship_type": "MEMBER_OF",
+    "evidence_text": "\u201cI serve as an Outrider.\u201d",
+    "chunk_id": "ccb14224-7fbe-49d7-817f-34bf43542d73",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Ironfell Citadel",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "\u201cYou command Ironfell Citadel,\u201d they said.\n\nIgnatz\u2019s eyes came to them.\n\n\u201cSince 286 AS,\u201d Malchior continued. \u201cYou have commanded Ironfell Citadel since 286 AS.",
+    "chunk_id": "b2b91e00-43a2-4143-8389-78aabb93274c",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Stormmarch",
+    "target_entity": "Thrice Bound Lantern",
+    "relationship_type": "CREATED",
+    "evidence_text": "Stormmarch had forged it in 72 AS, before Gloammarch had been raised from the waste",
+    "chunk_id": "f8077561-aa3f-4a61-81b5-2a438d9b2281",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cerys",
+    "target_entity": "Aegis",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Cerys raised the Aegis.",
+    "chunk_id": "671f37ce-578e-491e-a81f-529ab2f67778",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Cartel",
+    "target_entity": "Hollowreach",
+    "relationship_type": "CONTROLS",
+    "evidence_text": "The Cartel rules Hollowreach.",
+    "chunk_id": "0a68833e-7ce5-4035-a687-0f3fef7d2d2f",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
+  },
+  {
+    "source_entity": "Ignatz",
+    "target_entity": "Gauntlet Of Sorrowfell",
+    "relationship_type": "HOLDS",
+    "evidence_text": "Ignatz took up the Gauntlet of Sorrowfell. He wrapped it in black cloth, though the cloth did nothing to soften its shape.",
+    "chunk_id": "2d30a727-1563-4379-8be2-ccd20d231658",
+    "document_id": "6e52e705-a014-4a10-8265-77fdd8c53312",
+    "confidence": 0.95,
+    "source": "llm"
   }
 ]

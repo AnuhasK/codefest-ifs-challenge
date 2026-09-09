@@ -15,6 +15,7 @@ from src.config import (
     EMBEDDING_MODEL,
     EMBEDDING_DIMENSION,
     EMBEDDINGS_CACHE_PATH,
+    VOYAGE_EMBEDDINGS_CACHE_PATH,
 )
 from src.providers.key_rotator import GeminiKeyRotator
 
@@ -84,21 +85,40 @@ class EmbeddingProvider(ABC):
         pass
 
 
+class VoyageQuotaExhaustedError(RuntimeError):
+    """Raised when Voyage AI API key is missing, unauthorized, or quota is exhausted."""
+    pass
+
+
 class VoyageEmbeddingProvider(EmbeddingProvider):
     """
-    Voyage AI embedding provider (e.g. voyage-3-large, 1024 dims).
-    Includes intelligent adaptive rate limit backoff for unpaid tier (3 RPM / 10K TPM)
-    and standard tier (300 RPM).
+    Voyage AI embedding provider (voyage-3-large, 1024 dims).
+    Primary embedding provider for the Ashen Era Archive system.
+
+    Uses a dedicated SQLite cache at data/embeddings_cache_voyage.sqlite —
+    completely separate from the Gemini embedding cache (embeddings_cache.sqlite)
+    which is left untouched. This allows both providers to coexist and makes
+    rollback straightforward.
+
+    Rate limit handling:
+    - batch_size=16 for standard tier (300 RPM)
+    - Fast fail on 401/403/quota exhaustion (no endless sleep loops)
+    - Interrupted runs resume from disk cache (no redundant API calls)
     """
 
     def __init__(self, api_key: Optional[str] = None, model: str = EMBEDDING_MODEL):
         self.api_key = api_key or VOYAGE_API_KEY
-        if not self.api_key:
-            raise ValueError("VOYAGE_API_KEY is required for VoyageEmbeddingProvider.")
         self.model = model
-        self.client = voyageai.Client(api_key=self.api_key)
         self._dim = EMBEDDING_DIMENSION
-        self.cache = EmbeddingDiskCache(dimension=self._dim)
+        # Voyage gets its own cache DB — does NOT share with GeminiEmbeddingProvider
+        self.cache = EmbeddingDiskCache(db_path=VOYAGE_EMBEDDINGS_CACHE_PATH, dimension=self._dim)
+
+        if not self.api_key or self.api_key.strip().startswith("your_"):
+            self.client = None
+            self.is_available = False
+        else:
+            self.client = voyageai.Client(api_key=self.api_key)
+            self.is_available = True
 
     @property
     def dimension(self) -> int:
@@ -107,17 +127,43 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
     def embed_texts(self, texts: List[str], batch_size: int = 16) -> List[List[float]]:
         """
         Embed document chunks in batches using input_type='document'.
-        Automatically handles rate limits with exponential / adaptive backoff.
+        Checks the Voyage-specific disk cache first — interrupted runs resume without
+        re-calling the API for already-processed chunks.
+        Cache is committed to SQLite immediately after each batch.
         """
         if not texts:
             return []
 
-        all_embeddings: List[List[float]] = []
-        total_batches = (len(texts) + batch_size - 1) // batch_size
+        results: List[Optional[List[float]]] = [None] * len(texts)
+        missing_indices: List[int] = []
+        missing_texts: List[str] = []
 
-        for b_idx, i in enumerate(range(0, len(texts), batch_size), start=1):
-            batch = texts[i : i + batch_size]
-            cleaned_batch = [t if t and t.strip() else " " for t in batch]
+        # 1. Check Voyage disk cache first
+        for idx, t in enumerate(texts):
+            cached = self.cache.get_embedding(t)
+            if cached is not None:
+                results[idx] = cached
+            else:
+                missing_indices.append(idx)
+                missing_texts.append(t)
+
+        if not missing_texts:
+            print(f"  [Voyage AI] All {len(texts)} embeddings loaded from disk cache (0 API calls).", flush=True)
+            return [r for r in results if r is not None]
+
+        if len(missing_texts) < len(texts):
+            print(
+                f"  [Voyage AI] Loaded {len(texts) - len(missing_texts)}/{len(texts)} from disk cache. "
+                f"Generating remaining {len(missing_texts)}...",
+                flush=True,
+            )
+
+        total_batches = (len(missing_texts) + batch_size - 1) // batch_size
+
+        for b_idx, i in enumerate(range(0, len(missing_texts), batch_size), start=1):
+            batch_texts = missing_texts[i : i + batch_size]
+            batch_orig_indices = missing_indices[i : i + batch_size]
+            cleaned_batch = [t if t and t.strip() else " " for t in batch_texts]
 
             retries = 10
             for attempt in range(retries):
@@ -127,9 +173,16 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
                         model=self.model,
                         input_type="document",
                     )
-                    all_embeddings.extend(result.embeddings)
+                    batch_vecs = result.embeddings
+
+                    # Store results and commit to SQLite cache immediately
+                    for orig_idx, vec in zip(batch_orig_indices, batch_vecs):
+                        results[orig_idx] = vec
+                    self.cache.set_embeddings(batch_texts, batch_vecs)
+
+                    done_count = (len(texts) - len(missing_texts)) + min(i + batch_size, len(missing_texts))
                     if b_idx % 5 == 0 or b_idx == total_batches:
-                        print(f"  [Voyage AI] Embedded {len(all_embeddings)}/{len(texts)} chunks (batch {b_idx}/{total_batches})...", flush=True)
+                        print(f"  [Voyage AI] Embedded {done_count}/{len(texts)} chunks (batch {b_idx}/{total_batches})...", flush=True)
                     break
                 except Exception as e:
                     err_msg = str(e).lower()
@@ -142,7 +195,7 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
                             raise RuntimeError(f"Failed embedding batch with Voyage AI: {e}") from e
                         time.sleep(2 ** attempt)
 
-        return all_embeddings
+        return [r for r in results if r is not None]
 
     def embed_query(self, query: str) -> List[float]:
         """Embed a search query using input_type='query' with disk caching."""
@@ -152,7 +205,12 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
         if cached is not None:
             return cached
 
-        retries = 10
+        if not self.is_available or not self.client:
+            raise VoyageQuotaExhaustedError(
+                "VOYAGE_API_KEY is missing or unconfigured. Cannot generate query embedding."
+            )
+
+        retries = 2
         for attempt in range(retries):
             try:
                 result = self.client.embed(
@@ -165,12 +223,22 @@ class VoyageEmbeddingProvider(EmbeddingProvider):
                 return vec
             except Exception as e:
                 err_msg = str(e).lower()
-                if "rate" in err_msg or "429" in err_msg:
-                    time.sleep(21)
+                # Fast fail on authentication or quota errors - do not sleep
+                if any(k in err_msg for k in ("unauthorized", "invalid api key", "invalid_api_key", "401", "403", "forbidden")):
+                    self.is_available = False
+                    raise VoyageQuotaExhaustedError(f"Voyage AI authentication failed (invalid or expired key): {e}") from e
+                if any(k in err_msg for k in ("quota", "payment", "402", "exceeded your current quota", "insufficient_quota")):
+                    self.is_available = False
+                    raise VoyageQuotaExhaustedError(f"Voyage AI quota exhausted: {e}") from e
+
+                if "rate" in err_msg or "429" in err_msg or "tpm" in err_msg or "rpm" in err_msg:
+                    if attempt == retries - 1:
+                        raise VoyageQuotaExhaustedError(f"Voyage AI rate limit exceeded: {e}") from e
+                    time.sleep(5)
                 else:
                     if attempt == retries - 1:
                         raise RuntimeError(f"Failed embedding query with Voyage AI: {e}") from e
-                    time.sleep(2 ** attempt)
+                    time.sleep(1)
         return []
 
 
@@ -366,14 +434,12 @@ def get_embedding_provider() -> EmbeddingProvider:
             return GeminiEmbeddingProvider()
         raise ValueError("GEMINI_API_KEYS is required when EMBEDDING_PROVIDER=gemini.")
     elif provider_type == "voyage":
-        if VOYAGE_API_KEY:
-            return VoyageEmbeddingProvider()
-        raise ValueError("VOYAGE_API_KEY is required when EMBEDDING_PROVIDER=voyage.")
+        return VoyageEmbeddingProvider()
     else:
         # Fallback to whichever is available
-        if GEMINI_API_KEYS:
-            return GeminiEmbeddingProvider()
-        elif VOYAGE_API_KEY:
+        if VOYAGE_API_KEY and not VOYAGE_API_KEY.strip().startswith("your_"):
             return VoyageEmbeddingProvider()
+        elif GEMINI_API_KEYS:
+            return GeminiEmbeddingProvider()
         else:
-            raise ValueError("No embedding API key found in configuration.")
+            return VoyageEmbeddingProvider()

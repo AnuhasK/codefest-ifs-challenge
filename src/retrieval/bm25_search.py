@@ -44,18 +44,18 @@ def bm25_search(
             c.chapter,
             c.section_title,
             c.metadata,
-            d.title AS document_title,
-            d.source_category,
-            d.source_path,
+            COALESCE(d.title, c.section_title, 'Visual Archive Asset') AS document_title,
+            COALESCE(d.source_category, 'images') AS source_category,
+            COALESCE(d.source_path, c.metadata->>'file_path') AS source_path,
             ts_rank_cd(c.search_vector, plainto_tsquery('english', %(query)s)) AS score
         FROM chunks c
-        JOIN documents d ON c.document_id = d.id
+        LEFT JOIN documents d ON c.document_id = d.id
         WHERE c.search_vector @@ plainto_tsquery('english', %(query)s)
     """
     params = {"query": clean_query, "limit": top_k}
 
     if source_category:
-        sql += " AND d.source_category = %(cat)s"
+        sql += " AND COALESCE(d.source_category, 'images') = %(cat)s"
         params["cat"] = source_category
 
     sql += " ORDER BY score DESC LIMIT %(limit)s;"
@@ -76,7 +76,7 @@ def bm25_search(
                 for rank, row in enumerate(rows, start=1):
                     res = SearchResult(
                         chunk_id=str(row["chunk_id"]),
-                        document_id=str(row["document_id"]),
+                        document_id=str(row["document_id"] or row["chunk_id"]),
                         content=row["content"],
                         score=float(row["score"]),
                         distance=None,
@@ -84,9 +84,9 @@ def bm25_search(
                         page_end=row.get("page_end"),
                         chapter=row.get("chapter"),
                         section_title=row.get("section_title"),
-                        source_category=row.get("source_category"),
+                        source_category=row.get("source_category") or "images",
                         source_path=row.get("source_path"),
-                        document_title=row.get("document_title"),
+                        document_title=row.get("document_title") or "Visual Archive Asset",
                         rank=rank,
                         metadata=row.get("metadata") or {},
                     )

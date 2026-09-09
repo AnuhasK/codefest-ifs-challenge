@@ -16,6 +16,7 @@ from src.api.schemas import (
 )
 from src.database.postgres import get_db_connection
 from src.database.neo4j_db import get_neo4j_connection
+from src.config import CORPUS_PATH
 from src.api.routes.query import resolve_asset_file_path
 
 logger = logging.getLogger(__name__)
@@ -287,3 +288,175 @@ def get_asset_image(asset_id: str):
         media_type = "image/webp"
 
     return FileResponse(path=str(p), media_type=media_type)
+
+
+# ==========================================
+# Original Archive Document File Streaming Endpoints
+# ==========================================
+
+def serve_file_response(p: Path) -> FileResponse:
+    """Serve an archive file with proper media type and Content-Disposition header."""
+    suffix = p.suffix.lower()
+    if suffix == ".docx":
+        # Word documents download directly to the browser
+        media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        headers = {
+            "Content-Disposition": f'attachment; filename="{p.name}"',
+            "Access-Control-Expose-Headers": "Content-Disposition",
+        }
+    elif suffix == ".pdf":
+        # PDFs open directly in the browser viewer
+        media_type = "application/pdf"
+        headers = {
+            "Content-Disposition": f'inline; filename="{p.name}"',
+            "Access-Control-Expose-Headers": "Content-Disposition",
+        }
+    elif suffix in (".txt", ".log", ".md"):
+        # Markdown & Text open directly in browser
+        media_type = "text/plain; charset=utf-8"
+        headers = {
+            "Content-Disposition": f'inline; filename="{p.name}"',
+            "Access-Control-Expose-Headers": "Content-Disposition",
+        }
+    elif suffix in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
+        # Images open directly in browser
+        media_type = f"image/{suffix.lstrip('.')}" if suffix != ".jpg" else "image/jpeg"
+        headers = {
+            "Content-Disposition": f'inline; filename="{p.name}"',
+            "Access-Control-Expose-Headers": "Content-Disposition",
+        }
+    else:
+        media_type = "application/octet-stream"
+        headers = {
+            "Content-Disposition": f'attachment; filename="{p.name}"',
+            "Access-Control-Expose-Headers": "Content-Disposition",
+        }
+
+    return FileResponse(path=str(p), media_type=media_type, headers=headers)
+
+
+@router.get("/Ashen_Era_Archive/{archive_path:path}")
+@router.get("/archive/{archive_path:path}")
+def get_archive_file_by_path(archive_path: str, format: Optional[str] = Query(None)):
+    """
+    Serve archive documents directly using their relative path from the project root.
+    Examples:
+      - /Ashen_Era_Archive/codex/codex_vaeloria_i_gazetteer_of_the_sundered_realms.pdf#page=19
+      - /Ashen_Era_Archive/wiki/cerys_sablewood_the_ashen.md
+      - /Ashen_Era_Archive/ephemera/auction_catalogue_concerning_halvard_sablewood.docx
+    """
+    clean_sub = archive_path.replace("\\", "/").lstrip("/")
+    if ".." in clean_sub:
+        raise HTTPException(status_code=400, detail="Invalid path traversal")
+
+    target = (CORPUS_PATH / clean_sub).resolve()
+    try:
+        target.relative_to(CORPUS_PATH)
+    except ValueError:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    if not target.exists() or not target.is_file():
+        # Check alternative formats
+        if clean_sub.lower().endswith(".pdf"):
+            scan_cand = target.with_name(target.stem + ".scan.pdf")
+            if scan_cand.exists() and scan_cand.is_file():
+                target = scan_cand
+            else:
+                docx_cand = target.with_suffix(".docx")
+                if docx_cand.exists() and docx_cand.is_file():
+                    target = docx_cand
+        elif clean_sub.lower().endswith(".docx"):
+            pdf_cand = target.with_suffix(".pdf")
+            if pdf_cand.exists() and pdf_cand.is_file():
+                target = pdf_cand
+
+        if not target.exists() or not target.is_file():
+            resolved = resolve_asset_file_path(clean_sub)
+            if resolved:
+                target = Path(resolved)
+
+    if not target.exists() or not target.is_file():
+        raise HTTPException(status_code=404, detail=f"Archive file not found: {clean_sub}")
+
+    # If format='docx' requested and sibling docx exists, prefer docx
+    if format == "docx" and target.suffix.lower() != ".docx":
+        docx_sibling = target.with_suffix(".docx")
+        if docx_sibling.exists():
+            target = docx_sibling
+
+    return serve_file_response(target)
+
+
+@router.get("/documents/{document_id}/file")
+def get_document_file(document_id: str, format: Optional[str] = Query(None)):
+    """
+    Stream or serve an archive document by document UUID, chunk UUID, or asset UUID.
+    If the document has both DOCX and PDF representations:
+      - Default: serves PDF inline for native browser viewing and #page=N jumping.
+      - If format='docx': downloads the original Word document.
+    If the document only has DOCX: downloads the Word document.
+    If the document is Markdown or Text: views inline in browser.
+    """
+    try:
+        doc_uuid = UUID(document_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid document_id format (UUID required)")
+
+    raw_path = None
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            # 1. Try documents table
+            cur.execute("SELECT title, source_path, source_category FROM documents WHERE id = %s;", [doc_uuid])
+            row = cur.fetchone()
+            if row and row.get("source_path"):
+                raw_path = row["source_path"]
+            else:
+                # 2. Try chunks table (chunk_id passed or asset chunk)
+                cur.execute("""
+                    SELECT d.source_path, c.metadata
+                    FROM chunks c
+                    LEFT JOIN documents d ON c.document_id = d.id
+                    WHERE c.id = %s;
+                """, [doc_uuid])
+                c_row = cur.fetchone()
+                if c_row:
+                    if c_row.get("source_path"):
+                        raw_path = c_row["source_path"]
+                    elif c_row.get("metadata", {}).get("file_path"):
+                        raw_path = c_row["metadata"]["file_path"]
+                else:
+                    # 3. Try assets table
+                    cur.execute("SELECT file_path FROM assets WHERE id = %s;", [doc_uuid])
+                    a_row = cur.fetchone()
+                    if a_row and a_row.get("file_path"):
+                        raw_path = a_row["file_path"]
+
+    if not raw_path:
+        raise HTTPException(status_code=404, detail=f"Document or asset {document_id} not found")
+
+    resolved = resolve_asset_file_path(raw_path)
+    p = Path(resolved)
+
+    # Format selection logic:
+    if format == "docx" and p.suffix.lower() != ".docx":
+        sibling_docx = p.with_suffix(".docx")
+        if sibling_docx.exists():
+            p = sibling_docx
+    elif format != "docx" and p.suffix.lower() == ".docx":
+        # Sibling PDF check: If a PDF exists, prefer serving PDF for inline browser viewing with page jump
+        sibling_pdf = p.with_suffix(".pdf")
+        scan_pdf = p.with_name(p.stem + ".scan.pdf")
+        if sibling_pdf.exists() and sibling_pdf.is_file():
+            p = sibling_pdf
+        elif scan_pdf.exists() and scan_pdf.is_file():
+            p = scan_pdf
+
+    if not p.exists() or not p.is_file():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Document file not found on disk at {resolved}",
+        )
+
+    return serve_file_response(p)
+
+

@@ -269,6 +269,10 @@ class KnowledgeGraph:
         MATCH (start:Entity)
         WHERE toLower(start.name) = toLower($name)
            OR ANY(a IN start.aliases WHERE toLower(a) = toLower($name))
+           OR (size($name) >= 4 AND (
+               toLower(start.name) CONTAINS toLower($name)
+               OR toLower($name) CONTAINS toLower(start.name)
+           ))
         MATCH path = (start)-[r*1..{clean_hops}]-(target:Entity)
         WHERE ALL(rel IN r WHERE NOT type(rel) IN ['MENTIONED_IN', 'APPEARS_IN', 'CO_OCCURS_WITH'])
           AND start <> target
@@ -282,7 +286,7 @@ class KnowledgeGraph:
                    confidence: rel.confidence
                }}] AS relationships,
                length(path) AS hops
-        ORDER BY hops ASC
+        ORDER BY CASE WHEN toLower(start.name) = toLower($name) THEN 0 ELSE 1 END ASC, hops ASC
         LIMIT $limit
         """
         try:

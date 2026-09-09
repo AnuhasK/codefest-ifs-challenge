@@ -1,10 +1,11 @@
 import re
 import json
 import logging
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple, Set
 
-from src.config import BASE_DIR, CORPUS_PATH
+from src.config import BASE_DIR, CORPUS_PATH, GEMINI_REL_BATCH_SIZE
 from src.models.document import Chunk
 from src.models.entity import (
     RelationshipType,
@@ -272,3 +273,252 @@ def load_relationships_cache(
     except Exception as e:
         logger.warning("Failed to load relationships cache from %s: %s", path, e)
         return None
+
+
+BATCH_REL_CACHE_FILE = BASE_DIR / "data" / "relationship_batch_cache.json"
+
+
+def _load_batch_rel_cache() -> Dict[str, Any]:
+    if BATCH_REL_CACHE_FILE.exists():
+        try:
+            return json.loads(BATCH_REL_CACHE_FILE.read_text(encoding="utf-8"))
+        except Exception as e:
+            logger.warning("Failed reading relationship batch cache: %s", e)
+    return {}
+
+
+def _save_batch_rel_cache(cache: Dict[str, Any]) -> None:
+    try:
+        BATCH_REL_CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        BATCH_REL_CACHE_FILE.write_text(json.dumps(cache, indent=2), encoding="utf-8")
+    except Exception as e:
+        logger.warning("Failed saving relationship batch cache: %s", e)
+
+
+def extract_relationships_batch(
+    items: List[Tuple[Chunk, List[str]]],
+    llm: Optional[LLMProvider] = None,
+    batch_size: int = GEMINI_REL_BATCH_SIZE,
+) -> List[ExtractedRelationship]:
+    """
+    Extract relationships from multiple chunks in batches of `batch_size` (default: 10).
+    Massively reduces LLM API calls from ~800 to ~80 calls.
+    Falls back to single-chunk extraction on JSON parse error.
+    """
+    if not items or llm is None:
+        return []
+
+    cache = _load_batch_rel_cache()
+    all_extracted: List[ExtractedRelationship] = []
+    uncached_items: List[Tuple[Chunk, List[str], str]] = []
+
+    for chunk, entities in items:
+        if len(entities) < 2:
+            continue
+        sorted_ents = sorted(list(set(entities)))
+        cache_key = hashlib.sha256(f"{chunk.content[:1000]}:{sorted_ents}".encode("utf-8")).hexdigest()
+        if cache_key in cache:
+            cached_rels = cache[cache_key]
+            for r in cached_rels:
+                all_extracted.append(
+                    ExtractedRelationship(
+                        source_entity=r["source_entity"],
+                        target_entity=r["target_entity"],
+                        relationship_type=r["relationship_type"],
+                        evidence_text=r["evidence_text"],
+                        chunk_id=str(chunk.id),
+                        document_id=str(chunk.document_id) if chunk.document_id else None,
+                        confidence=float(r.get("confidence", 0.9)),
+                        source=r.get("source", "llm"),
+                    )
+                )
+        else:
+            uncached_items.append((chunk, sorted_ents, cache_key))
+
+    if not uncached_items:
+        return all_extracted
+
+    total_batches = (len(uncached_items) + batch_size - 1) // batch_size
+    print(
+        f"  [Relationships] Extracting relationships for {len(uncached_items)} chunks in {total_batches} batches ({batch_size} chunks/call)...",
+        flush=True,
+    )
+
+    allowed_types = {t.value for t in RelationshipType}
+
+    for b_idx, i in enumerate(range(0, len(uncached_items), batch_size), start=1):
+        batch_slice = uncached_items[i : i + batch_size]
+        chunks_payload = [
+            {
+                "index": str(idx),
+                "entities": ents,
+                "text": chunk.content[:1500],
+            }
+            for idx, (chunk, ents, _) in enumerate(batch_slice)
+        ]
+
+        prompt = f"""You are an expert knowledge graph relationship extractor for the fictional "Ashen Era" universe.
+Below are several text chunks. For each chunk, a list of confirmed named entities in that chunk is provided.
+
+For each chunk, identify any explicit relationships between the given entities.
+
+Allowed relationship types:
+{', '.join(sorted(list(allowed_types)))}
+
+Rules:
+1. Source and target MUST be entities from the provided list for that chunk.
+2. Only extract explicitly stated facts. Do not speculate or extrapolate.
+3. Provide the exact supporting evidence excerpt from the text.
+4. Confidence must be between 0.5 and 1.0.
+
+Chunks:
+{json.dumps(chunks_payload, indent=2)}
+
+Return JSON in this exact structure where keys are the chunk index strings ("0", "1", ...):
+{{
+  "0": [
+    {{
+      "source": "Ser Vael",
+      "target": "Ashen Vanguard",
+      "type": "MEMBER_OF",
+      "evidence": "Ser Vael served with the Ashen Vanguard",
+      "confidence": 0.95
+    }}
+  ],
+  "1": []
+}}
+"""
+        batch_success = False
+        try:
+            response = llm.generate(
+                prompt=prompt,
+                system_prompt="You are an expert knowledge graph relationship extractor. Respond strictly with valid JSON conforming to the requested schema.",
+            )
+            raw_text = response.content.strip()
+            if raw_text.startswith("```"):
+                raw_text = re.sub(r"^```[a-zA-Z]*\n?", "", raw_text)
+                raw_text = re.sub(r"\n?```$", "", raw_text).strip()
+
+            data = json.loads(raw_text)
+
+            for idx, (chunk, ents, cache_key) in enumerate(batch_slice):
+                idx_str = str(idx)
+                chunk_rels: List[ExtractedRelationship] = []
+                serialized_for_cache = []
+
+                for r in data.get(idx_str, []):
+                    s = str(r.get("source", "")).strip()
+                    t = str(r.get("target", "")).strip()
+                    rtype = str(r.get("type", "")).strip().upper()
+                    ev = str(r.get("evidence", "")).strip()
+                    conf = float(r.get("confidence", 0.9))
+
+                    if not s or not t or s == t:
+                        continue
+                    if rtype not in allowed_types:
+                        continue
+                    if conf < 0.5:
+                        continue
+
+                    rel_obj = ExtractedRelationship(
+                        source_entity=s,
+                        target_entity=t,
+                        relationship_type=rtype,
+                        evidence_text=ev,
+                        chunk_id=str(chunk.id),
+                        document_id=str(chunk.document_id) if chunk.document_id else None,
+                        confidence=conf,
+                        source="llm",
+                    )
+                    chunk_rels.append(rel_obj)
+                    serialized_for_cache.append({
+                        "source_entity": s,
+                        "target_entity": t,
+                        "relationship_type": rtype,
+                        "evidence_text": ev,
+                        "confidence": conf,
+                        "source": "llm",
+                    })
+
+                all_extracted.extend(chunk_rels)
+                cache[cache_key] = serialized_for_cache
+
+            _save_batch_rel_cache(cache)
+            batch_success = True
+
+        except Exception as e:
+            logger.warning("Batch relationship extraction failed for batch %d: %s. Falling back to per-chunk extraction.", b_idx, e)
+
+        if not batch_success:
+            # Fallback to single chunk extraction
+            for chunk, ents, cache_key in batch_slice:
+                single_rels = extract_relationships_from_chunk(chunk, ents, llm)
+                all_extracted.extend(single_rels)
+                cache[cache_key] = [
+                    {
+                        "source_entity": r.source_entity,
+                        "target_entity": r.target_entity,
+                        "relationship_type": r.relationship_type,
+                        "evidence_text": r.evidence_text,
+                        "confidence": r.confidence,
+                        "source": r.source,
+                    }
+                    for r in single_rels
+                ]
+            _save_batch_rel_cache(cache)
+
+        print(
+            f"  [Relationships] Completed batch {b_idx}/{total_batches} ({min(i + batch_size, len(uncached_items))}/{len(uncached_items)} chunks)...",
+            flush=True,
+        )
+
+    return all_extracted
+
+
+def extract_all_relationships(
+    chunks: List[Chunk],
+    chunk_to_entities: Dict[str, Any],
+    llm: Optional[LLMProvider] = None,
+    corpus_path: Optional[Path] = None,
+    batch_size: int = GEMINI_REL_BATCH_SIZE,
+) -> List[ExtractedRelationship]:
+    """
+    Complete relationship extraction pipeline:
+    1. Deterministic wiki infobox extraction (zero API calls)
+    2. Batched LLM relationship extraction for chunks with 2+ entities
+    3. Merges, deduplicates, and caches all relationships to data/extracted_relationships.json
+    """
+    print("Extracting canonical relationships from wiki infoboxes...", flush=True)
+    infobox_rels = extract_infobox_relationships(corpus_path)
+
+    all_relationships: List[ExtractedRelationship] = list(infobox_rels)
+
+    items: List[Tuple[Chunk, List[str]]] = []
+    for chunk in chunks:
+        cid = str(chunk.id)
+        raw_ents = chunk_to_entities.get(cid, [])
+        ent_names = [
+            e.name if hasattr(e, "name") else str(e)
+            for e in raw_ents
+            if (hasattr(e, "name") and e.name) or str(e).strip()
+        ]
+        unique_names = sorted(list(set(ent_names)))
+        if len(unique_names) >= 2:
+            items.append((chunk, unique_names))
+
+    if items and llm is not None:
+        print(f"Found {len(items)} chunks with 2+ entities eligible for relationship extraction.", flush=True)
+        llm_rels = extract_relationships_batch(items, llm=llm, batch_size=batch_size)
+        all_relationships.extend(llm_rels)
+
+    # Deduplicate relationships by (source.lower(), target.lower(), type)
+    seen: Set[Tuple[str, str, str]] = set()
+    deduped: List[ExtractedRelationship] = []
+    for r in all_relationships:
+        key = (r.source_entity.strip().lower(), r.target_entity.strip().lower(), r.relationship_type.strip().upper())
+        if key not in seen:
+            seen.add(key)
+            deduped.append(r)
+
+    save_relationships_cache(deduped)
+    return deduped

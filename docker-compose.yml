@@ -57,7 +57,16 @@ services:
       GEMINI_API_KEYS: ${GEMINI_API_KEYS:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-voyage}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-voyage-3-large}
+      LLM_MODEL: ${LLM_MODEL:-gemini-2.5-flash}
+      LLM_MODEL_STRONG: ${LLM_MODEL_STRONG:-gemini-2.5-flash}
       CORPUS_PATH: /app/Ashen_Era_Archive
+    volumes:
+      - ./src:/app/src
+      - ./app:/app/app
+      - ./data:/app/data
+      - ./Ashen_Era_Archive:/app/Ashen_Era_Archive:ro
     command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 
   ui:
@@ -68,9 +77,15 @@ services:
       - "${UI_PORT:-8501}:8501"
     depends_on:
       - api
+    volumes:
+      - ./app:/app/app
+      - ./src:/app/src
+      - ./Ashen_Era_Archive:/app/Ashen_Era_Archive:ro
     environment:
       API_URL: http://api:8000
+      BROWSER_API_URL: ${BROWSER_API_URL:-http://localhost:8000}
     command: streamlit run app/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
+
 
 volumes:
   postgres_data:

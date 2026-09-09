@@ -57,6 +57,7 @@ def test_build_template_prefix():
     assert "Muster" in prefix
     assert "Ser Vael" in prefix
     assert "Ashen Vanguard" in prefix
+    assert "Entities: Ser Vael [Person], Ashen Vanguard [Faction]." in prefix
 
 
 def test_needs_llm_prefix_detection_with_spacy():
