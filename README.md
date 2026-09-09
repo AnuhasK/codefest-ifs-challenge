@@ -21,6 +21,14 @@ The LLM is treated strictly as an inference and synthesis engine over retrieved 
 
 ---
 
+## Documentation
+
+- **[System Architecture](docs/architecture.md)**: Full end-to-end system topology, dual-storage design (PostgreSQL + Neo4j), 4-stream hybrid retrieval, and multi-hop reasoning.
+- **[Architectural & Engineering Decisions](docs/decisions.md)**: Comprehensive Architectural Decision Records (ADRs 01–21), technical rationale, rejected alternatives, and empirical benchmarks.
+- **[System Limitations & Trade-offs](docs/limitations.md)**: In-depth engineering review of latency bottlenecks, metric saturation, alias resolution edge cases, failed approaches, and production roadmap.
+
+---
+
 ## Key Features
 
 - **Format-Aware Ingestion Pipeline**: Ingests PDF, DOCX, Markdown, TXT, and scanned PDFs (`.scan.pdf` via Tesseract OCR).
