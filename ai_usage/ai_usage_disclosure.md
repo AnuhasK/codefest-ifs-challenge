@@ -26,6 +26,11 @@ In accordance with the Codefest 2026 competition guidelines:
 
 AI was used as an **accelerator, pair programmer, and sounding board**, never as an unmonitored generator. The system's architectural principles, data engineering, evaluation methodology, and critical design pivots were conceived, evaluated, and directed by the human engineering team.
 
+### Independent Research-Driven Architecture (Not Blind AI Generation)
+Crucially, the system architecture was **not blindly taken or generated from AI**. Instead, the foundation of the system was developed through extensive independent technical research by the team across industry engineering blogs, ML community discussions (such as practitioner findings on Reddit's `r/GraphRAG` and `r/LanguageTechnology`), and published technical literature (including Anthropic's Contextual Retrieval methodologies and hybrid search evaluations).
+
+The team gathered proven, state-of-the-art patterns—such as dual-storage topologies (PostgreSQL pgvector + Neo4j), corpus-aware gazettes to overcome fictional domain hallucination, local ONNX cross-encoders, and reciprocal rank fusion—and actively injected these researched concepts into the AI dialogues. AI tools (ChatGPT and Antigravity) were directed to help compare trade-offs, formulate, and synthesize these diverse research inputs into a structured, unified design document (`docs/architecture-v1.md`) tailored to the constraints of the Ashen Era fantasy corpus. Every module, phase, and acceptance gate was rigorously evaluated, challenged, and verified against empirical failure modes.
+
 This document discloses all tools used, the exact scope of their usage, key moments of human intervention where AI-suggested solutions were rejected or corrected, and the index of accompanying chat transcripts.
 
 ---
@@ -40,7 +45,7 @@ This document discloses all tools used, the exact scope of their usage, key mome
 | **FlashRank Cross-Encoder** | Local ONNX (`ms-marco-TinyBERT-L-2-v2`) | Retrieval Engine | Local CPU reranking of fused candidate chunks (<20ms latency, zero API calls). |
 | **RapidOCR** | Local ONNX (`rapidocr-onnxruntime`) | Ingestion Pipeline | Deterministic, offline optical character recognition for extracting tabular data (threat ratings, garrison strengths) from 15 figure plates on CPU. |
 | **Antigravity IDE / Claude 3.7 Sonnet** | Anthropic / IDE Assistant | Development & Engineering | Code architecture review, refactoring, test creation, debugging rate limits and SQL queries, documentation authoring. |
-| **ChatGPT (GPT-4o)** | OpenAI / Web Interface | Ideation & Brainstorming | Early brainstorming on Cypher schema patterns and evaluation metric edge cases. |
+| **ChatGPT (GPT-4o)** | OpenAI / Web Interface | Ideation & Research Synthesis | Formulating independent research (blogs, Reddit posts, technical articles) into the initial architecture design; structuring the 8-phase implementation roadmap; early brainstorming on Cypher schemas and evaluation edge cases. |
 
 ---
 
@@ -117,16 +122,29 @@ To ensure the LLM behaved as an evidence-grounded inference engine, the team dev
 
 ## 5. Exported Chat Log Catalog
 
-All full, raw chat transcripts exported from development sessions are stored in this directory (`ai_usage/chats/`) for judge inspection:
+All full, raw chat transcripts exported from development sessions are stored in [`ai_usage/chats/`](chats/) for judge inspection, alongside direct links to web-hosted sessions:
+
+### Local Chat Transcripts (`ai_usage/chats/`)
 
 | File Name | Development Focus | Key Human Steers & Inventions |
 |---|---|---|
-| [`chats/01_project_scaffold_and_storage_design.md`](chats/01_project_scaffold_and_storage_design.md) | Architecture & Storage | Decision to use dual storage (PostgreSQL + Neo4j); Docker Compose port mapping isolation (`5433:5432`). |
-| [`chats/02_ingestion_ocr_and_rapidocr.md`](chats/02_ingestion_ocr_and_rapidocr.md) | Ingestion & Vision | Dropping full Gemini Vision for figure plates; implementing local RapidOCR CPU pipeline for numerical data. |
-| [`chats/03_ner_gazette_and_spacy_rejection.md`](chats/03_ner_gazette_and_spacy_rejection.md) | Entity Extraction | Rejecting `en_core_web_trf`; engineering corpus-aware gazette and batched Gemini Flash NER. |
-| [`chats/04_hybrid_retrieval_and_rrf_tuning.md`](chats/04_hybrid_retrieval_and_rrf_tuning.md) | Retrieval & Ranking | Implementing 4-stream RRF fusion ($k=60$) over weighted score sums; local FlashRank cross-encoder integration. |
-| [`chats/05_multihop_graph_and_state_machine.md`](chats/05_multihop_graph_and_state_machine.md) | Graph & Multi-Hop | Designing bounded `QueryState` state machine; formulating Cypher graph expansion queries. |
-| [`chats/06_evaluation_metrics_and_benchmark_runs.md`](chats/06_evaluation_metrics_and_benchmark_runs.md) | Evaluation & Metrics | Diagnosing `Hit@K` ceiling effect; inventing Joint Multi-Target Recall; executing 20-question benchmark suite. |
+| [`chats/Project Plan Corpus Analysis.md`](chats/Project%20Plan%20Corpus%20Analysis.md) | Architectural Scoping & Feasibility | Audited 52-section plan against 10-day timeline; pruned React for Streamlit; selected Neo4j graph; authored `docs/architecture-v1.md`. |
+| [`chats/ingestion-development.md`](chats/ingestion-development.md) | Ingestion & Contextual Retrieval | Discarded generic spaCy `en_core_web_trf`; designed corpus-aware Gazette + rule NER; built SQLite disk caches for idempotency. |
+| [`chats/Entity Extraction Methodology Alternatives.md`](chats/Entity%20Extraction%20Methodology%20Alternatives.md) | Offline NER & Local OCR | Introduced external ML community research (Reddit / spaCy NLP); replaced LLM image calls with CPU RapidOCR for figure plates. |
+| [`chats/Architecture And Implementation Audit.md`](chats/Architecture%20And%20Implementation%20Audit.md) | Hybrid Retrieval Audit | Verified Phase 1 & 2 gates; built PostgreSQL BM25 (`ts_rank_cd`), dense embeddings, RRF ($k=60$), and FlashRank reranking; added Recall@K & MRR. |
+| [`chats/Architecture Implementation Gap Analysis.md`](chats/Architecture%20Implementation%20Gap%20Analysis.md) | Gap Analysis & Metric Reform | Standardized on `gemini-3.8-flash`; synced 2,011 entities to Neo4j; identified `Hit@K` ceiling effect, triggering Joint Multi-Target Recall. |
+| [`chats/Switching Embeddings To Voyage.md`](chats/Switching%20Embeddings%20To%20Voyage.md) | Voyage AI Vector Migration | Upgraded dense embeddings to `voyage-3-large` (1024-dim); caught and removed hardcoded entity relationships in favor of dynamic extraction. |
+| [`chats/UI API Integration Plan.md`](chats/UI%20API%20Integration%20Plan.md) | Middleware & Trace UI | Prioritized FastAPI backend before frontend; designed dark archive UI; demanded interactive `show_trace` toggle for Track 1C judging. |
+| [`chats/Generate LLM Evaluation Dataset.md`](chats/Generate%20LLM%20Evaluation%20Dataset.md) | Benchmark Evaluation & UX | Executed 20-question benchmark with `gemini-3.8-flash`; overhauled bracket-heavy citation UX with hover previews; resolved AFC warnings. |
+
+### Web-Hosted Sessions (ChatGPT Live Shares)
+
+*(Note: Because ChatGPT shared web sessions render dynamically via client-side JavaScript, raw text exports could not be extracted without markdown formatting loss; live share links are provided below for evaluation auditability)*:
+
+| Session Link | Focus | Key Human Steers & Inventions |
+|---|---|---|
+| [ChatGPT: Confirm Architecture Role](https://chatgpt.com/share/6aa1805b-9b40-83ee-9c72-42204f49579e) | Architecture Scoping & Role Definition | Synthesizing external technical research (engineering blogs, Reddit discussions, articles) into architectural roles, boundary definitions, and feasibility scoping. |
+| [ChatGPT: Implementation Plan Summary](https://chatgpt.com/share/6aa1806d-2090-83ee-970f-e41427278343) | Phased Implementation Roadmap | Formulating the 8-phase implementation roadmap, acceptance criteria, and gatekeeper tests from vetted best practices. |
 
 ---
 
