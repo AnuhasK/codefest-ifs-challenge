@@ -1459,7 +1459,7 @@ Here is the exact reason why the API requests are not succeeding and how to solv
 
 Look at your keys currently in `.env`:
 ```env
-GEMINI_API_KEY=AQ.Ab8RN6KA4GbyliSTwNb7Nz_XzYTV2fLYNq1fAd_qxfaOLOBoZw,...
+GEMINI_API_KEY=key1,...
 ```
 
 - Keys starting with `AQ.Ab8...` are **not** standard Google AI Studio API keys.
